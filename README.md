@@ -23,12 +23,10 @@ Use `dream2nix` over of `pnpm` or `npm` directly. Per `dream2nix` [project setup
 
 ```bash
 $ nix flake init -t github:nix-community/dream2nix#simple
-$ git add flake.nix
-
 $ nix eval --impure --raw --expr 'builtins.currentSystem' > ./nix_systems
-$ git add ./nix_systems
-nix run github:nix-community/dream2nix#detect-projects . > projects.toml
-git add projects.toml
+$ rm -rf node_modules  # Resolve parsing issue in following command per https://github.com/nix-community/dream2nix/issues/484
+$ nix run github:nix-community/dream2nix#detect-projects . > projects.toml
+$ git add .
 ```
 
 Run `nix flake show` to check flake outputs (will generate `flake.lock`).
