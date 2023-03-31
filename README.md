@@ -37,6 +37,12 @@ Once everything is working, run `direnv allow`.
 
 * `nix develop` into `npm start`? `pnpm`? Or will some `dream2nix` utility?
 
+I guess npm install since `npx next dev` and `npx next start` can't find deps like `react` and `next-contentlayer`?
+```bash
+$ cd hkailahi-dev
+$ npm install
+```
+
 ## Resources
 
 https://nix-community.github.io/dream2nix/
