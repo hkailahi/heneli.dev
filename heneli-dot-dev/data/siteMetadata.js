@@ -2,23 +2,23 @@
 
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Heterodox Devoganda',
+  title: 'Code with Heneli',
   author: 'Heneli Kailahi',
-  headerTitle: 'Heterodox Devoganda',
-  description: 'A blog created with Next.js and Tailwind.css',
+  headerTitle: 'Code with Heneli',
+  description: 'A blog about alternative approaches for programming and industry',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://heneli.dev',
   siteRepo: 'https://github.com/hkailahi/heneli.dev',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
-  socialBanner: '/static/images/twitter-card.png',
+  socialBanner: '/static/images/twitter-card.png', // TODO - Add alternative graphic
   email: 'bright.tent7049@fastmail.com',
   github: 'https://github.com/hkailahi',
   twitter: 'https://twitter.com/kat_getheny',
   // facebook: 'https://facebook.com',
   // youtube: 'https://youtube.com',
-  linkedin: 'https://www.linkedin.com/in/hkailahi',
+  linkedin: 'https://www.linkedin.com/in/hkailahi?original_referer=heneli.dev',
   locale: 'en-US',
   analytics: {
     // If you want to use an analytics provider you have to add it to the
