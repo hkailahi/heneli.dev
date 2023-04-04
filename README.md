@@ -1,6 +1,18 @@
 # heneli.dev
 
+## Contents
+- [heneli.dev](#henelidev)
+  - [Contents](#contents)
+  - [Blog Discussions](#blog-discussions)
+  - [Initial Setup](#initial-setup)
+
+## Blog Discussions
+
+Discussions are hosted in the 'Discussions' tab here on Github above this repo. Comments on blogposts can be added here or and on the posts themselves via [`giscus`](https://github.com/laymonage/giscus).
+
 ## Initial Setup
+
+Checkout the [first PR](https://github.com/hkailahi/heneli.dev/pull/2)! These are the steps I took to initially set up this repo ([Tailwind Next.js Starter Blog](https://github.com/timlrx/tailwind-nextjs-starter-blog#quick-start-guide) + a little [`Nix`](zero-to-nix.com)). I highly recommend creating your own blog with this template, but change up your theme so I can keep mine. 😛
 
 1. Apply Tailwind Next.js Starter Blog template
 
@@ -137,3 +149,5 @@ $ nix develop
 ```
 
 Success!!
+
+Follow https://github.com/timlrx/tailwind-nextjs-starter-blog#quick-start-guide start customizing!

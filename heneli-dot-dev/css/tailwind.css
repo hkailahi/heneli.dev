@@ -27,3 +27,98 @@ input:-webkit-autofill,
 input:-webkit-autofill:focus {
   transition: background-color 600000s 0s, color 600000s 0s;
 }
+
+:root {
+  --sans: system-ui, -apple-system, blinkmacsystemfont, 'Segoe UI', helvetica,
+    arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  --mono: 'San Francisco Mono', 'Monaco', 'Consolas', 'Lucida Console',
+    'DejaVu Sans Mono', 'Bitstream Vera Sans Mono', monospace;
+  --white: #fff;
+  --black: #1b1f24;
+  --gray-0: #f6f8fa;
+  --gray-1: #eaeef2;
+  --gray-2: #d0d7de;
+  --gray-3: #afb8c1;
+  --gray-4: #8c959f;
+  --gray-5: #6e7781;
+  --gray-6: #57606a;
+  --gray-7: #424a53;
+  --gray-8: #32383f;
+  --gray-9: #24292f;
+  --blue-0: #ddf4ff;
+  --blue-5: #0969da;
+  --blue-9: #002155;
+  --green-0: #dafbe1;
+  --green-5: #1a7f37;
+  --green-9: #002d11;
+  --yellow-0: #fff8c5;
+  --yellow-5: #9a6700;
+  --yellow-9: #3b2300;
+  --orange-0: #fff1e5;
+  --orange-5: #bc4c00;
+  --orange-9: #471700;
+  --red-0: #ffebe9;
+  --red-5: #cf222e;
+  --red-9: #4c0014;
+  --purple-0: #fbefff;
+  --purple-5: #8250df;
+  --purple-9: #2e1461;
+  --pink-0: #ffeff7;
+  --pink-5: #bf3989;
+  --pink-9: #4d0336;
+  --coral-0: #fff0eb;
+  --coral-5: #c4432b;
+  --coral-9: #510901;
+  --mdx-yellow: hsl(39deg 97% 58%);
+  --hl: var(--blue-5);
+  --fg: var(--black);
+  --bg: var(--white);
+}
+
+/* From https://github.com/mdx-js/mdx/blob/main/docs/_asset/index.css#L671 for <Note> components */
+.note {
+  color: var(--white);
+  /* font-size: smaller; */
+  line-height: calc(1em + (1 / 0.8 * 1ex));
+  padding-inline: calc(1 / 0.8 * (1em + 1ex));
+  margin-block: calc(1 / 0.8 * (1em + 1ex));
+  position: relative;
+  z-index: 0;
+  inset: 0;
+  mask-image: paint(squircle);
+  --squircle-radius: 10px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+
+  /* Actually the border color: */
+  background-color: var(--purple-5);
+}
+
+.note::after {
+  content: '';
+  position: absolute;
+  mask-image: paint(squircle);
+  z-index: -1;
+  background-color: hsl(9deg 64% 8%);
+  inset: 0;
+  --squircle-radius: 9px;
+  border-radius: 9px;
+
+  background-color: var(--purple-5);
+}
+
+.legacy {
+  background-color: var(--gray-5);
+}
+
+.legacy::after {
+  background-color: var(--gray-0);
+}
+
+.important {
+  background-color: var(--red-5);
+}
+
+.important::after {
+  background-color: var(--red-0);
+}
