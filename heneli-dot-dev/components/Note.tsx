@@ -3,7 +3,7 @@ import React from 'react'
 const known = new Set(['info', 'legacy', 'important'])
 
 export function Note(props) {
-  const {children, type} = props
+  const { type, children } = props
   const className = ['note']
 
   if (known.has(type)) className.push(type)
