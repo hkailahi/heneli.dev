@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg version="1.0" xmlns="http://www.w3.org/2000/svg"
- width="107.000000pt" height="107.000000pt" viewBox="0 0 107.000000 107.000000"
- preserveAspectRatio="xMidYMid meet">
-<metadata>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="53.87" height="43.61" viewBox="0, 0, 470, 401">
   <defs>
     <clipPath id="Clip_1">
       <path d="M431.265,194.386 L462.845,93.642 L368.943,50.09 L368.067,50.09 L294.658,23.631 L294.45,23.653 L293.782,20.194 L274.574,6.538 C274.574,6.538 253.667,11.659 233.175,11.659 C214.939,11.659 197.698,7.6 194.143,6.731 L193.958,6.672 L193.936,6.672 L174.906,20.194 L174.364,22.933 L173.392,22.763 L99.982,50.09 L6.051,93.642 L37.631,194.386 L94.854,183.298 L95.707,183.298 L81.613,394.183 L386.437,394.183 L372.342,183.298 L374.064,183.298 L431.265,194.386 z"/>
