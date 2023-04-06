@@ -1,25 +1,9 @@
 import siteMetadata from '@/data/siteMetadata'
 import headerNavLinks from '@/data/headerNavLinks'
 import Link from './Link'
-import LogoDark from '@/data/logo_dark.svg'
-import LogoLight from '@/data/logo_light.svg'
+import Logo from './Logo'
 import MobileNav from './MobileNav'
 import ThemeSwitch from './ThemeSwitch'
-import { useTheme } from 'next-themes'
-
-{/* For different images on theme changes, per https://www.npmjs.com/package/next-themes#Images */}
-function ThemedLogo() {
-  const { resolvedTheme } = useTheme()
-
-  switch (resolvedTheme) {
-    case 'light':
-      return <LogoLight />
-    case 'dark':
-      return <LogoDark />
-    default:
-      return <LogoLight />
-  }
-}
 
 const Header = () => {
   return (
@@ -28,7 +12,7 @@ const Header = () => {
         <Link href="/" aria-label={siteMetadata.headerTitle}>
           <div className="flex items-center justify-between">
             <div className="mr-3">
-              <ThemedLogo />
+              <Logo />
             </div>
             {typeof siteMetadata.headerTitle === 'string' ? (
               <div className="hidden h-6 text-2xl font-semibold sm:block">
