@@ -1,0 +1,310 @@
+---
+title: 'Fearless Tinkering is Functional'
+date: '2023-04-05'
+lastmod: '2023-04-05'
+tags: ['functional', 'complexity', 'algebra', 'haskell', 'nixos', 'verse', 'unison']
+draft: false
+summary: 'A fearless tinkerer sails a ship where entire classes of leakage are rendered an impossibility.'
+images: [ ]
+authors: ['default']
+# version: 0.1
+---
+
+# Fearless Tinkering is Functional
+
+<TOCInline toc={props.toc} toHeading={3} asDisclosure />
+
+🪝
+
+Sometimes functional programming gets a bad rap. Critics from industry cite a laundry list of issues: lack of commercial validation, high barrier of entry, sparse library catalog, poor documentation, unfamiliar academic culture, frictious tooling, and a dismal entry-level job market. Advocates counter with [a](https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users) [number](https://mercury.com/) [of](https://www.pagerduty.com/blog/tag/elixir/) [success](https://www.janestreet.com/) [stories](https://hasura.io/) and appeals pointing to [ongoing](https://elixir-lang.org/blog/2022/10/05/my-future-with-elixir-set-theoretic-types/) [improvements](https://haskell.foundation/projects/). “[Things](https://zero-to-nix.com/) [_really_](https://zaid-ajaj.github.io/the-elmish-book/#/) [_are_](https://github.com/haskell/haskell-language-server) [getting](https://www.amazon.com/Production-Haskell-Succeeding-Industry/dp/B0BTNVFR2N) [better](https://github.com/haskell/error-messages)!” Deserved or otherwise, skepticism is hard to overcome.
+
+It’s certainly never been the case that a functional language was the de facto industry standard like all of Java, Python, and JavaScript have been. By choice[^1] or by fate, the benefits born of iterating a language independent of widespread reliance have been traded against predictable costs on functional ecosystems. When there’s 10,000 new programmers learning an imperative language to every individual learning a functional one, can a functional approach really compete?[^2]
+
+My answer is yes. While I see merit in the above critiques, I don’t believe that any of them are inherent. In fact, I’ll argue that the functional paradigm already has best-in-class learnability thanks to **fearless tinkering**.[^4]
+
+## Fearless in Theory
+
+---
+
+### Fear and Complexity
+
+There’s an endless list of things that invoke fear in programmers. Buggy software, rolling upgrades, concurrency, bit rot, year-out deadlines, service alerts, tech debt, stale builds, nondeterminism, time libraries, ambiguous requirements, hardware faults, software rewrites, network partitions, scope creep, security, and on and on. Each of these can be terrifying on their own. To make matters worse, software rarely has just a single source of horror. Very simple programs written by very thoughtful programmers can host a multitude.
+
+Without the right tools, conquering these fears can feel impossible. If your tools can’t protect you, you won’t be able to protect yourself. Some retreat to a defensive programming style, but adopting apprehension grants no solace. What use is an infinite roll of duct tape when a ship takes water? If tape can’t solve the first leak, should one patch the next, pick their battles, or accept fate and lose hope in the voyage? Does a decision even matter when the ship is already sinking? Maybe swimming to shore and joining a new boat would suffice… at least until that crew wants to tape their leaks. By then, that too will be someone else’s problem. The cognitive burden of faulty software is real and difficult to remedy. Programming is a social exercise, and teammates, regardless of fairness, won’t appreciate learned helplessness.
+
+Most fears boil down to uncertainty about **complexity**. As Fred Brooks explained in No Silver Bullet, there exists **essential complexity** that cannot be avoided and **accidental complexity** for everything else.[^5] Out of the Tar Pit followed up by diagnosing **state**, **control flow**, and **code volume** as the most frequent culprits underlying accidental complexity. The nature of complexity is festering and exponential, so tackling root causes is always better than addressing symptoms. Put another way, preventing leaks by addressing the inherent structural deficiencies of a ship’s build is favorable to being skilled at plugging holes.
+
+**Fearless tinkering** is the ability to engage a domain and confidently reason about it while unencumbered by accidental complexity. Whether the domain is concurrency, software upgrades, or something else, a fearless tinkerer can rely on the structural guarantees of their context to safely explore their domain and target the essential complexity of the task at hand. A fearless tinkerer sails a ship where entire classes of leakage are rendered an impossibility. What kinds of leaks are prevented? How are they decided? As discussed in the following sections, these guarantees are determined by the algebra of one’s program.
+
+### On Functional Programming
+
+Here is a collection of commonly discussed characteristics[^6] from functional languages:[^7]
+* Referential Transparency.
+* Pure functions.
+* Declarative.
+* Immutability.
+* First-Class Functions.
+* Higher-Order Functions.
+* Expression-Oriented.
+* Pattern Matching.
+* Tail Call Elimination.
+* Managed Effects.
+* Algebraic Datatypes.
+* Composability.
+* Recursive Datatypes.
+* Equational Reasoning.
+
+Functional programming doesn’t solve complexity, but helps one meet it by surfacing its roots. To do this, functional languages deliver several of the more successful and battle-tested approaches to the state, control flow, and volume.
+
+Functional languages _<u>make stateful complexity explicit</u>_. By pairing immutable defaults with performant and easy-to-use APIs, functional languages minimize the need for mutable state. Introducing mutable state thus becomes an intentional action. Given immutability’s elimination of destructive updates, compilers are empowered to reward programmers with greater [expressiveness](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) and [safety](https://en.wikipedia.org/wiki/Software_transactional_memory) at less cost. Some functional languages make explicit their “effects” with types, creating a distinction between “effect-free” and “effectful” code which can be reasoned about separately.
+
+With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones (statements)</u>_, functional languages eliminate a number of control flow issues. Jump-based statements, which break compositionality and equational reasoning, are replaced with expressions that can be substituted for their outputs. Bigger programs can be faithfully decomposed into smaller programs. This allows for the local reasoning of individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get”.
+
+Functional languages address program volume by _<u>making mechanical the act of stripping programs down to their essence</u>_. For instance, verbose wrangling code can be collapsed into neat reusable patterns using higher-order functions and function composition. Typed functional languages use parametric, ad-hoc, structural, and other forms of polymorphism to expand ordinary functions over a single domain into general-purpose functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote, mental calculations of dynamism onto programmer’s better-suited counterparts in computers. The capability of endless abstraction helps uncover rock-solid, lean foundations for APIs and wider ecosystems.
+
+Armed with the properties of functional languages, programmers can reclaim their cognitive sovereignty and fearlessly explore software in action.
+
+### Ideas over Implementation Details
+
+> Declare it. Answer how with what. Break the causal chain and unshackle from the past. The world is simply what you say it is. 
+> - a sage functional programmer, probably
+
+If language is a tool for thought, then one should value dialects enabling the natural communication of them. Blunted alternatives that intersperse anything meaningful with robotic recitations of language internals or error-prone adaptations to outside alterations are painful to tolerate. A language that yields such fragile mental models debilitates a programmer’s ability to handle real-world scenarios like context-switching, product evolution, and the eventuality of a system’s growth beyond what can be kept in one’s head. The essential complexity programmers face is already challenging enough.
+
+When the business calls for an algorithm to determine how many users visited their website last week, no one’s first thought should have to be about for-loops, heap allocations, b-tree indexes, assembly instructions, or cosmic rays. No, an API that’s better suited to immediate communication might yield something like:
+
+```java
+all_users -> filter_by(visited_since(-7 days)) -> count()
+```
+
+Declarative programming simplifies the act of learning because it 1) meets one at their layer of abstraction and 2) let’s one focus solely on what’s in front of them. A well-designed declarative API lays out all the vocabulary and structure one should need, such that formulating solutions through sentences is as natural as placing blocks in a game of Tetris. Learners can focus on encoding the logic of the place they actually care about instead of the windy road they may have taken to get there. By only necessitating a specification of ‘what is’, the programmer is unburdened by the interconnected history of their model’s state transitions.
+
+### Constraints Liberate
+
+> [Constraints liberate, liberties constrain](https://youtu.be/GqmsQeSzMdw)
+> - Rúnar Bjarnason
+
+Observing the underlying properties of a program is the key to unlocking its simplification. A simple pure function is simple because of the numerous constraints that have already been imposed on it. Also, the restriction of mapping input sets onto output sets eases the discovery of additional mathematical relationships in one’s program. Employing popular [functional](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) [techniques](https://kowainik.github.io/posts/haskell-mini-patterns) to prune superfluous code paths can make invariants lurking in our programs even more apparent. By building a toolkit of common operations with associated constraints, one can unlock a useful library of powers to call upon in various programming situations.
+
+One could rightly object that having to learn new mathematical abstractions is trading one kind of complexity for another. In practice, there are but a small handful of core abstractions that frequently occur and are worth their collective weight to the average programmer.[^8] As with the above discussion on declarative programming, one could view learning these abstractions as engaging with the fundamentals of their domain. The major benefit of understanding an abstraction is that once you’ve understood it, _you’ve understood it for all of its applications_.
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Property</th>
+      <th scope="col">Disallows</th>
+      <th scope="col">Power</th>
+      <th scope="col">Example</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Functional Purity</th>
+      <td>
+        ```jsx chrome=no
+        logInfo(msg):
+            upload_ssn() 
+            return “info:” + msg
+        ```
+      </td>
+      <td>Fearlessly execute and reproduce</td>
+      <td>Haskell</td>
+    </tr>
+    <tr>
+      <th scope="row">Immutable</th>
+      <td>
+        ```
+        x++
+        ```
+      </td>
+      <td>Fearlessly rollback and share dependencies</td>
+      <td>Nix, Persistent Data Structures</td>
+    </tr>
+    <tr>
+      <th scope="row" >
+        <p>Associative:</p>
+        <p>`(A <> B) <> C == A <> (B <> C)`</p>
+        </th>
+      <td>
+        ```jsx chrome=no
+        logInfo(msg):
+            upload_ssn() 
+            return “info:” + msg
+        ```
+      </td>
+      <td>Fearlessly parallelize</td>
+      <td>MapReduce</td>
+    </tr>
+    <tr>
+      <th scope="row" >
+        <p>Commutative:</p>
+        <p>`A <> B == B <> A`</p>
+        </th>
+      <td>
+        ```jsx chrome=no
+        for x in xs:
+            if f(x):
+                break
+            if g(x):
+                continue
+            counter++
+        ```
+      </td>
+      <td>Fearlessly reorder executions</td>
+      <td>Pijul</td>
+    </tr>
+    <tr>
+      <th scope="row" >
+        <p>Transitive:</p>
+        <p>`F: A -> B, G: B -> C` => `G . F: A -> C`</p>
+        </th>
+      <td>
+        ```jsx chrome=no
+        no_negs(x: int) -> Optional[int]:
+            if x < 0: None
+            else: x
+
+        add_rand(a: int) -> int:
+            a + random_int()
+
+        >>> add_rand(no_negs(-10))
+        *** error!
+        ```
+      </td>
+      <td>Fearlessly compose</td>
+      <td>Profunctor Optics, Generics-SOP</td>
+    </tr>
+    <tr>
+      <th scope="row" >
+        <p>Join-Semilattice:</p>
+        <p>`Associative: (A <> B) <> C == A <> (B <> C)`</p>
+        <p>`Commutative: A <> B == B <> A`</p>
+        <p>`Idempotent: A <> A == A`</p>
+        </th>
+      <td>
+        ```jsx chrome=no
+        f(edits):
+            for edit in edits:
+                x.async_append(edit)
+
+        >>> f([‘Hello’, ‘World’])
+        >>> get_x()
+        [‘Init’, ‘World’, ‘Hello’]
+        ```
+      </td>
+      <td>Fearlessly synchronize and replicate</td>
+      <td>CRDTs</td>
+    </tr>
+    <tr>
+      <th scope="row" >Denumerable</th>
+      <td>
+        ```jsx chrome=no
+        is_odd(x: int) -> bool:
+            if x == 0: False
+            if x == 1: True
+            if x == 2: False
+            if x == 17: True
+
+        >>> is_odd(10000)
+        *** error!
+        ```
+      </td>
+      <td>Fearlessly pattern match</td>
+      <td>Error-Handling in Rust</td>
+    </tr>
+  </tbody>
+  <caption>Figure 1: A small sampling of properties and the powers they grant.</caption>
+</table>
+
+## Fearless in Practice
+
+---
+
+### Nix & NixOS
+
+#### Fearless Upgrades
+
+#### Fearless Reproducibility
+
+#### Fearless Sharing
+
+### Haskell
+
+Fixing a bug? No problem!
+
+Need a new feature? Sure thing!
+
+Did you read about that best practice? Incorporation was easy!
+
+Handle another edge case? Say less!
+
+Upgrading 50 libraries? 💯
+
+#### Fearless Refactoring
+
+It is straightforward and mechanical to translate functions into “generalized” forms. For example, one progression could be:
+* function with several **hardcoded arguments**
+* function on **several arguments**
+* function on a **record of arguments** (configuration record)
+* function on a **record of functions** computing arguments ([handler pattern](https://jaspervdj.be/posts/2018-03-08-handle-pattern.html))
+* function dispatched to an ad-hoc **interpreter translating polymorphic operations** into  concrete functions computing arguments (final algebra, [finally tagless](https://serokell.io/blog/introduction-tagless-final))
+* function, defined with an eDSL, on an **interpreter translating an AST** into functions computing arguments (initial algebra, [defunctionalization](https://blog.sigplan.org/2019/12/30/defunctionalization-everybody-does-it-nobody-talks-about-it/))
+* …and back again (refunctionalization)
+
+Programmers can pick whatever individual or combination of these equivalent forms best suit their task.
+
+
+#### Fearless Maintenance
+
+### Functional Adjacent
+
+## A Fearless Future 
+---
+
+### Fearless Interoperability with Verse
+
+### Fearless DX with Unison
+
+## Wrap
+
+Thanks for reaching the end! Here are some options if you’d like to get started with functional programming:
+* If you’d like an entry point into application programming with functional languages, I recommend checking out [Elm](https://elm-lang.org/) and [Elixir](https://elixir-lang.org/). 
+* If you’re interested in a functional devops experience, I recommend checking out [Nix](https://nixos.org/) with the [Zero to Nix](https://zero-to-nix.com/) guide.
+* If you are looking for a follow-up on incorporating algebraic foundations into your daily work, I recommend reading [Algebra-Driven Design](https://algebradriven.design/).
+* If you want to fully immerse yourself in functional programming without familiar imperative crutches, I recommend checking out [Haskell](https://www.haskell.org/).[^10]
+
+## Footnotes
+
+[^1]:
+    The prelude to the [Haskell Foundation Whitepaper](https://haskell.foundation/whitepaper/) has good coverage on the previous success of the “Avoid success at all costs” slogan and current evolution beyond the phrase.
+
+[^2]: 
+    Source: I made it up. The best I could find was the [2022 Stack Overflow Developer Survey](https://survey.stackoverflow.co/2022/#technology) and the [March 2023 TIOBE index](https://www.tiobe.com/tiobe-index/), which can’t directly validate my claim but weakly support it’s order of magnitude.
+
+    Per Stack Overflow, Scala (2.59%), Haskell (2.22%), Elixir (2.15%), Clojure (1.51%), F# (1.03%), Erlang (0.9%), and OCaml (0.59%) make up a combined 10.4% of 71,547 responses for [Most Popular Technologies](https://survey.stackoverflow.co/2022/#technology-most-popular-technologies) survey, none of which meet the 5000 connection minimum in the 69,362 respondent [Work With vs Want to Work With](https://survey.stackoverflow.co/2022/#worked-with-vs-want-to-work-with-language-worked-want) survey. 
+
+    Per TIOBE popularity index, only #25 F# (0.53%), #31 Haskell (0.34%), and #38 Scala (0.23%) make the top 50, with all of Elixir, Erlang, Common Lisp, Schema, Clojure, F#, Erlang, and OCaml landing between top 51 - 100.
+
+[^4]: // TODO
+
+[^5]: // TODO
+
+[^6]: Overlapping, non-compulsory, non-exhaustive
+
+[^7]: 
+    You probably noticed that I cowardly deferred to others the task of formally defining “functional programming”. The fact of matter is that FP is a vibe.
+
+    More seriously, I use “functional programming” as shorthand for a style that avoids mutation and implicit “effects”. I also define “functional languages” as those enabling the representation of programs with expressions that can be substituted for the results of their evaluation (as is the case for even “impure” DSLs like `State` or `IO`).
+
+    Both the usefulness and accuracy of the term “functional” has been debated. Even the meaning and relation of commonly associated descriptors like “declarative” is contested. There doesn’t seem to be a minimal feature set (not even higher-order functions!) across languages that are widely considered functional. The heuristic for determining which languages are functional might as well be whether the language mentions ‘functional’ in its marketing material or shares a family origin with those listed on the sidebar of r/functionalprogramming.
+
+    For the sake of this post, I am willing to tolerate the imprecision of ‘Fearless Tinkering is Functional’ over something that might better match like ‘expression-oriented’, ‘denotative’, or ‘algebraic’ (definitional claims are unfalsifiable anyways). I am also willing, when a claim reflects my own opinions, to forgo small nuances (or bury them in footnotes) when speaking to unacquainted audiences. My goals with this specific post are more about connecting valuable ideas through familiar phrasing to a wider audience than advancing a discussion for those already equipped with understanding. 
+
+    I do think there are more general problems with various commonly-used terms by functional programmers, and that particular statements often lead to poor intuitions and mismatched discussions. I hope to publish more on this topic soon.
+
+[^8]: No one needs to go learn category theory! If someone tells you otherwise, they are wrong and not to be trusted.
+
+[^10]:
+    [14] For video learners, Philipp Hagenlocher's [Haskell for Imperative Programmers](https://www.youtube.com/playlist?list=PLe7Ei6viL6jGp1Rfu0dil1JH1SHk9bgDV) playlist is a phenomenal introductory exposure. If, like me, you like 1000+ page tutorials with ample hand-holding, you could learn with [Haskell from First Principles](https://haskellbook.com/). Otherwise, the upcoming [Effective Haskell](https://pragprog.com/titles/rshaskell/effective-haskell/) book seems, from my brief skim, like a promising early resource. Additionally, helpful online references like [Typeclasses](https://typeclasses.com/) and [Kowainik’s blog](https://kowainik.github.io/posts) can be very beginner-friendly. The (formerly NICTA) [fp-course](https://github.com/system-f/fp-course) is a guided exercise that’s perfect for beginners struggling to grapple with fundamental abstractions.
+
+    For those desiring intermediate resources, I can strongly recommend [Production Haskell](https://www.amazon.com/Production-Haskell-Succeeding-Industry/dp/B0BTNVFR2N), [Thinking with Types](https://thinkingwithtypes.com/), and the _Concurrent_ section of the classic [Parallel and Concurrent Programming in Haskell](https://www.amazon.com/Parallel-Concurrent-Programming-Haskell-Multithreaded/dp/1449335942). Additionally, promising works on the horizon like [The Haskell Optimization Handbook](https://github.com/input-output-hk/hs-opt-handbook.github.io) and some unannounced efforts make now a great time to get in.
