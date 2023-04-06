@@ -31,7 +31,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { filePath, path, slug, date, title, tags } = content
+  const { filePath, path, slug, date, title, version, tags } = content
   const basePath = path.split('/')[0]
   const [loadComments, setLoadComments] = useState(false)
 
@@ -55,6 +55,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               </dl>
               <div>
                 <PageTitle>{title}</PageTitle>
+                <text className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">v{version}</text>
               </div>
             </div>
           </header>

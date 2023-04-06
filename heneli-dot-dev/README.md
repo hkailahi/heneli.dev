@@ -171,6 +171,7 @@ Currently 10 fields are supported.
 title (required)
 date (required)
 tags (required, can be empty array)
+version (required)
 lastmod (optional)
 draft (optional)
 summary (optional)
