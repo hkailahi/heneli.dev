@@ -12,8 +12,11 @@ import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/master/data/${path}`
-const discussUrl = (path) =>
+const twitterUrl = (path) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`)}`
+const issueUrl = `https://github.com/hkailahi/heneli.dev/issues`
+const discussUrl = `https://github.com/hkailahi/heneli.dev/discussions`
+const trashUrl = `https://news.ycombinator.com/`
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -100,11 +103,30 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
               <div className="prose max-w-none pb-8 pt-10 dark:prose-dark">{children}</div>
               <div className="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">
-                <Link href={discussUrl(path)} rel="nofollow">
+                <Link href={twitterUrl(path)} rel="nofollow">
                   Discuss on Twitter
                 </Link>
                 {` • `}
                 <Link href={editUrl(filePath)}>View on GitHub</Link>
+              </div>
+              <div className="pb-6 pt-6 text-xs text-gray-700 dark:text-gray-300">
+                <text>
+                  Something incorrect? Addition to propose? Follow-up to link above? File an{' '}
+                  <Link href={issueUrl} className="text-cyan-400 underline" rel="nofollow">
+                    issue
+                  </Link>
+                  . Comment to add? Join the discussion below by authorizing Giscus or commenting
+                  directly on the{' '}
+                  <Link href={discussUrl} className="text-cyan-400 underline" rel="nofollow">
+                    Github Discussion
+                  </Link>
+                  . Off-topic remarks, unfunny jokes, weirdly overfamiliar internet-speak, and
+                  bootlicking will be moved{' '}
+                  <Link href={trashUrl} className="text-cyan-400 underline" rel="nofollow">
+                    here
+                  </Link>
+                  .
+                </text>
               </div>
               {siteMetadata.comments && (
                 <div
