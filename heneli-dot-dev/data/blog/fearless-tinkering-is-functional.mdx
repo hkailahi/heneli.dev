@@ -79,10 +79,10 @@ Declarative programming simplifies the act of learning because it 1) meets one a
 
 ### Constraints Liberate
 
-> [Constraints liberate, liberties constrain](https://youtu.be/GqmsQeSzMdw)
-> - Rúnar Bjarnason
+> Freedom at one level leads to restriction at another. A constraint at one level leads to freedom and power at another level.
+> - Rúnar Bjarnason, [Constraints liberate, Liberties constrain](https://youtu.be/GqmsQeSzMdw)
 
-Observing the underlying properties of a program is the key to unlocking its simplification. A simple pure function is simple because of the numerous constraints that have already been imposed on it. Also, the restriction of mapping input sets onto output sets eases the discovery of additional mathematical relationships in one’s program. Employing popular [functional](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) [techniques](https://kowainik.github.io/posts/haskell-mini-patterns) to prune superfluous code paths can make invariants lurking in our programs even more apparent. By building a toolkit of common operations with associated constraints, one can unlock a useful arsenal of powers to call upon in various programming situations.
+Observing the underlying properties of a program is the key to unlocking its simplification. A simple pure function is simple because of the numerous constraints that have already been imposed on it. Also, the restriction of mapping input sets onto output sets eases the discovery of additional relationships in one’s program. Employing popular [functional](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) [techniques](https://kowainik.github.io/posts/haskell-mini-patterns) to prune superfluous code paths can make invariants lurking in our programs even more apparent. By building a toolkit of common operations with associated constraints, one can unlock a useful arsenal of powers to call upon in various programming situations.
 
 One could rightly object that having to learn new mathematical abstractions is trading one kind of complexity for another. In practice, there are but a small handful of core abstractions that programmers will typically run into and are thus worth their collective weight.[^8] Learning these abstractions could also be viewed as deepening one's understanding of their domain. The major benefit of learning an abstraction is that once you’ve understood it, you’ve understood it for all of its applications.
 
@@ -232,20 +232,20 @@ One could rightly object that having to learn new mathematical abstractions is t
 > - Bryan Cantrill, [Platform as a Reflection of Values](https://vimeo.com/230142234)
 
 
-Programmers make mistakes. As such, our tools should aspire not to punish us for unfamiliarity or occasional incorrectness. Too often users stumble into a tool's legitimate accidental complexity, only to be chided for “holding it wrong” as if they should feel guilty for letting the tool paint them into a corner. Of course, this doesn’t mean anyone wants overzealous tools that “helpfully” enact what hasn’t been asked for. Instead, tools should focus on preventing unrecoverable choices from being made too casually or too late. When a situation calls for an action with serious implications, our tools should help us feel the weight of our request. Uniformly weighting every possibility will lead users to assume that either every action is reasonable or every action is fallible. Tools shouldn’t be afraid to immediately inform us when they think we’re wrong. Discovering mistakes during the construction of a new home is much less painful than making the same discoveries after a family has moved into it. Selecting tools by their structural guarantees is about using our values to elect the ways our software _can’t_ go wrong. Fearless tinkerers can be wrong, strong!
+Programmers make mistakes. As such, our tools should aspire not to punish us for unfamiliarity or occasional incorrectness. Too often users stumble into a tool's legitimate accidental complexity, only to be chided for “holding it wrong” as if they should feel guilty for letting the tool paint them into a corner. Of course, this doesn’t mean anyone wants overzealous tools that “helpfully” enact what hasn’t been asked for. Instead, tools should focus on preventing unrecoverable choices from being made too casually or too late. When a situation calls for an action with serious implications, our tools should help us feel the weight of our request. Uniformly weighting every possibility will lead users to assume that either every action is reasonable or every action is fallible. Tools shouldn’t be afraid to immediately inform us when they think we’re wrong. Discovering mistakes during the construction of a new home is much less painful than making the same discoveries after a family has moved into it. Selecting tools by their structural guarantees is about using our values to elect the ways our software _can’t_ go wrong. A fearless tinkerer can be wrong, strong!
 
-In this section, I’ll introduce two functional technologies and illustrate how their structural properties enable **fearless tinkering**. These alone won’t do functional ecosystems justice as there are too many examples for exhaustive and in-depth coverage (ex. fearless concurrency in Erlang + Elixir). Even amongst the tools I’ll mention, there are other dimensions of fearlessness that I won’t get to. Conversely, I also won't be able to mention existing structural deficiencies and unnecessary footguns[^9] stymieing further fearless flavors.
+In this section, I’ll introduce two functional technologies and illustrate how their structural properties enable **fearless tinkering**. These alone won’t do functional ecosystems justice as there are too many examples for exhaustive and in-depth coverage.[^9] Even amongst the tools I’ll mention, there are other dimensions of assurance that I won’t get to. Conversely, I also won't cover the structural deficiencies and unnecessary footguns[^10] they hold stymieing further fearlessness.
 
-Much more important than any specific technology are the ideas that underlie them. Demonstrating a market for fearless approaches to the critical pain points of our daily work will help future iterations and alternatives both incorporate and make accessible the necessary structural guarantees.
+Much more important than any specific technology are the ideas that underlie them. Demonstrating a market for fearless approaches to the critical pain points of our daily work will help future iterations of our technologies and their alternatives make accessible the required structural guarantees.
 
 
 ### Nix & NixOS
 
 The entropy of modern software is staggering. Programs inside programs directing separate programs exist, and each of them contains their own digital metropolis. Whether it’s the shear connectors in the bridges, building codes of the plumbing networks, or newest floor plan atop a towering skyscraper, every software artifact reflects a choice made by someone somewhere. The feats of modern software could not be made if every virtual wheel needed reinventing. A global and communal project of shared decisions is harnessed to base, tweak, and publish new constructions.
 
-Despite how foundational accessing external developments is, interfacing with outside software remains a tremendous challenge. Every piece of software has its own installation manual and distribution strategy. Attaining pre-built infrastructure or the materials to create one’s own means traversing complicated and intersecting digital supply chains. Brittle runbooks, non-reproducible scripts, and imperative packaging tools that freely step on each other’s work lead to uniquely broken and divergent systems. Fundamental issues like build-time variability, unspecified dependencies, and shared dynamic libraries can turn one-off upgrades into intractable archeological treasure hunts. When stuck in dependency hell, a teammate voicing that some software “works on their machine” offers more dread than helpfulness.
+Despite how foundational accessing external developments is, interfacing with outside software remains a tremendous challenge. Every piece of software has its own installation manual and distribution strategy. Attaining pre-built infrastructure or the materials to create one’s own means traversing complicated and intersecting digital supply chains. Brittle runbooks, non-reproducible scripts, and imperative packaging tools that freely step on each other’s work lead to uniquely broken and divergent systems. Fundamental issues like build-time variability, unspecified dependencies, and implicit mutatation of shared libraries can turn one-off upgrades into intractable archeological treasure hunts. When stuck in dependency hell, a teammate voicing that some software “works on their machine” offers more dread than helpfulness.
 
-Nix attempts to solve these problems by introducing a purely functional DevOps ecosystem. By representing all software components in an immutable graph, Nix is able to offer rich queries about one’s system and defang previously panic-inducing deployments. With a declarative language for reproducible system configurations, installing software simply becomes writing a Nix expression to describe a target system with that package installed. The same is true for applying parameter configurations, upgrades, uninstallations, or any deployment action. Developers and operators can focus on what they want their system to look like instead of divining a sequential migration path to get there. The quality-of-life gains from the structural guarantees Nix provides are highlighted below via ‘fearless environments’ and ‘fearless sharing’.
+Nix attempts to solve these problems by introducing a purely functional DevOps ecosystem. By representing all software components in an immutable graph, Nix is able to offer rich queries about one’s system and defang previously panic-inducing deployments. With a declarative language for reproducible system configurations, installing software simply becomes writing a Nix expression to describe a target system with that package installed. The same is true for applying parameter configurations, upgrades, uninstallations, or any deployment action. Developers and operators can focus on what they want their system to look like instead of spending their time divining a sequential migration path to get there. The quality-of-life gains from the structural guarantees Nix provides are highlighted below via ‘fearless environments’ and ‘fearless sharing’.
 
 #### Fearless Environments
 
@@ -296,9 +296,9 @@ Programmers can pick whatever individual or combination of these equivalent form
 
 Thanks for reaching the end! Here are some options if you’d like to get started with functional programming:
 * If you’d like an entry point into application programming with functional languages, I recommend checking out [Elm](https://elm-lang.org/) and [Elixir](https://elixir-lang.org/). 
-* If you’re interested in a functional devops experience, I recommend checking out [Nix](https://nixos.org/).[^10]
+* If you’re interested in a functional devops experience, I recommend checking out [Nix](https://nixos.org/).[^11]
 * If you are looking for a follow-up on incorporating algebraic foundations into your daily work, I recommend reading [Algebra-Driven Design](https://algebradriven.design/).
-* If you want to fully immerse yourself in functional programming without familiar imperative crutches, I recommend checking out [Haskell](https://www.haskell.org/).[^11]
+* If you want to fully immerse yourself in functional programming without familiar imperative crutches, I recommend checking out [Haskell](https://www.haskell.org/).[^12]
 
 [^1]:
     The prelude to the [Haskell Foundation Whitepaper](https://haskell.foundation/whitepaper/) has good coverage on the previous success of the “Avoid success at all costs” slogan and current evolution beyond the phrase.
@@ -331,6 +331,11 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
     No one needs to learn category theory to become a [great functional programmer](http://comonad.com/reader/2014/letter-to-a-young-haskell-enthusiast/)! Sure, some people have brought great ideas from category theory and other mathematical fields back to the realm of programming. But good ideas have flown in the opposite direction as well! Programmers should treat math as a tool that serves to give us understanding, rather than a tool we serve to give our understanding.
 
 [^9]:
+    For example, I don't cover fearless concurrency in Erlang and Elixir. If you have a follow-up covering something, [I'd love to link it below](https://github.com/hkailahi/heneli.dev/issues):
+    
+    * 
+
+[^10]:
     Like any other programming language, the functional ones aren't free of warts and confusing conventions from oral tradition. For example, see https://nix.dev/anti-patterns/ and https://github.com/NorfairKing/haskell-WAT.
     
     So fearless...
@@ -349,7 +354,7 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
     False
     ```
 
-[^10]: 
+[^11]: 
     For video learners, Brian McKenna's [RootConf 2019 talk](https://youtu.be/RtqWE5lgaCg) and Burke Libbey's [Nix: What Even is it Though](https://youtu.be/6iVXaqUfHi4) are accessible overviews of Nix and it's ideas.
 
     To get started using Nix, I recommend following the [Zero to Nix](https://zero-to-nix.com/) Quick Start guide. From there, I recommend checking out nix.dev, Official NixOS learning page, and/or the follow-up resources recommended at the end of the [Zero to Nix](https://zero-to-nix.com/start/learn-more) Quick Start guide.
@@ -363,7 +368,7 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
 
     For intermediate audiences, check out the upcoming [NixOS in Production](https://leanpub.com/nixos-in-production) book.
 
-[^11]:
+[^12]:
     [14] For video learners, Philipp Hagenlocher's [Haskell for Imperative Programmers](https://www.youtube.com/playlist?list=PLe7Ei6viL6jGp1Rfu0dil1JH1SHk9bgDV) playlist is a phenomenal introductory exposure. If, like me, you like 1000+ page tutorials with ample hand-holding, you could learn with [Haskell from First Principles](https://haskellbook.com/). Otherwise, the upcoming [Effective Haskell](https://pragprog.com/titles/rshaskell/effective-haskell/) book seems, from my brief skim, like a promising early resource. Additionally, helpful online references like [Typeclasses](https://typeclasses.com/) and [Kowainik’s blog](https://kowainik.github.io/posts) can be very beginner-friendly. [fp-course](https://github.com/system-f/fp-course) is a great hands-on exercise that’s perfect for beginners struggling to grapple with fundamental abstractions. Finally, [What I Wish I Knew When Learning Haskell](https://github.com/sdiehl/wiwinwlh) can serve as a solid, free reference for checking your understanding of various topics.
 
     For intermediate audiences, I can strongly recommend [Production Haskell](https://www.amazon.com/Production-Haskell-Succeeding-Industry/dp/B0BTNVFR2N), [Thinking with Types](https://thinkingwithtypes.com/), and the _Concurrent_ section of the classic [Parallel and Concurrent Programming in Haskell](https://www.amazon.com/Parallel-Concurrent-Programming-Haskell-Multithreaded/dp/1449335942). Additionally, promising works on the horizon like [The Haskell Optimization Handbook](https://github.com/input-output-hk/hs-opt-handbook.github.io) and some unannounced efforts make now a great time to get in.
