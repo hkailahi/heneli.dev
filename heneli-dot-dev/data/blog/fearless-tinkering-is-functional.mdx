@@ -3,7 +3,7 @@ title: 'Fearless Tinkering is Functional'
 date: '2023-04-05'
 lastmod: '2023-04-05'
 version: '0.1'
-tags: ['functional', 'complexity', 'algebra', 'haskell', 'nixos', 'verse', 'unison']
+tags: ['functional', 'complexity', 'algebra', 'haskell', 'nix', 'verse', 'unison']
 draft: false
 summary: 'A fearless tinkerer sails a ship where entire classes of leakage are rendered an impossibility.'
 images: [ ]
@@ -58,7 +58,7 @@ Functional languages _<u>make stateful complexity explicit</u>_. By pairing immu
 
 With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements, which break compositionality and equational reasoning, are replaced with expressions that can be substituted for their evaluations. Bigger programs can be faithfully decomposed into smaller ones. This allows for the local reasoning of individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get”.
 
-Functional languages address program volume by making mechanical the act of _<u>stripping programs down to their essence</u>_. For instance, verbose wrangling code can be collapsed into neat reusable patterns using higher-order functions and composition. Typed functional languages use various polymorphisms to expand infinitely-many functions over one domain into an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto programmer’s better-suited counterparts in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs is naturally terse. Judiscious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and wider ecosystems.
+Functional languages address program volume by making mechanical the act of _<u>stripping programs down to their essence</u>_. For instance, verbose wrangling code can be collapsed into neat reusable patterns using higher-order functions and composition. Typed functional languages use various polymorphisms to expand infinitely-many functions over one domain into an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto programmer’s better-suited counterparts in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. Judiscious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and wider ecosystems.
 
 Armed with the properties of functional languages, programmers can reclaim their cognitive sovereignty and fearlessly explore software in action.
 
@@ -122,7 +122,7 @@ One could rightly object that having to learn new mathematical abstractions is t
         <td>Nix</td>
       </tr>
       <tr>
-        <th scope="row" >
+        <th scope="row">
           <p>Associative:</p>
           <p>`(A <> B) <> C == A <> (B <> C)`</p>
           </th>
@@ -143,7 +143,7 @@ One could rightly object that having to learn new mathematical abstractions is t
         <td>MapReduce</td>
       </tr>
       <tr>
-        <th scope="row" >
+        <th scope="row">
           <p>Commutative:</p>
           <p>`A <> B == B <> A`</p>
           </th>
@@ -234,7 +234,7 @@ One could rightly object that having to learn new mathematical abstractions is t
 
 Programmers make mistakes. As such, our tools should aspire not to punish us for unfamiliarity or occasional incorrectness. Too often users stumble into a tool's legitimate accidental complexity, only to be chided for “holding it wrong” as if they should feel guilty for letting the tool paint them into a corner. Of course, this doesn’t mean anyone wants overzealous tools that “helpfully” enact what hasn’t been asked for. Instead, tools should focus on preventing unrecoverable choices from being made too casually or too late. When a situation calls for an action with serious implications, our tools should help us feel the weight of our request. Uniformly weighting every possibility will lead users to assume that either every action is reasonable or every action is fallible. Tools shouldn’t be afraid to immediately inform us when they think we’re wrong. Discovering mistakes during the construction of a new home is much less painful than making the same discoveries after a family has moved into it. Selecting tools by their structural guarantees is about using our values to elect the ways our software _can’t_ go wrong. A fearless tinkerer can be wrong, strong!
 
-In this section, I’ll introduce two functional technologies and illustrate how their structural properties enable **fearless tinkering**. These alone won’t do functional ecosystems justice as there are too many examples for exhaustive and in-depth coverage.[^9] Even amongst the tools I’ll mention, there are other dimensions of assurance that I won’t get to. Conversely, I also won't cover the structural deficiencies and unnecessary footguns[^10] they hold stymieing further fearlessness.
+In this section, I’ll introduce two functional technologies and illustrate how their structural properties enable **fearless tinkering**. These alone won’t do functional ecosystems justice as there are too many examples for exhaustive and in-depth coverage.[^9] Even amongst the tools I’ll mention, there are other dimensions of assurance that I won’t get to. Conversely, I also won't cover the structural deficiencies and footguns[^10] stymieing further fearlessness.
 
 Much more important than any specific technology are the ideas that underlie them. Demonstrating a market for fearless approaches to the critical pain points of our daily work will help future iterations of our technologies and their alternatives make accessible the required structural guarantees.
 
@@ -243,14 +243,18 @@ Much more important than any specific technology are the ideas that underlie the
 
 The entropy of modern software is staggering. Programs inside programs directing separate programs exist, and each of them contains their own digital metropolis. Whether it’s the shear connectors in the bridges, building codes of the plumbing networks, or newest floor plan atop a towering skyscraper, every software artifact reflects a choice made by someone somewhere. The feats of modern software could not be made if every virtual wheel needed reinventing. A global and communal project of shared decisions is harnessed to base, tweak, and publish new constructions.
 
-Despite how foundational accessing external developments is, interfacing with outside software remains a tremendous challenge. Every piece of software has its own installation manual and distribution strategy. Attaining pre-built infrastructure or the materials to create one’s own means traversing complicated and intersecting digital supply chains. Brittle runbooks, non-reproducible scripts, and imperative packaging tools that freely step on each other’s work lead to uniquely broken and divergent systems. Fundamental issues like build-time variability, unspecified dependencies, and implicit mutatation of shared libraries can turn one-off upgrades into intractable archeological treasure hunts. When stuck in dependency hell, a teammate voicing that some software “works on their machine” offers more dread than helpfulness.
+Despite how foundational accessing external developments is, interfacing with outside software remains a tremendous challenge. Every piece of software has its own installation manual and distribution strategy. Attaining pre-built infrastructure or the materials to create one’s own means traversing complicated and intersecting digital supply chains. Brittle runbooks, non-reproducible scripts, and imperative packaging tools that freely step on each other’s work lead to uniquely broken and divergent systems. Fundamental issues like build-time variability, unspecified dependencies, and implicit mutation of shared libraries can turn one-off upgrades into intractable archeological treasure hunts. When stuck in dependency hell, a teammate voicing that some software “works on their machine” offers more dread than helpfulness.
 
-Nix attempts to solve these problems by introducing a purely functional DevOps ecosystem. By representing all software components in an immutable graph, Nix is able to offer rich queries about one’s system and defang previously panic-inducing deployments. With a declarative language for reproducible system configurations, installing software simply becomes writing a Nix expression to describe a target system with that package installed. The same is true for applying parameter configurations, upgrades, uninstallations, or any deployment action. Developers and operators can focus on what they want their system to look like instead of spending their time divining a sequential migration path to get there. The quality-of-life gains from the structural guarantees Nix provides are highlighted below via ‘fearless environments’ and ‘fearless sharing’.
+Nix attempts to solve these problems by introducing a purely functional DevOps ecosystem. By representing all software components in an immutable graph, Nix is able to offer rich queries about one’s system and defang previously panic-inducing deployments. With a declarative language for reproducible system configurations, installing software simply becomes writing a Nix expression to describe a target system with that package installed. The same is true for applying parameter configurations, upgrades, uninstallations, or any deployment action. Developers and operators can focus on what they want their system to look like instead of spending their time divining a sequential migration path to get there. The quality-of-life gains from the structural guarantees Nix provides are highlighted below.
 
 #### Fearless Environments
 
 > The <u>world</u> is all that is the case. A <u>computation</u> is any action taken by a programmable device. An <u>environment</u> is the set of all past and present worlds that a computation can observe. An <u>effect</u> is a computation that depends on or changes the program’s environment. We run programs to produce effects in the world around us.
 > - Patrick Thomson, definitions from ["Building Haskell Programs with Fused Effects"](https://youtu.be/vfDazZfxlNs?t=145)
+
+For many developers, infrastructure is an uncomfortable area. Whether it’s the state of a cluster on `us-east-2` or a configuration outside one’s project repository, reasoning about [action at a distance](https://en.wikipedia.org/wiki/Action_at_a_distance_%28computer_programming%29) can be treacherous. Further, the stakes are often high when managing software deployments. A tangled web of mutual, implicit dependencies means that modifying one’s system could also mean getting stuck in an invalid state. Tolerating a “working” yet unsatisfactory environment is frequently preferable to the risks of transitioning to something better. As experimentation with alternatives is difficult, iterating is typically restricted to when one’s hand is forced or the alternative has already been intimately understood. Tools for managing remote environments tend to remain unfamiliar as the consequences of trying them out might be an expensive $CLOUD_PROVIDER bill. A horrible cocktail culminating all these frictions is chiefly found in operational firefighting. Operators are tasked with debugging a live system whose interface, tools, and symptoms are usually only practiced against when problems occur. Even in organizations with significant platform investments, the exploratory surface of test deployments rarely reflect the time and space pollution built up across all imperative local developer and remote production environments.
+
+Application programming, in contrast, can give developers a sense of power and ease. Assuming a working environment, the program behavior and outputs of a project are more locally observable. Equipped with a test harness, REPL, and breakpointing facilities, an interactive view of one’s program environment, including variables and available operations, can be explored. An application programmer can further wield static analyzers, linters, and all their most familiar tools to iteratively coax their programs into the desired state. 
 
 
 #### Fearless Sharing
@@ -300,6 +304,8 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
 * If you are looking for a follow-up on incorporating algebraic foundations into your daily work, I recommend reading [Algebra-Driven Design](https://algebradriven.design/).
 * If you want to fully immerse yourself in functional programming without familiar imperative crutches, I recommend checking out [Haskell](https://www.haskell.org/).[^12]
 
+## Footnotes
+
 [^1]:
     The prelude to the [Haskell Foundation Whitepaper](https://haskell.foundation/whitepaper/) has good coverage on the previous success of the “Avoid success at all costs” slogan and current evolution beyond the phrase.
 
@@ -336,9 +342,7 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
     * tbd
 
 [^10]:
-    Like any other programming language, the functional ones aren't free of warts and confusing conventions from oral tradition. For example, see https://nix.dev/anti-patterns/ and https://github.com/NorfairKing/haskell-WAT.
-    
-    So fearless...
+    [So fearless](https://github.com/NorfairKing/haskell-WAT)...
     ```haskell
     Prelude> length ('a','b')
     1
