@@ -111,7 +111,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               </div>
               <div className="pb-6 pt-6 text-xs text-gray-700 dark:text-gray-300">
                 <text>
-                  Something incorrect? Addition to propose? Follow-up to link above? File an{' '}
+                  Something incorrect? Addition to propose? Please file an{' '}
                   <Link href={issueUrl} className="text-cyan-400 underline" rel="nofollow">
                     issue
                   </Link>
