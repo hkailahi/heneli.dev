@@ -44,22 +44,13 @@ Most fears boil down to uncertainty about **complexity**. As Fred Brooks explain
 
 ### On Functional Programming
 
-Here is a collection of commonly discussed characteristics[^6] from functional languages:[^7]
-
-- Referential Transparency.
-- Pure functions.
-- Declarative.
-- Immutability.
-- First-Class Functions.
-- Higher-Order Functions.
-- Expression-Oriented.
-- Pattern Matching.
-- Tail Call Elimination.
-- Managed Effects.
-- Algebraic Datatypes.
-- Composability.
-- Recursive Datatypes.
-- Equational Reasoning.
+The functional style encourages transformation-based workflows over state-based workflows. To motivate this approach, functional languages commonly offer a collection[^6] of characteristics:[^7]
+|  |  |  |   |
+| - | :- | -: | :-: |
+| Referential Transparency | Pure functions | Declarative | Immutability |
+| First-Class Functions | Higher-Order Functions | Expression-Oriented | Pattern Matching |
+| Tail Call Elimination | Managed Effects | Algebraic Datatypes | Composability |
+| Recursive Datatypes | Equational Reasoning | | |
 
 Functional programming doesn’t solve complexity, but helps one meet it by surfacing its roots. To do this, functional languages deliver several of the more successful and battle-tested approaches to the state, control flow, and volume.
 
@@ -272,8 +263,8 @@ For many developers, infrastructure is an uncomfortable area. Whether it’s the
 Application programming, in contrast, can give developers a sense of power and ease. Assuming a working environment, the program behavior and outputs of a project are more locally observable. Equipped with a test harness, REPL, and breakpointing facilities, an interactive view of one’s program environment, including variables and available operations, can be explored. An application programmer can further wield static analyzers, linters, and all their most familiar tools to iteratively coax their programs into the desired shape.
 
  <figure >
-  <Image alt="docker" src="/static/images/blog/docker-works-my-machine.jpg" width={270} height={360} class="mx-auto"/>
-  <figcaption class="text-center">Memeified Docker Origin Story, Credit: [@dev7null](https://www.redbubble.com/people/dev7null/shop)</figcaption>
+  <Image alt="docker" src="/static/images/blog/docker-works-my-machine.jpg" width={270} height={360} className="mx-auto"/>
+  <figcaption className="text-center">Memeified Docker Origin Story, Credit: [@dev7null](https://www.redbubble.com/people/dev7null/shop)</figcaption>
 </figure>
 
 #### Fearless Sharing
@@ -298,8 +289,8 @@ It is straightforward and mechanical to translate functions into “generalized�
 - function on **several arguments**
 - function on a **record of arguments** (configuration record)
 - function on a **record of functions** computing arguments ([handle pattern](https://jaspervdj.be/posts/2018-03-08-handle-pattern.html))
-- function dispatched to an ad-hoc **interpreter translating polymorphic functions into concrete functions** computing arguments (final encoding, [finally tagless](https://youtu.be/JxC1ExlLjgw))
-- function, defined with an eDSL, dispatched to an **interpreter translating an AST into functions** computing arguments (initial encoding, [defunctionalization](https://blog.sigplan.org/2019/12/30/defunctionalization-everybody-does-it-nobody-talks-about-it/))
+- function, defined with a **type-level eDSL**, **interpreted by translating polymorphic functions into concrete functions** computing arguments (final encoding, [finally tagless](https://youtu.be/JxC1ExlLjgw))
+- function, defined with a **value-level eDSL**, **interpreted by translating an AST into functions** computing arguments (initial encoding, [defunctionalization](https://blog.sigplan.org/2019/12/30/defunctionalization-everybody-does-it-nobody-talks-about-it/))
 - …and back again (refunctionalization)
 
 Programmers can pick whatever individual or combination of these equivalent forms best suit their task.
@@ -339,7 +330,7 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
 [^5]: The definition of accidental complexity in 'Out of the Tar Pit' is more specific to requirements of the user, but. in this post, can be treated more broadly as meaning self-inflicted or avoidable complexity.
 [^6]: Overlapping, non-compulsory, non-exhaustive
 [^7]:
-    You probably noticed that I cowardly deferred to others the task of formally defining “functional programming”. The fact of matter is that FP is a vibe.
+    You may have noticed that I cowardly deferred to others the task of formally defining “functional programming”. The fact of matter is that FP is a vibe.
 
     More seriously, I use “functional programming” as shorthand for a style that avoids mutation and implicit “effects”. I also define “functional languages” as those enabling the representation of programs with expressions that can be substituted for their evaluated value (as is the case for even [“impure” eDSLs like `State` or `IO`](https://twitter.com/lexi_lambda/status/1242878496076189702?s=20)).
 
