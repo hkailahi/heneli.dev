@@ -2,9 +2,9 @@
 
 /** @type {import("pliny/config").PlinyConfig } */
 const siteMetadata = {
-  title: 'Code with Heneli',
+  title: 'Heap State',
   author: 'Heneli Kailahi',
-  headerTitle: 'Code with Heneli',
+  headerTitle: 'Heap State',
   description: 'A blog about alternative approaches for programming and industry',
   language: 'en-us',
   theme: 'system', // system, dark or light
