@@ -262,12 +262,14 @@ For many developers, infrastructure is an uncomfortable area. Whether it’s the
 
 A horrible culmination of these frictions is regularly found in operational firefighting. Operators are tasked with debugging a live system whose interface, tools, and symptoms are typically only practiced against when problems occur. Even in organizations with significant platform investments, the exploratory surface of test deployments rarely reflect the time and space pollution built up across all contributing local developer and remote production environments.
 
-Application programming, in contrast, can give developers a sense of power and ease. Assuming a stable working environment, the behavior and outputs of a local program are far more observable. Equipped with a test harness, REPL, and breakpointing facilities, an interactive view of one’s program environment, including variables and available operations, can be explored. An application programmer can further wield static analyzers, linters, IDE feedback, and all their most familiar tools to iteratively coax their programs into the desired shape. While programs are inseparable from their execution environments, application programmers can approximate control over their state space by optimizing for their own fixed environment.
+Application programming, in contrast, can give developers a sense of power and ease. Assuming a stable working environment, the behavior and outputs of a local program are far more observable. Equipped with a test harness, REPL, and breakpointing facilities, an interactive view of one’s program environment, including variables and available operations, can be explored. An application programmer can wield static analyzers, linters, IDE feedback, and all their most familiar tools to iteratively coax their programs into the desired shape. While it might mean tremendous pain in the short term, application programmers can usually throw their hands up and start over from scratch when an insurmountable problem arises. If a developer ties their local project repository into an knot, they can blow it away and pull out a fresh copy. Application programmers regularly break their own local environments in ways that would be intolerable anywhere else. Though programs are inseparable from their execution environments, application programmers can approximate control over their state space by optimizing for their own fixed environment.
 
  <figure >
   <Image alt="docker" src="/static/images/blog/docker-works-my-machine.jpg" width={270} height={360} className="mx-auto"/>
   <figcaption className="text-center">Memeified Docker Origin Story, Credit: [@dev7null](https://www.redbubble.com/people/dev7null/shop)</figcaption>
 </figure>
+
+How can we bring the advantages of application programming to infrastructure? Containers and Infrastructure as Code (IaC) are popular answers.
 
 #### Fearless Sharing
 
