@@ -8,6 +8,7 @@ draft: false
 summary: 'A fearless tinkerer sails a ship where entire classes of leakage are rendered an impossibility.'
 images: []
 authors: ['default']
+layout: PostSimple
 ---
 
 <TOCInline toc={props.toc} toHeading={3} asDisclosure />
@@ -49,7 +50,7 @@ The functional style encourages transformation-based workflows over state-based 
 | - | :- | -: | :-: |
 | Referential Transparency | Pure functions | Declarative | Immutability |
 | First-Class Functions | Higher-Order Functions | Expression-Oriented | Pattern Matching |
-| Tail Call Elimination | Managed Effects | Algebraic Datatypes | Composability |
+| Tail Call Elimination | Managed Effects | Algebraic Datatypes | Compositionality |
 | Recursive Datatypes | Equational Reasoning | | |
 
 Functional programming doesn’t solve complexity, but helps one meet it by surfacing its roots. To do this, functional languages deliver several of the more successful and battle-tested approaches to the state, control flow, and volume.
@@ -246,31 +247,77 @@ Much more important than any specific technology are the ideas that underlie the
 
 ### Nix & NixOS
 
-The entropy of modern software is staggering. Programs inside programs directing separate programs exist, and each layer contains their own digital metropolis. Whether it’s the shear connectors in the bridges, building codes of the plumbing networks, or newest floor plan atop a towering skyscraper, every software artifact reflects a choice made by someone somewhere. The feats of modern software could not be made if every virtual wheel needed reinventing. A global and communal project of shared decisions is harnessed to base, tweak, and publish new constructions.
+The entropy of modern software is staggering. Programs inside programs directing separate programs exist with each layer containing their own digital metropolis. Whether it’s the shear connectors in the bridges, building codes of the plumbing networks, or newest floor plan atop a towering skyscraper, every software artifact reflects a choice made by someone somewhere. The feats of modern software could not be made if every virtual wheel needed reinventing. A global and communal project of shared decisions is harnessed to base, tweak, and publish new constructions.
 
 Despite how foundational accessing external developments is, interfacing with outside software remains a tremendous challenge. Every piece of software has its own installation manual and distribution strategy. Attaining pre-built infrastructure or the materials to create one’s own means traversing complicated and intersecting digital supply chains. Brittle runbooks, non-reproducible scripts, and imperative packaging tools that freely step on each other’s work lead to uniquely broken and divergent systems. Fundamental issues like build-time variability, unspecified dependencies, and implicit mutation of shared libraries can turn one-off upgrades into intractable archeological treasure hunts. When stuck in dependency hell, a teammate voicing that some software “works on their machine” offers more dread than helpfulness.
 
-Nix attempts to solve these problems by introducing a purely functional DevOps ecosystem. By representing all software components in an immutable graph, Nix is able to offer rich queries about one’s system and defang panic-inducing deployments. With a declarative language for reproducible system configurations, installing software simply becomes writing a Nix expression that describes a target system with that package installed. The same is true for applying parameter configurations, upgrades, uninstallations, dependency modifications, or any deployment action. Instead of divining sequential migration paths, developers and operators can focus solely on what they want their system to look like. The quality-of-life gains from the structural guarantees Nix provides are highlighted below.
+Nix attempts to solve these problems by introducing a purely functional DevOps ecosystem. By representing all software components in an immutable graph, Nix is able to offer rich queries about one’s system and defang panic-inducing deployments. With a declarative language for reproducible system configurations, installing software simply becomes writing a Nix expression that describes a target system with that package installed. The same is true for applying parameter configurations, upgrades, uninstallations, dependency modifications, or any deployment action. Instead of divining sequential migration paths, developers and operators can focus solely on what they want their system to look like. The limitations of traditional infrastructure is contrasted below with Nix.
 
-#### Fearless Environments
+#### Traditional Infrastructure: Advances and Limitations
 
 > The <u>world</u> is all that is the case. A <u>computation</u> is any action taken by a programmable device. An <u>environment</u> is the set of all past and present worlds that a computation can observe. An <u>effect</u> is a computation that depends on or changes the program’s environment. We run programs to produce effects in the world around us.
 >
 > - Patrick Thomson, definitions from ["Building Haskell Programs with Fused Effects"](https://youtu.be/vfDazZfxlNs?t=145)
 
-For many developers, infrastructure is an uncomfortable area. Whether it’s the state of a cluster on `us-east-2` or a configuration outside one’s project repository, reasoning about [action at a distance](https://en.wikipedia.org/wiki/Action_at_a_distance_%28computer_programming%29) can be treacherous. Further, the stakes are often high when managing software deployments. A tangled web of mutual, implicit dependencies means that modifying one’s system could also mean getting stuck in an invalid state. Tolerating a “working” yet unsatisfactory environment is frequently preferable to the risks of transitioning to something better. As experimentation with alternatives is difficult, iterating is normally restricted to when one’s hand is forced or the alternative has already been intimately understood. Even the modern practice of automated upgrades for existing dependencies is [fraught](https://arxiv.org/abs/2109.11921v1). Tools for managing remote environments tend to remain unfamiliar as the consequences of trying them out might yield an expensive `$CLOUD_PROVIDER` bill.
+For many developers, infrastructure is an uncomfortable area. Whether it’s the state of a cluster on `us-east-2` or a configuration outside one’s project repository, reasoning about [action at a distance](https://en.wikipedia.org/wiki/Action_at_a_distance_%28computer_programming%29) can be treacherous. Further, the stakes are often high when managing software deployments. A tangled web of mutual, implicit dependencies means that modifying one’s system could lead to getting stuck in an invalid state. Tolerating a “working” yet unsatisfactory environment is frequently preferable to the risks of transitioning to something better. As experimentation with alternatives is difficult, iterating is normally restricted to when one’s hand is forced or the alternative has already been intimately understood. Even the modern practice of automated upgrades for existing dependencies is [fraught](https://arxiv.org/abs/2109.11921v1). Tools for managing remote environments tend to remain unfamiliar as the consequences of trying them out might yield an expensive `$CLOUD_PROVIDER` bill.
 
-A horrible culmination of these frictions is regularly found in operational firefighting. Operators are tasked with debugging a live system whose interface, tools, and symptoms are typically only practiced against when problems occur. Even in organizations with significant platform investments, the exploratory surface of test deployments rarely reflect the time and space pollution built up across all contributing local developer and remote production environments.
+A horrible culmination of these frictions is regularly found in operational firefighting. Operators are tasked with debugging a live system whose interface, tools, and symptoms are typically only practiced against when problems occur. Even in organizations with significant platform investments, the exploratory surface of test deployments rarely reflects the time and space pollution built up across all contributing local developer and remote production environments.
 
 Application programming, in contrast, can give developers a sense of power and ease. Assuming a stable working environment, the behavior and outputs of a local program are far more observable. Equipped with a test harness, REPL, and breakpointing facilities, an interactive view of one’s program, including local bindings and available operations, can be explored. An application programmer can wield static analyzers, linters, IDE feedback, and all their most familiar tools to iteratively coax their programs into the desired shape. The ultimate execution of their developments in production can be separated behind various stages of evaluation like continuous integration, peer review, staging deployments, and quality assurance.
 
-While it might mean tremendous pain in the short term, application programmers can usually throw their hands up and start over from scratch when an insurmountable problem arises in their local environment. If a developer ties their local project repository into an knot, they can blow it away and pull out a fresh copy. Application programmers regularly break their own local environments in ways that would be intolerable anywhere else. Though programs are inseparable from their execution environments, application programmers can approximate control over their state space by optimizing for their own fixed environment.
+While it might mean tremendous pain in the short term, application programmers can usually throw their hands up and start over from scratch when an insurmountable problem arises in their local environment. If a developer ties their local project repository into an knot, they can blow it away and pull down a fresh copy. Application programmers regularly break their own local environments in ways that would be intolerable anywhere else. Though program behaviors are inseparable from their execution environments, application programmers can approximate control over their state space by optimizing for their own fixed environment.
 
-##### ***Industry's Answer***
+Containers and Infrastructure as Code (IaC) are popular answers to the question of whether infrastructure can achieve the same advantages as application programming.
 
-How can the software industry bring the advantages of application programming to infrastructure? Containers and Infrastructure as Code (IaC) are popular answers.
+...
 
-##### ***Nix: The New Primitive***
+Not all is rosy. The imperative nature of things like Dockerfiles destroys compositionality and reproduciblity.
+
+#### Fearless Environments
+
+Nix Store is an append-only graph database that stores components in a file system.
+
+Let's say I wanted to know the dependencies of the `python` package I installed on my Mac [using Nix](https://github.com/hkailahi/dotnix/blob/c59b2e2654f8a84cab1ac59ab72e991ffe84ca70/home.nix#L20). First, I can confirm that the package is installed and present in my local Nix database (called the [Nix Store](https://zero-to-nix.com/concepts/nix-store)):
+```bash
+$ readlink $(which python)
+/nix/store/b07jgllrc7lxa1k91ycrwd6b6103rnr3-python3-3.11.2/bin/python
+```
+
+One option would be to inspect the package's build plan (called a [derivation](https://zero-to-nix.com/concepts/derivations)) to find direct dependencies and their build plans:
+```bash
+$ nix show-derivation $(which python) | jq '.[].inputDrvs | keys'
+[
+  "/nix/store/1xahjpviam9852a7scsia0q2bjb094qp-expat-2.5.0.drv",
+  "/nix/store/27937yxcz188rjjlccsflkf9c13l4d4f-libxcrypt-4.4.33.drv",
+  "/nix/store/348m2mrwr5fzf342mj6syi2kcndjizc7-bzip2-1.0.8.drv",
+  "/nix/store/6a1h1vmygpn6ndw82rccp8py2vk1hwgk-mailcap-2.1.53.drv",
+  "/nix/store/98vrd1paa9nnnw9sgv9s02fcfylcgkph-tzdata-2022g.drv",
+  "/nix/store/c6v0sdff24f3v927gghavbccikqvigbg-openssl-3.0.8.drv",
+  "/nix/store/cry7j70x7g18iyk4zbkl438xgpgf391v-libffi-3.4.4.drv",
+  "/nix/store/dckqzhb1jvsa58kja64hxwalayf2nisy-Python-3.11.2.tar.xz.drv",
+  "/nix/store/f5l3izi0531c2v7ghrpr1y19zfn38dpj-sqlite-3.41.0.drv",
+  "/nix/store/hxfa8y04mirqks2jq85cjal3hqqkg56h-nuke-references.drv",
+  "/nix/store/i3pdq0fxgddnfhvcixky40by5rd9x743-gdbm-1.23.drv",
+  "/nix/store/i5hjpgcds94pbvykhhn37v187i721j4z-readline-8.2p1.drv",
+  "/nix/store/p0635v6skcncxhby1vlmbwhz3623g2jp-ncurses-6.4.drv",
+  "/nix/store/q6ia1g3g9q1wcn54z51dfk6wkiivb8z2-stdenv-darwin.drv",
+  "/nix/store/r569q0lh69dgdhgayvzi3lh57b30k1q4-xz-5.4.1.drv",
+  "/nix/store/r72rgwi54aybpd7srj34smbs075vzww5-bash-5.2-p15.drv",
+  "/nix/store/rj0zk4938sm9gfs4xk2rgdwwnk8hi368-configd-453.19.drv",
+  "/nix/store/wb2b6ckrdrhgq5bxnxyhvkxyaa3b01g8-python-setup-hook.sh.drv",
+  "/nix/store/wvs3d46lz7ji4lijhdzwkf1clrd1xaxz-zlib-1.2.13.drv"
+]
+```
+
+Then, I could build off this to recursively inspect ancestral build plans. Instead, I'll use Nix's CLI to both query the Nix Store for dependency graph and temporarily install the `graphviz` package to visualize it:
+```bash
+$ nix-store --query $(which python) --graph | nix-shell -p graphviz --command 'dot -Tpng > python_deps.png'
+```
+![Python Dependency Graph](/static/images/blog/python_deps.png)
+
+Nix is input-addressable by default.
+
+Separation of evaluation and execution. Instantiate populates your Nix Store
 
 Nix is versatile and expandable. It can fit neatly within existing infrastructure with rich ways of defining atoms like containers. It can also entirely subsume previous infrastructure with things like NixOS, NixOps, and deploy-rs.
 
