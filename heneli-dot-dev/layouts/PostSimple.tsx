@@ -50,7 +50,7 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
                 <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                   v{version}
                 </div>
-                <br/>
+                <br />
                 <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                   {readingTime.text} ({readingTime.words} words)
                 </div>
