@@ -21,7 +21,10 @@ import rehypePresetMinify from 'rehype-preset-minify'
 const root = process.cwd()
 
 const computedFields: ComputedFields = {
-  readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw, { wordsPerMinute: 175 }) },
+  readingTime: {
+    type: 'json',
+    resolve: (doc) => readingTime(doc.body.raw, { wordsPerMinute: 200 })
+  },
   slug: {
     type: 'string',
     resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
