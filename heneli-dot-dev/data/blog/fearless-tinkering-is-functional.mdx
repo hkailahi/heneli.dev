@@ -52,7 +52,7 @@ The functional style encourages transformation-based workflows over state-based 
   | - | :- | -: | :-: |
   | Referential Transparency | Pure functions | Declarative | Immutability |
   | First-Class Functions | Higher-Order Functions | Expression-Oriented | Pattern Matching |
-  | Tail Call Elimination | Managed Effects | Algebraic Datatypes | Composability |
+  | Tail Call Elimination | Managed Effects | Algebraic Datatypes | Compositionality |
   | Recursive Datatypes | Equational Reasoning | | |
 </div>
 
@@ -60,7 +60,7 @@ Functional programming doesn’t solve complexity, but helps one meet it by surf
 
 Functional languages _<u>make stateful complexity explicit</u>_. By pairing immutable defaults with performant and easy-to-use APIs, functional languages minimize the need for mutable state. Introducing mutable state thus becomes an intentional and visible action. Given the elimination of destructive updates, compilers are empowered to reward programmers with greater [expressiveness](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) and [safety](https://en.wikipedia.org/wiki/Software_transactional_memory) at less cost. Some functional languages make explicit their “effects” with types, creating a distinction that allows separate reasoning of “effect-free” and “effectful” code.
 
-With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements, which break composability and equational reasoning, are replaced with expressions that can be substituted for their evaluations. Bigger programs can be faithfully decomposed into smaller ones. This allows for the local reasoning of individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get”.
+With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements, which break compositionality, are replaced with expressions that can be substituted for their evaluations. Bigger programs can be faithfully decomposed into smaller ones. This allows for the local reasoning of individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get”.
 
 Functional languages address program volume by making mechanical the act of _<u>stripping programs down to their essence</u>_. For instance, verbose wrangling code can be collapsed into neat reusable patterns using higher-order functions and composition. Typed functional languages use various polymorphisms to replace infinitely-many functions over one domain with an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto programmer’s better-suited counterparts in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. Judiscious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and wider ecosystems.
 
@@ -276,7 +276,7 @@ Containers and Infrastructure as Code (IaC) are popular answers to the question 
 
 Not all is rosy. The imperative nature of things like Dockerfiles destroys composability and reproducibility.
 
-While containers provide a degree of isolation, there's nothing inherent to "contained" environments that ensures composability or reproduciblity.
+While containers provide a [minimal degree of isolation](https://fly.io/blog/sandboxing-and-workload-isolation/), there's nothing inherent to "contained" environments ensuring compositionality or reproduciblity.
 
 Putting a declarative interface over leaky abstraction might look simpler for the happy path. structural guarantees
 
@@ -461,7 +461,7 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
     False
     ```
 [^12]:
-    Learning Nix is a significant undertaking. Similar to `git`, Nix's underlying model is much simpler to grasp than the (current) interfaces for interacting with it. Continuous contributions by generous individuals are made towards making Nix tooling and its ecosystem more approachable. While I believe Nix is worth exploring for most developers, it's important that people know what they're signing up for.
+    While I believe Nix is worth exploring for most developers, it's important that interested parties know what they're signing up for. Learning Nix is a significant undertaking. The explicit, build-from-source model means that package authors are forced to confront essential complexity up front rather than paying off limitations or tech debt as required. This commonly manifests from the bizarre assumptions that popular software make about their host environment and toolchain. Fortunately for end-users, many pre-defined packages exist and are available for modification or cached download. In fact, the primary [Nix's primary package repository](https://search.nixos.org/packages) is the largest repository of "fresh packages"  available [by a wide margin](https://repology.org/repositories/graphs). For everything else, end-users can use provided ["fetchers"](https://nixos.org/manual/nixpkgs/stable/#chap-pkgs-fetchers) to shorcut the build-from-source model while still benefitting from pinned dependencies. These fetchers allow callers to retrieve artifacts from various sources and verify their contents against a hash. Similar to `git`, Nix's underlying model is much simpler to grasp than the current interfaces for interacting with it. Continuous contributions by generous individuals are made towards reflecting this simplicity and polishing end-user interfaces.
 
     Fortunately, there's been a surge of beginner-friendly tools, like [`flox`](https://floxdev.com/blog/homebrew), [`devenv`](https://devenv.sh/), [`fleek`](https://getfleek.dev/), and [`devbox`](https://www.jetpack.io/devbox/), that allow newcomers to get the benefits of Nix immediately. These services build on top of Nix to provide access to things like package management, container development, and package/environment distribution.
 
