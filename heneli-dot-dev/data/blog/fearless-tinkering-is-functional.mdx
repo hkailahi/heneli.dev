@@ -268,22 +268,37 @@ Is it possible to bring the same advantages from application programming to the 
 
 Meanwhile, Nix has developed to fill these gaps. Nix can fit neatly within existing infrastructure, letting engineers recover [reproduciblity and its benefits](https://reproducible-builds.org/) while using [IaC](https://nix.dev/tutorials/nixos/build-and-deploy/deploying-nixos-using-terraform), [containers](https://floxdev.com/blog/flox-and-containers), and other solutions. Nix can also subsume various existing tools with things like NixOS, Home-Manager, NixOps, and deploy-rs. This versatility allows Nix to be introduced piecemeal into projects and organizations.
 
+#### Nix: A Minimal Primer
+
+In the Nix language, everything is an expression. This includes Nix's central data structure, the [derivation](https://zero-to-nix.com/concepts/derivations). Derivations can be thought of as recipes for building software components. These build plans include stable references to the build plans of their direct dependencies.  A key part of making Nix "purely functional" is the separation of evaluation and execution. Building a software component with Nix consists of the following steps:
+
+1. _Instantiation_ - evaluation of nix expression that assembles a derivation
+2. _Realisation_ - execution of derivation instructions and addition of output into the Nix Store
+
+The Nix Store is an append-only graph database that stores components in the host's file system (typically under `/nix/store`). Every package, service, and configuration is stored in an immutable way, meaning it cannot be modified after being created. Instead, changes result in new component versions, leaving the previous ones intact.
+
+The location of a package in the Nix Store is determined by the hash of its derivation. As a derivation contains references to its exact inputs, Nix is able to ensure that a given package is built in the same way every time. This property is referred to as being "input-addressable", and is how Nix works by default. For example, a `foo` package stored at `/nix/store/9fjirpbq4yhzbf89hdkg9plk65mjazxy-foo-package` will have been created by a derivation whose contents hash to `9fjirpbq4yhzbf89hdkg9plk65mjazxy`. Any change to a transitive dependency of `foo` will be reflected by a new hash for `foo`'s new derivation (ex. `/nix/store/3wby0ym34x4rb5vv78vh58f4p2pvw19j-foo-package`).
+
+The Nix literature defines ["correct deployments"](https://books.google.ca/books?id=gP2kAAAACAAJ) as software deployments that "given identical inputs... should behave the same on an end-user machine as on the developer machine". This is a useful albeit weaker notion of reproducibility than [bit-for-bit reproducibility](https://reproducible-builds.org/docs/definition/). While Nix can ensure the build plans are executed with the same steps and inputs, it can't ensure a determinstic binary output as the underlying package being built might require usage of bespoke, non-determinstic tools.
+
+Rather than storing components by the hash of their build plan, Nix support for storing components by the hash of their build outputs is progressing. This property is commonly referred to as being **content-addressable**, and would reduce recompilation via [_early cutoff_](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf). For obvious reasons, bit-for-bit reproducibility is important for content-addressable builds.
+
 #### Fearless Environments
 
 > The <u>world</u> is all that is the case. A <u>computation</u> is any action taken by a programmable device. An <u>environment</u> is the set of all past and present worlds that a computation can observe. An <u>effect</u> is a computation that depends on or changes the program’s environment. We run programs to produce effects in the world around us.
 >
 > - Patrick Thomson @  Strange Loop 2019, definitions from ["Building Haskell Programs with Fused Effects"](https://youtu.be/vfDazZfxlNs?t=145)
 
-With Nix, everything is built off expressions. Nix allows us to define reproducible and composable environments.
+Nix allows us to define reproducible and composable environments.
 
-Nix Store is an append-only graph database that stores components in a file system.
+As each package is stored in a unique path, different versions or variants of a package can coexist without conflict.
+
+  Nix ensures a transactional semantics: builds can always safely be interrupted, restarted, or run in parallel.
 
 Nix is **input-addressable** by default. This means that ... and ... (further explored in next section).
 - Nix guarantees that packages will be built with the same inputs. Build outputs aren't necessarily deterministic as Nix can't make the
 While it can't make non-deterministic software deterministic
 Nix can't guarantee 'bit-for-bit' reproducibility
-
-Work is being done to support output-reproducibility **content-addressable** by default. This would remove various avoidable recompilation through [_early cutoff_](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf).
 
 Separation of evaluation and execution.
 - Instantiation evaluation a nix expression. This pure computation results in data structure called a derivation that represents a build plan (derivation).
@@ -547,8 +562,6 @@ Programmers can pick whatever individual or combination of these equivalent form
 ### Fearless Interoperability with Verse
 
 ### Fearless DX with Unison
-
-### Fearless Updates with Electric SQL
 
 ## Wrap
 
