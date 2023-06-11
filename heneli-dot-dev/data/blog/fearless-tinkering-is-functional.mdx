@@ -33,12 +33,12 @@ There’s an endless list of things that invoke fear in programmers:
   | - | :- | -: | :-: |
   | Buggy software | rolling upgrades | concurrency | bit rot |
   | year-out deadlines | service alerts | tech debt | stale builds |
-  | nondeterminism | time libraries | ambiguous requirements | hardware faults |
+  | nondeterminism | clocks | ambiguous requirements | hardware faults |
   | software rewrites | network partitions | scope creep | security |
 </div>
-...and on and on. Each of these can be terrifying on their own. To make matters worse, software rarely has just a single source of horror. Very simple programs written by very thoughtful programmers can host a multitude.
+...and on and on. Each of these can be terrifying on their own. To make matters worse, software rarely contains just a single source of horror. Very simple programs written by very thoughtful programmers can host a multitude.
 
-Without the right tools, conquering these fears can feel impossible. If your tools can’t protect you, you won’t be able to protect yourself. Some adopt a defensive programming style, but institutionalizing apprehension isn't an end in itself. What use is an infinite roll of duct tape when a ship takes water? If tape can’t solve the first leak, should one patch the next, pick their battles, or accept fate and lose hope in the voyage? Does a decision even matter when the ship is already sinking? Maybe swimming to shore and joining a new boat would suffice… at least until that crew wants to tape their leaks. By then, that too will be someone else’s problem. The cognitive burden of faulty software is real and difficult to remedy. Programming is a social exercise, and teams will burn out accomodating learned helplessness.
+Without the right tools, conquering these fears can feel impossible. If your tools can’t be trusted, your contributions can't be either. Some adopt a defensive programming style, but institutionalizing apprehension isn't an end in itself. What use is an infinite roll of duct tape when a ship takes water? If tape can’t solve the first leak, should one patch the next, pick their battles, or accept fate and lose hope in the voyage? Does a decision even matter when the ship is already sinking? Maybe swimming to shore and joining a new boat would suffice… at least until that crew wants to tape their leaks. By then, that too will be someone else’s problem. The cognitive burden of faulty software is real and difficult to remedy. Programming is a social exercise, and teams will burn out accommodating learned helplessness.
 
 Most fears boil down to uncertainty about **complexity**. As Fred Brooks explained in [No Silver Bullet](https://en.wikipedia.org/wiki/No_Silver_Bullet), there exists **essential complexity** that cannot be avoided and **accidental complexity** that can.[^5] [Out of the Tar Pit](https://github.com/papers-we-love/papers-we-love/blob/2eb8d21/design/out-of-the-tar-pit.pdf) followed up by diagnosing **state**, **control flow**, and **code volume** as the most frequent culprits underlying accidental complexity. The nature of complexity is festering and exponential, so tackling root causes is always better than addressing symptoms. Put another way, preventing leaks by addressing the inherent structural deficiencies of a ship’s build is favorable to being skilled at plugging holes.
 
@@ -60,9 +60,9 @@ Functional programming doesn’t solve complexity, but helps one meet it by surf
 
 Functional languages _<u>make stateful complexity explicit</u>_. By pairing immutable defaults with performant and easy-to-use APIs, functional languages minimize the need for mutable state. Introducing mutable state thus becomes an intentional and visible action. Given the elimination of destructive updates, compilers are empowered to reward programmers with greater [expressiveness](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) and [safety](https://en.wikipedia.org/wiki/Software_transactional_memory) at less cost. Some functional languages make explicit their “effects” with types, creating a distinction that allows separate reasoning of “effect-free” and “effectful” code.
 
-With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements, which break compositionality, are replaced with expressions that can be substituted for their evaluations. Bigger programs can be faithfully decomposed into smaller ones. This allows for the local reasoning of individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get”.
+With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements, which break compositionality, are replaced with expressions that can be substituted for their evaluations. Bigger programs can be faithfully decomposed into smaller ones. This allows local reasoning on individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get”.
 
-Functional languages address program volume by _<u>making decomposition mechanical</u>_. Programs and their concepts can be stripped programs down to their essence. For instance, verbose wrangling code can be collapsed into neat reusable patterns using higher-order functions and composition. Typed functional languages use various polymorphisms to replace infinitely-many functions over one domain with an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto programmer’s better-suited counterparts in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. Judiscious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and wider ecosystems.
+Functional languages address program volume by _<u>making decomposition mechanical</u>_. Programs and their domains can be stripped programs down to their essence. For instance, verbose wrangling code can be collapsed into neat reusable patterns using higher-order functions and composition. Typed functional languages use various polymorphisms to replace infinitely-many functions over one domain with an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto programmer’s better-suited counterparts in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. Judiscious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and wider ecosystems.
 
 Armed with the properties of functional languages, programmers can reclaim their cognitive sovereignty and fearlessly explore software in action.
 
@@ -264,62 +264,26 @@ Application programming, in contrast, can give developers a sense of power and e
 
 The extent to which work is disposable is the extent to which work is safe to do. While it might mean tremendous pain in the short term, application programmers can usually throw their hands up and start over from scratch when an insurmountable problem arises locally. If a developer ties their local project repository into an knot, they can blow it away and pull down a fresh copy. During development, application programmers regularly break their domain in ways that would be intolerable anywhere else. Though program behaviors are inseparable from their execution environments, application programmers can approximate control over their state space by optimizing for their own fixed environment.
 
-Is it possible to bring the same advantages from application programming to the world of infrastructure? _Containers_ and _Infrastructure as Code_ are popular answers, but these are not without limitations. For instance, the same issues of imperativity that existed before containers still exist inside of them today. While containers and microVMs provide [varying degrees of isolation](https://fly.io/blog/sandboxing-and-workload-isolation/), "contained" environments don't inherently ensure compositionality or reproduciblity. A `Dockerfile` in version control can only nominally correspond to an image stored in a container registry. Containers partially address configuration drift when using the same image, but don't offer guarantees about iterating a new image or even rebuilding the same one. The mutability of common base images pushes users onto shifting grounds and creates a host of compliance concerns. Worse, the already limited means by which associated tools like vulnerability scanners determine an image's origin and dependencies are [easily obfuscated](https://youtu.be/9weGi0csBZM). Likewise, IaC offerings that market themselves as "immutable infrastructure" without reproducibility guarantees leave a lot on the table. These create a non-uniform experience as environments are delivered declaratively yet developed imperatively. Masking a leaky abstraction with a 'declarative' interface (obscures resulting pathologies and) will, of course, not be "fearless" and underdeliver in terms of simplicity and use cases.
+Is it possible to bring the same advantages from application programming to the world of infrastructure? _Containers_ and _Infrastructure as Code_ are popular answers, but these are not without limitations. For instance, the same issues of imperativity that existed before containers still exist inside of them today. While containers and microVMs provide [varying degrees of isolation](https://fly.io/blog/sandboxing-and-workload-isolation/), "contained" environments don't inherently ensure compositionality or reproduciblity. As Matthew Croughan put it, "Docker is repeatable, but not reproducible." One can define instructions, but executing them doesn't guarantee the same output. As such, a `Dockerfile` in version control can only nominally correspond to an image stored in a container registry. Containers partially address configuration drift when using the same image, but don't offer guarantees about iterating a new image or even rebuilding the same one. The mutability of common base images pushes users onto shifting grounds and creates a host of compliance concerns. Worse, the already limited means by which associated tools like vulnerability scanners determine an image's origin and dependencies are [easily obfuscated](https://youtu.be/9weGi0csBZM). Likewise, IaC offerings that market themselves as "immutable infrastructure" without reproducibility guarantees leave a lot on the table. These create a non-uniform experience as environments are delivered declaratively yet developed imperatively. Masking a leaky abstraction with a 'declarative' interface (obscures resulting pathologies and) will, of course, not be "fearless" and underdeliver in terms of simplicity and use cases.
 
 Meanwhile, Nix has developed to fill these gaps. Nix can fit neatly within existing infrastructure, letting engineers recover [reproduciblity and its benefits](https://reproducible-builds.org/) while using [IaC](https://nix.dev/tutorials/nixos/build-and-deploy/deploying-nixos-using-terraform), [containers](https://floxdev.com/blog/flox-and-containers), and other solutions. Nix can also subsume various existing tools with things like NixOS, Home-Manager, NixOps, and deploy-rs. This versatility allows Nix to be introduced piecemeal into projects and organizations.
 
 #### Fearless Environments
 
-<details>
-  <summary>Nix in Action: A Minimal Primer</summary>
-
-  Let's say I wanted to know the dependencies of my local `python` installation.
-
-  Whether installed through Nix's CLI or [declaratively with a configuration file](https://github.com/hkailahi/dotnix/blob/c59b2e2654f8a84cab1ac59ab72e991ffe84ca70/home.nix#L20), any package installed with Nix should will be present in my local Nix database (called the [Nix Store](https://zero-to-nix.com/concepts/nix-store)):
-  ```bash
-  $ readlink $(which python)
-  /nix/store/b07jgllrc7lxa1k91ycrwd6b6103rnr3-python3-3.11.2/bin/python
-  ```
-
-  One route would be to inspect the package's build plan (called a [derivation](https://zero-to-nix.com/concepts/derivations)) to find direct dependencies and their build plans:
-  ```bash
-  $ nix show-derivation $(which python) | jq '.[].inputDrvs | keys'
-  [
-    "/nix/store/1xahjpviam9852a7scsia0q2bjb094qp-expat-2.5.0.drv",
-    "/nix/store/27937yxcz188rjjlccsflkf9c13l4d4f-libxcrypt-4.4.33.drv",
-    "/nix/store/348m2mrwr5fzf342mj6syi2kcndjizc7-bzip2-1.0.8.drv",
-    "/nix/store/6a1h1vmygpn6ndw82rccp8py2vk1hwgk-mailcap-2.1.53.drv",
-    "/nix/store/98vrd1paa9nnnw9sgv9s02fcfylcgkph-tzdata-2022g.drv",
-    "/nix/store/c6v0sdff24f3v927gghavbccikqvigbg-openssl-3.0.8.drv",
-    "/nix/store/cry7j70x7g18iyk4zbkl438xgpgf391v-libffi-3.4.4.drv",
-    "/nix/store/dckqzhb1jvsa58kja64hxwalayf2nisy-Python-3.11.2.tar.xz.drv",
-    "/nix/store/f5l3izi0531c2v7ghrpr1y19zfn38dpj-sqlite-3.41.0.drv",
-    "/nix/store/hxfa8y04mirqks2jq85cjal3hqqkg56h-nuke-references.drv",
-    "/nix/store/i3pdq0fxgddnfhvcixky40by5rd9x743-gdbm-1.23.drv",
-    "/nix/store/i5hjpgcds94pbvykhhn37v187i721j4z-readline-8.2p1.drv",
-    "/nix/store/p0635v6skcncxhby1vlmbwhz3623g2jp-ncurses-6.4.drv",
-    "/nix/store/q6ia1g3g9q1wcn54z51dfk6wkiivb8z2-stdenv-darwin.drv",
-    "/nix/store/r569q0lh69dgdhgayvzi3lh57b30k1q4-xz-5.4.1.drv",
-    "/nix/store/r72rgwi54aybpd7srj34smbs075vzww5-bash-5.2-p15.drv",
-    "/nix/store/rj0zk4938sm9gfs4xk2rgdwwnk8hi368-configd-453.19.drv",
-    "/nix/store/wb2b6ckrdrhgq5bxnxyhvkxyaa3b01g8-python-setup-hook.sh.drv",
-    "/nix/store/wvs3d46lz7ji4lijhdzwkf1clrd1xaxz-zlib-1.2.13.drv"
-  ]
-  ```
-
-  One could imagine recursively inspecting ancestral build plans to collect transitive dependencies. Instead, I'll use Nix's CLI to query the dependency graph directly and temporarily install `graphviz` to visualize it:
-  ```bash
-  $ nix-store --query $(which python) --graph | nix-shell --packages graphviz --command 'dot -Tpng > python_deps.png'
-  ```
-  ![Python Dependency Graph](/static/images/blog/python_deps.png)
-
-</details>
+> The <u>world</u> is all that is the case. A <u>computation</u> is any action taken by a programmable device. An <u>environment</u> is the set of all past and present worlds that a computation can observe. An <u>effect</u> is a computation that depends on or changes the program’s environment. We run programs to produce effects in the world around us.
+>
+> - Patrick Thomson @  Strange Loop 2019, definitions from ["Building Haskell Programs with Fused Effects"](https://youtu.be/vfDazZfxlNs?t=145)
 
 With Nix, everything is built off expressions. Nix allows us to define reproducible and composable environments.
 
 Nix Store is an append-only graph database that stores components in a file system.
 
-Nix is input-addressable by default. As a result, builds are deterministic.
+Nix is **input-addressable** by default. This means that ... and ... (further explored in next section).
+- Nix guarantees that packages will be built with the same inputs. Build outputs aren't necessarily deterministic as Nix can't make the
+While it can't make non-deterministic software deterministic
+Nix can't guarantee 'bit-for-bit' reproducibility
+
+Work is being done to support output-reproducibility **content-addressable** by default. This would remove various avoidable recompilation through [_early cutoff_](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf).
 
 Separation of evaluation and execution.
 - Instantiation evaluation a nix expression. This pure computation results in data structure called a derivation that represents a build plan (derivation).
@@ -343,6 +307,136 @@ Benefits of source and binary distribution. Trustworthy binary caches.
 
 All these guarentees work with native file system / environment instead of a bespoke environment. If we want to multiple separate environments, we can do that while and share mutual dependencies without worrying that modifications from one project will break or leak into another.
 
+#### Supplementary Examples
+
+<details>
+  <summary>Package Management</summary>
+
+  The preferred method of installing packages with Nix [declaratively with a configuration file](https://github.com/hkailahi/dotnix/blob/c59b2e2654f8a84cab1ac59ab72e991ffe84ca70/home.nix#L20). This can be done at the project-level developer environments or globally within a system configuration file.
+
+  For example, let's say I need to install [`firefox`](https://search.nixos.org/packages?channel=23.05&show=firefox&from=0&size=50&sort=relevance&type=packages&query=firefox) and upgrade my global [`python`](https://search.nixos.org/packages?channel=23.05&show=python311&from=0&size=50&sort=relevance&type=packages&query=python311) installation. Regardless of whether my system is specified with NixOS, Home-Manager, or Nix-Darwin, the corresponding configuration change will look something like:
+
+  ```diff
+      environment.systemPackages = with pkgs; [
+  -      python310
+  +      python311
+  +      firefox
+      ];
+  ```
+
+  You can check out the [system configuration for my 2019 MacBook Pro](https://github.com/hkailahi/dotnix/tree/main) on Github along with [countless others](https://github.com/search?q=dotfiles+language%3ANix&type=repositories&l=Nix).
+</details>
+
+<br />
+
+<details>
+  <summary>Auditing Packages</summary>
+
+  Let's say I wanted to know the dependencies of my local `python` installation. Outside of garbage collection, any package installed via Nix should be present in one's local Nix database (called the [Nix Store](https://zero-to-nix.com/concepts/nix-store)):
+  ```bash
+  $ readlink $(which python)
+  /nix/store/7fkcip5klr0gksrjgdb3xf0wiz89mdak-python3-3.11.3/bin/python
+  ```
+
+  One route would be to inspect the package's build plan (called a [derivation](https://zero-to-nix.com/concepts/derivations)) to find direct dependencies and their build plans:
+  ```bash
+  $ nix derivation show $(which python) | jq '.[].inputDrvs | keys'
+  [
+    "/nix/store/1sh46d9v2n87kabvhnsqqpsrn0l8j9qb-readline-8.2p1.drv",
+    "/nix/store/3yzr5644didynr33gmg8ps3pd40i5gsk-ncurses-6.4.drv",
+    "/nix/store/4k5amvhhn2ahfj4lnwfmhdb3i6fd3pc8-configd-453.19.drv",
+    "/nix/store/5l1qsivyqzvwim32c4lqlw08gqkr1pda-libffi-3.4.4.drv",
+    "/nix/store/ah5g0p1vca3izf2z72w7xwgi0gwfr2rz-sqlite-3.41.2.drv",
+    "/nix/store/anqxwbxv66qwqwnxmrk5dczlzawan3w4-bash-5.2-p15.drv",
+    "/nix/store/b05r3wxalqnkhik6d60xxjbizx01vd32-Python-3.11.3.tar.xz.drv",
+    "/nix/store/bd9w0gdpl5h8n97yfgv0i6mdwyqz4lv9-xz-5.4.3.drv",
+    "/nix/store/dgy0q5xz9h8yphvn72rrpmdsnvhll5d9-gdbm-1.23.drv",
+    "/nix/store/dkx3cs1vqvsafsca08vx681d5jhhsr8v-bzip2-1.0.8.drv",
+    "/nix/store/j0xw7lx8bxi6098psd1x9qgqq8k3186d-zlib-1.2.13.drv",
+    "/nix/store/kw4n89mqr55jzqpw66sncyvpgs3lscyx-libxcrypt-4.4.33.drv",
+    "/nix/store/mbqjy5ff44qsw8bzi7b4q07hnhp5nmy5-mailcap-2.1.53.drv",
+    "/nix/store/n92l3i5n4a2z3gy7qhvq6545vvrih0cz-stdenv-darwin.drv",
+    "/nix/store/nh3pwqzjjsh9ldvimxswsslrs7vw58kb-nuke-references.drv",
+    "/nix/store/vhsawk7n84qsb052923kc6mc8rxzg1c8-python-setup-hook.sh.drv",
+    "/nix/store/xxwl7wc8pyf66z89w1s3x0h1mbx1kawc-expat-2.5.0.drv",
+    "/nix/store/ymxifdj2b2li33jybh29d5c9v79i403v-openssl-3.0.8.drv",
+    "/nix/store/zvh05gmr58z8fkjlnchj5vyd81nbvz23-tzdata-2023c.drv"
+  ]
+  ```
+
+  One could imagine recursively inspecting ancestral build plans to collect transitive dependencies. Instead, I'll use Nix's CLI to query the dependency graph directly and temporarily install `graphviz` to visualize it:
+  ```bash
+  $ nix-store --query $(which python) --graph | nix-shell --packages graphviz --command 'dot -Tpng > python_deps.png'
+  ```
+  ![Python Dependency Graph](/static/images/blog/python_deps.png)
+
+  Or I could explore dependencies interactively with the `nix-tree` file browser.
+  ```bash
+  $ nix-tree $(which python)
+  ```
+  ![Python Dependency Graph](/static/images/blog/nix_tree_python.png)
+
+  As the entire build specification for my python installation exists in the Nix Store, tools like [vulnix](https://github.com/nix-community/vulnix) can be used to audit it against the NIST National Security Database.
+  ```bash
+  $ vulnix $(which python)
+  5 derivations with active advisories
+
+  ------------------------------------------------------------------------
+  flex-2.6.4
+
+  /nix/store/0fjlvx3rfi9p4y8wb723hvz7q0f4ijs7-flex-2.6.4.drv
+  CVE                                                CVSSv3
+  https://nvd.nist.gov/vuln/detail/CVE-2019-6293     5.5
+
+  ------------------------------------------------------------------------
+  # ...
+  ```
+
+  We can also generate SBOMs with [`sbomnix`](https://github.com/tiiuae/sbomnix):
+  ```bash
+  $ sbomnix $(which python) && head sbom.csv
+  WARNING  Command line argument '--meta' missing: SBOM will not include license information (see '--help' for more details)
+  INFO     Loading runtime dependencies referenced by '/nix/store/blz0ndg2hnph226br17qrqbcj088yqsf-python3-3.10.11/bin/python3.10'
+  INFO     Wrote: sbom.cdx.json
+  INFO     Wrote: sbom.spdx.json
+  INFO     Wrote: sbom.csv
+  "name","pname","version","patches","system","out","cpe","purl","urls","store_path"
+  "ICU-66108","ICU","66108","","x86_64-darwin","['/nix/store/aas1khljq5sp40ryb578adg4yc0wgjdf-ICU-66108']","cpe:2.3:a:ICU:ICU:66108:*:*:*:*:*:*:*","pkg:nix/ICU@66108","","/nix/store/k6d279xzyqi0fin6408in8yfymqzis5q-ICU-66108.drv"
+  "Libsystem-1238.60.2","Libsystem","1238.60.2","","x86_64-darwin","['/nix/store/zg52hvdcbgkiybjn7w1n30l0skxrx08k-Libsystem-1238.60.2']","cpe:2.3:a:Libsystem:Libsystem:1238.60.2:*:*:*:*:*:*:*","pkg:nix/Libsystem@1238.60.2","","/nix/store/xlpi8lsqxb0mv3k34xrziff37andhpy2-Libsystem-1238.60.2.drv"
+  "Security-55471.14.18","Security","55471.14.18","","x86_64-darwin","['/nix/store/0d8xnyf5ijrqixg4n90098y5s9lk1cgr-Security-55471.14.18']","cpe:2.3:a:Security:Security:55471.14.18:*:*:*:*:*:*:*","pkg:nix/Security@55471.14.18","","/nix/store/m17yissf06s7f8gnyq37xr64j7d4b888-Security-55471.14.18.drv"
+  "bash-5.2-p15","bash-5.2-p15","5.2","/nix/store/a73wzcks7h2y814qxa1z3kv1hg205mpm-bash52-001 /nix/store/xc3h9isl5566i6a4pvdsgin26rchijrq-bash52-002 /nix/store/sxc8xmi7caxaiywzh15za9crpk3bw98z-bash52-003 /nix/store/2ynclzrdl0hy9miy6k8gcwgzw4mhsmd0-bash52-004 /nix/store/z76vsdh69cvwkwhwg69k7d1znwjmx6hf-bash52-005 /nix/store/1fw5..."
+  "brotli-1.0.9","brotli","1.0.9","","x86_64-darwin","['/nix/store/m0hh9mxbgvwp0pnvn4s1s7yzzic4kfcm-brotli-1.0.9-lib', '/nix/store/q906v945rq108jcpmfr5xzcgq9g70p4r-brotli-1.0.9']","cpe:2.3:a:brotli:brotli:1.0.9:*:*:*:*:*:*:*","pkg:nix/brotli@1.0.9","","/nix/store/7rd6lx3zkb2xbcy0a54pp9bpix060r1g-brotli-1.0.9.drv"
+  "bzip2-1.0.8","bzip2","1.0.8","/nix/store/ws73d521m0im6x7nhb0836i51z2yd9dq-bzip2-1.0.6.2-autoconfiscated.patch","x86_64-darwin","['/nix/store/6ckxm90hlpwhvzkzif384ric3xs3mdjd-bzip2-1.0.8']","cpe:2.3:a:bzip2:bzip2:1.0.8:*:*:*:*:*:*:*","pkg:nix/bzip2@1.0.8","","/nix/store/byvhbgf18yxwnqird6f423wyijd7izq1-bzip2-1.0.8.drv"
+  "configd-453.19","configd","453.19","","x86_64-darwin","['/nix/store/84irf9wyg2lfvblq1fr54qp6qqcqh0q1-configd-453.19']","cpe:2.3:a:configd:configd:453.19:*:*:*:*:*:*:*","pkg:nix/configd@453.19","","/nix/store/gbnwmrym9x104b1ywr3asmn12icgzp08-configd-453.19.drv"
+  "curl-8.1.1","curl","8.1.1","/nix/store/w1c7ihmg8ykp1ddpjldq7i5407cqsbz4-7.79.1-darwin-no-systemconfiguration.patch","x86_64-darwin","['/nix/store/jlayla89klra9qxlydqbrld8aizp8nf9-curl-8.1.1']","cpe:2.3:a:curl:curl:8.1.1:*:*:*:*:*:*:*","pkg:nix/curl@8.1.1","","/nix/store/d2j52ik1ykyr7v5641j5fp8225j4h6ll-curl-8.1.1.drv"
+  "expat-2.5.0","expat","2.5.0","","x86_64-darwin","['/nix/store/jldbmj8wpd81az2zlc6bql9f5cwi5y2b-expat-2.5.0']","cpe:2.3:a:expat:expat:2.5.0:*:*:*:*:*:*:*","pkg:nix/expat@2.5.0","","/nix/store/ld9l8jhgfdhrbqjl8rj9wq3addblwkja-expat-2.5.0.drv"
+  ```
+
+</details>
+
+<br />
+
+<details>
+  <summary>Working with Containers</summary>
+
+  OCI images can be created and manipulated with the `dockerTools` module provided by `nixpkgs`. Here is an example from the [`nixpkgs` Manual](https://nixos.org/manual/nixpkgs/stable/#sec-pkgs-dockerTools) of a simple nix expression for creating a container with the [`hello`](https://www.gnu.org/software/hello/manual/hello.html) binary:
+
+  ```nix
+  pkgs.dockerTools.buildImage {
+    name = "hello";
+    tag = "latest";
+    copyToRoot = pkgs.buildEnv {
+      name = "image-root";
+      paths = [ pkgs.hello ];
+      pathsToLink = [ "/bin" ];
+    };
+
+    config.Cmd = [ "/bin/hello" ];
+  }
+  ```
+
+  Further documentation and examples can be found in the [Nixpkgs Manual](https://nixos.org/manual/nixpkgs/stable/#sec-pkgs-dockerTools). For optimized containers, see [Optimising Docker Layers for Better Caching with Nix](https://grahamc.com/blog/nix-and-layered-docker-images/), [A faster `dockerTools.buildImage` prototype](https://lewo.abesis.fr/posts/nix-build-container-image/), and [`nix2container`](https://github.com/nlewo/nix2container).
+</details>
 
 ### Haskell
 
@@ -357,6 +451,10 @@ All these guarentees work with native file system / environment instead of a bes
 > Upgrading 50 libraries? 💯
 
 Haskell is a general-purpose programming language that's statically-typed, lazy, and purely functional.
+
+
+As Gabriella Gonzalez noted in the [2016 State of the Haskell Ecosystem](https://github.com/Gabriella439/post-rfc/blob/main/sotu.md#server-side-web-programming), "where Haskell shines in usability is the runtime support for software transactional memory (which differentiates Haskell from Go), lightweight threads that use non-blocking I/O, and garbage collection (which differentiates Haskell from Rust)."[^12]
+
 
 #### Fearless Refactoring
 
@@ -374,9 +472,65 @@ Programmers can pick whatever individual or combination of these equivalent form
 
 #### Fearless Maintenance
 
-> The <u>world</u> is all that is the case. A <u>computation</u> is any action taken by a programmable device. An <u>environment</u> is the set of all past and present worlds that a computation can observe. An <u>effect</u> is a computation that depends on or changes the program’s environment. We run programs to produce effects in the world around us.
->
-> - Patrick Thomson @  Strange Loop 2019, definitions from ["Building Haskell Programs with Fused Effects"](https://youtu.be/vfDazZfxlNs?t=145)
+#### Supplementary Examples
+
+<details>
+  <summary>Deriving Behaviors for Free</summary>
+
+  Like Swift protocols or Rust traits, type classes in Haskell let programmers associate named set of operations with types. These association of behaviors are enabling by providing, inheriting, or generating implementations of operation set on a given type.
+
+  For example, let's say I created a `PrimaryColor` type whose values can be `Red`, `Yellow`, or `Blue`. In order to make `PrimaryColor`s displayable or comparable, I can provide "instances" of the `Show` and `Eq` type classes:
+  ```hs
+  data PrimaryColor = Red | Yellow | Blue
+
+  instance Eq PrimaryColor where
+    (==) :: PrimaryColor -> PrimaryColor -> Bool
+    Red (==) Red       = True
+    Yellow (==) Yellow = True
+    Blue (==) Blue     = True
+    _ (==) _           = False
+
+  instance Show PrimaryColor where
+    show :: PrimaryColor -> String
+    show Red    = "Red"
+    show Yellow = "Yellow"
+    show Blue   = "Blue"
+  ```
+
+  Haskell can generate instances automatically for a given type based on the instances of the type's fields instances, the type's shape, the type classes' default implementations, or by borrowing instances from an identitically-shaped type.
+
+  ```hs
+  data User = User
+    {  name  :: String
+    ,  age   :: Int
+    }
+    deriving stock (Eq, Ord, Show)
+    deriving anyclass (FromJSON, ToJSON, FromCsv, ToCsv, FromDbRow, ToDbRow)
+  ```
+
+  The `Eq` instance generated above uses the underlying `Eq` instances on `String` and `Int` to ensure that two `User`s are equal if and only if they have the same `name` and `age`. In addition, we know at a glance that `User`s can be ordered, displayed, serialized and deserialized to JSON or CSV, and stored in a database.
+
+  ```hs
+  λ> phil = User "Phil" 25
+  λ> zoe = User "Zoe" 42
+  λ> phil > zoe
+  False
+  λ> zoe == zoe
+  True
+  ```
+</details>
+
+<br />
+
+<details>
+  <summary>Property Testing with QuickCheck</summary>
+</details>
+
+<br />
+
+<details>
+  <summary>Lock-Free Concurrency with Software Transactional Memory</summary>
+</details>
 
 ### Functional Adjacent
 
@@ -395,9 +549,9 @@ Programmers can pick whatever individual or combination of these equivalent form
 Thanks for reaching the end! Here are some options if you’d like to get started with functional programming:
 
 - If you’d like an entry point into application programming with functional languages, I recommend checking out [Elm](https://elm-lang.org/) and [Elixir](https://elixir-lang.org/).
-- If you’re interested in a functional devops experience, I recommend checking out [Nix](https://nixos.org/).[^12]
+- If you’re interested in a functional devops experience, I recommend checking out [Nix](https://nixos.org/).[^13]
 - If you are looking for a follow-up on incorporating algebraic foundations into your daily work, I recommend reading [Algebra-Driven Design](https://algebradriven.design/).
-- If you want to fully immerse yourself in functional programming without familiar imperative crutches, I recommend checking out [Haskell](https://www.haskell.org/).[^13]
+- If you want to fully immerse yourself in functional programming without familiar imperative crutches, I recommend checking out [Haskell](https://www.haskell.org/).[^14]
 
 ## Footnotes
 
@@ -455,6 +609,8 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
     False
     ```
 [^12]:
+    The original quote differentiated Haskell's support for "lightweight threads that use non-blocking I/O" from the JVM. Java originally had green threads before before deprecating them in favor of using OS threads. As of 2022, lightweight threads have been re-introduced via [Project Loom](https://blogs.oracle.com/javamagazine/post/going-inside-javas-project-loom-and-virtual-threads) with [Java 19](https://www.oracle.com/news/announcement/oracle-releases-java-19-2022-09-20/).
+[^13]:
     While I believe Nix is worth exploring for most developers, it's important that interested parties know what they're signing up for. Learning Nix is a significant undertaking. The explicit, build-from-source model means that package authors are forced to confront essential complexity up front rather than accruing tech debt that can be paid later. Roadblocks commonly manifest from the bizarre assumptions made by various software about their host environment and toolchain. The cruel reality is that many packaging tasks with Nix are actually just sophisticated ways of glueing [bash scripts](https://nixos.org/manual/nixpkgs/stable/#chap-stdenv) together. Fortunately for end-users, many pre-defined packages exist and are available for modification or cached download. In fact, the [Nix ecosystem's primary package repository](https://search.nixos.org/packages) contains the largest number of "fresh packages" [by a wide margin](https://repology.org/repositories/graphs). For everything else, end-users can use provided ["fetchers"](https://nixos.org/manual/nixpkgs/stable/#chap-pkgs-fetchers) to shorcut the build-from-source model while still benefitting from pinned dependencies. These fetchers allow callers to retrieve artifacts from various sources and verify their contents against a hash. Similar to `git`, Nix's underlying model is much simpler to grasp than the current interfaces for interacting with it. Ongoing contributions by generous individuals are being made towards reflecting this simplicity and polishing end-user interfaces.
 
     Fortunately, there's been a surge of beginner-friendly tools allow newcomers to get the benefits of Nix immediately. Some examples include [`flox`](https://floxdev.com/blog/homebrew), [`devenv`](https://devenv.sh/), [`fleek`](https://getfleek.dev/), and [`devbox`](https://www.jetpack.io/devbox/). These services build on top of Nix to provide access to things like package management, container development, and package/environment distribution.
@@ -472,7 +628,7 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
     - [Managing Firefox on macOS with Nix](https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/)
     - The original thesis, [The Purely Functional Software Deployment Model](https://edolstra.github.io/pubs/phd-thesis.pdf), and a modern review titled [The Nix Thesis](https://jonathanlorimer.dev/posts/nix-thesis.html)
     - The NixOS paper, [NixOS: A Purely Functional Linux Distribution](https://edolstra.github.io/pubs/nixos-jfp-final.pdf)
-[^13]:
+[^14]:
     For video learners, Philipp Hagenlocher's [Haskell for Imperative Programmers](https://www.youtube.com/playlist?list=PLe7Ei6viL6jGp1Rfu0dil1JH1SHk9bgDV) playlist is a phenomenal introductory exposure.
 
     If, like me, you like 1000+ page tutorials with ample hand-holding, you could learn with [Haskell from First Principles](https://haskellbook.com/). Otherwise, the upcoming [Effective Haskell](https://pragprog.com/titles/rshaskell/effective-haskell/) book seems, from my brief skim, like a promising early resource. Additionally, helpful online references like [Typeclasses](https://typeclasses.com/) and [Kowainik’s blog](https://kowainik.github.io/posts) can be very beginner-friendly. [fp-course](https://github.com/system-f/fp-course) and Brian McKenna's [video walkthrough](https://www.youtube.com/playlist?list=PLly9WMAVMrayYo2c-1E_rIRwBXG_FbLBW) is a great hands-on exercise that’s perfect for beginners struggling to grapple with fundamental abstractions. Finally, [What I Wish I Knew When Learning Haskell](https://github.com/sdiehl/wiwinwlh) can serve as a solid, free reference for checking your understanding of various topics.
