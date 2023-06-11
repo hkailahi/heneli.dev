@@ -281,7 +281,7 @@ The location of a package in the Nix Store is determined by the hash of its deri
 
 The Nix literature defines ["correct deployments"](https://books.google.ca/books?id=gP2kAAAACAAJ) as software deployments that "given identical inputs... should behave the same on an end-user machine as on the developer machine". This is a useful albeit weaker notion of reproducibility than [bit-for-bit reproducibility](https://reproducible-builds.org/docs/definition/). While Nix can ensure the build plans are executed with the same steps and inputs, it can't ensure a determinstic binary output as the underlying package being built might require usage of bespoke, non-determinstic tools.
 
-Rather than storing components by the hash of their build plan, Nix support for storing components by the hash of their build outputs is progressing. This property is commonly referred to as being **content-addressable**, and would reduce recompilation via [_early cutoff_](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf). For obvious reasons, bit-for-bit reproducibility is important for content-addressable builds.
+Rather than storing components by the hash of their build plan, Nix support is progressing for storing components by the hash of their build outputs. This property is commonly referred to as being **content-addressable**, and would reduce recompilation via [_early cutoff_](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf). For obvious reasons, bit-for-bit reproducibility is important for content-addressable builds.
 
 #### Fearless Environments
 
@@ -291,18 +291,15 @@ Rather than storing components by the hash of their build plan, Nix support for 
 
 Nix allows us to define reproducible and composable environments.
 
+Whether it's installing a new package or upgrading your system, changes through Nix are made atomically. This means all changes happen at once or not at all, ensuring users are never left in a partially updated state even if an operation is interrupted. If an upgrade causes issues, one can immediately roll back to the previous configuration. As a result, iteration doesn't need to be a high-commitment activity. Users can
+tryout packages with temporary installations that don't pollute their environments. Binaries used in one-off commands don't have live beyond their usage. The combination of rollbacks and version control let's one recreate their enviroment from any point in the past. If one doesn't need something anymore, they can get rid of it without fear of it being unrecoverable. package hoarding is rendered unnecessary and configurations are able to be minimal.
+
 As each package is stored in a unique path, different versions or variants of a package can coexist without conflict.
 
-  Nix ensures a transactional semantics: builds can always safely be interrupted, restarted, or run in parallel.
+Nix ensures a transactional semantics: builds can always safely be interrupted, restarted, or run in parallel.
 
-Nix is **input-addressable** by default. This means that ... and ... (further explored in next section).
-- Nix guarantees that packages will be built with the same inputs. Build outputs aren't necessarily deterministic as Nix can't make the
-While it can't make non-deterministic software deterministic
-Nix can't guarantee 'bit-for-bit' reproducibility
+Cross compiling
 
-Separation of evaluation and execution.
-- Instantiation evaluation a nix expression. This pure computation results in data structure called a derivation that represents a build plan (derivation).
-- Realization build
 
 #### Fearless Sharing
 
@@ -312,13 +309,22 @@ Separation of evaluation and execution.
 >
 > - Julien Urraca @ Open Source 101 2023, ["From Nix to Docker - Everything You Need to Know About Polygot Package Management"](https://youtu.be/onBQhwuPOAc?t=231)
 
+
+
+The source deployment model is one in which packages are deployed in source form as opposed to binary form. This allows flexibility in build-time configurations and a greater degree of trust. Binary deployments, on the other hand, require less resources like disk space for the binaries and network resources for obtaining the binary package.
+
+Unfortunately, source deployments can be expensive as resources are required to obtain and store the sources, CPU time and memory to build the package, and disk space for temporary ﬁles and the ﬁnal results. To make matters worse, binary deployment only involves runtime dependencies, while source deployment may involve additional dependencies that are only used at build time, such as compilers
+
+Best of source and binary distribution. Trustworthy binary caches.
+- Binary Caching: Even though Nix supports building from source, it also has a binary cache (cache.nixos.org by default) that hosts pre-built binaries. When you install a package, Nix first checks whether the binary is available in the cache. If it is, Nix downloads and installs the binary instead of building from source. This makes package installation faster, which is one of the key advantages of binary distributions.
+- Source Availability: Like source distributions, Nix always allows you to build from source. This gives you the flexibility to modify the source code and build the package according to your specific needs.
+
 Sharing both internally and externally. Free dependency sharing. Best of source and binary distributions.
 
-Layered docker images for sharing dependencies https://grahamc.com/blog/nix-and-layered-docker-images/
+In fact, Nix can recover greater sharing from existing infrastructure like [optimally-layered docker images](https://grahamc.com/blog/nix-and-layered-docker-images/) and third-party dependency management for [Bazel builds](https://nix-bazel.build/).
 
 Input-addressable
 
-Benefits of source and binary distribution. Trustworthy binary caches.
 
 All these guarentees work with native file system / environment instead of a bespoke environment. If we want to multiple separate environments, we can do that while and share mutual dependencies without worrying that modifications from one project will break or leak into another.
 
