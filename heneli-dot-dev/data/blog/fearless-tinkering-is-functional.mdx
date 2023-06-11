@@ -419,7 +419,7 @@ All these guarentees work with native file system / environment instead of a bes
 <details>
   <summary>Working with Containers</summary>
 
-  OCI images can be created and manipulated with the `dockerTools` module provided by `nixpkgs`. Here is an example from the [`nixpkgs` Manual](https://nixos.org/manual/nixpkgs/stable/#sec-pkgs-dockerTools) of a simple nix expression for creating a container with the [`hello`](https://www.gnu.org/software/hello/manual/hello.html) binary:
+  OCI images can be created and manipulated with the `dockerTools` module provided by `nixpkgs`. Here is [an example](https://nixos.org/manual/nixpkgs/stable/#sec-pkgs-dockerTools) of a simple nix expression for building an image containing the [`hello`](https://www.gnu.org/software/hello/manual/hello.html) binary:
 
   ```nix
   pkgs.dockerTools.buildImage {
@@ -435,7 +435,7 @@ All these guarentees work with native file system / environment instead of a bes
   }
   ```
 
-  Further documentation and examples can be found in the [Nixpkgs Manual](https://nixos.org/manual/nixpkgs/stable/#sec-pkgs-dockerTools). For optimized containers, see [Optimising Docker Layers for Better Caching with Nix](https://grahamc.com/blog/nix-and-layered-docker-images/), [A faster `dockerTools.buildImage` prototype](https://lewo.abesis.fr/posts/nix-build-container-image/), and [`nix2container`](https://github.com/nlewo/nix2container).
+  Further documentation and examples can be found in the [Nixpkgs Manual](https://nixos.org/manual/nixpkgs/stable/#sec-pkgs-dockerTools). For better optimized containers, see [Optimising Docker Layers for Better Caching with Nix](https://grahamc.com/blog/nix-and-layered-docker-images/) and [`nix2container`](https://github.com/nlewo/nix2container).
 </details>
 
 ### Haskell
@@ -477,18 +477,18 @@ Programmers can pick whatever individual or combination of these equivalent form
 <details>
   <summary>Deriving Behaviors for Free</summary>
 
-  Like Swift protocols or Rust traits, type classes in Haskell let programmers associate named set of operations with types. These association of behaviors are enabling by providing, inheriting, or generating implementations of operation set on a given type.
+  Like Swift protocols or Rust traits, typeclasses in Haskell let programmers associate types with named sets of operations. This association is done by providing, inheriting, or generating an implementation on a given type.
 
-  For example, let's say I created a `PrimaryColor` type whose values can be `Red`, `Yellow`, or `Blue`. In order to make `PrimaryColor`s displayable or comparable, I can provide "instances" of the `Show` and `Eq` type classes:
+  For example, let's say I created a `PrimaryColor` type whose values could be `Red`, `Yellow`, or `Blue`. To make `PrimaryColor`s displayable and comparable, I could provide "instances" of the `Show` and `Eq` typeclasses:
   ```hs
   data PrimaryColor = Red | Yellow | Blue
 
   instance Eq PrimaryColor where
     (==) :: PrimaryColor -> PrimaryColor -> Bool
-    Red (==) Red       = True
-    Yellow (==) Yellow = True
-    Blue (==) Blue     = True
-    _ (==) _           = False
+    Red == Red       = True
+    Yellow == Yellow = True
+    Blue == Blue     = True
+    _ == _           = False
 
   instance Show PrimaryColor where
     show :: PrimaryColor -> String
@@ -497,10 +497,10 @@ Programmers can pick whatever individual or combination of these equivalent form
     show Blue   = "Blue"
   ```
 
-  Haskell can generate instances automatically for a given type based on the instances of the type's fields instances, the type's shape, the type classes' default implementations, or by borrowing instances from an identitically-shaped type.
+  Haskell can generate instances automatically using a typeclasses' default implementations, a type's shape, a type's field instances, or by borrowing instances from an identitically-shaped type.
 
   ```hs
-  data User = User
+  data Person = Person
     {  name  :: String
     ,  age   :: Int
     }
@@ -508,11 +508,11 @@ Programmers can pick whatever individual or combination of these equivalent form
     deriving anyclass (FromJSON, ToJSON, FromCsv, ToCsv, FromDbRow, ToDbRow)
   ```
 
-  The `Eq` instance generated above uses the underlying `Eq` instances on `String` and `Int` to ensure that two `User`s are equal if and only if they have the same `name` and `age`. In addition, we know at a glance that `User`s can be ordered, displayed, serialized and deserialized to JSON or CSV, and stored in a database.
+  The `Eq` instance generated above uses the underlying `Eq` instances on `String` and `Int`. This way two people are equal if and only if they share the same `name` and `age`. In addition to equality, we know at a glance that people can be ordered, displayed, serialized to JSON & CSV, and stored in a database.
 
   ```hs
-  λ> phil = User "Phil" 25
-  λ> zoe = User "Zoe" 42
+  λ> phil = Person "Phil" 25
+  λ> zoe = Person "Zoe" 42
   λ> phil > zoe
   False
   λ> zoe == zoe
@@ -523,13 +523,19 @@ Programmers can pick whatever individual or combination of these equivalent form
 <br />
 
 <details>
-  <summary>Property Testing with QuickCheck</summary>
+  <summary>Property-Based Testing</summary>
+
+  Property-based Testing originated from Haskell with the QuickCheck library.
 </details>
 
 <br />
 
 <details>
-  <summary>Lock-Free Concurrency with Software Transactional Memory</summary>
+  <summary>Concurrency but Headache-Free</summary>
+
+  Software Transactional Memory
+
+  Who knew that the same language known for avoiding shared mutable state could be so good at using shared mutable state?
 </details>
 
 ### Functional Adjacent
