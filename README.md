@@ -3,8 +3,17 @@
 ## Contents
 - [heneli.dev](#henelidev)
   - [Contents](#contents)
+  - [About](#about)
   - [Blog Discussions](#blog-discussions)
   - [Initial Setup](#initial-setup)
+
+## About
+
+This is my blog. Articles are written in MDX/Markdown files in `heneli-dot-dev/data/blog`. Bibliographies and research notes for each article are found in the `references` directory. Some of my posts include:
+
+- [Fearless Tinkering is Functional](https://www.heneli.dev/blog/fearless-tinkering-is-functional)
+
+This site is written in React + Next.js, and deployed via Vercel. Cookieless, privacy-first analytics are provided through Plausible. Comments are provided through Github Discussions and Giscus.
 
 ## Blog Discussions
 
@@ -139,11 +148,11 @@ $ nix flake lock
 $ nix develop
 # warning: Git tree '/Users/hkailahi/dev/sites/heneli.dev' is dirty
 # 🔨 Welcome to devshell
-# 
+#
 # [general commands]
-# 
+#
 #   menu - prints this menu
-# 
+#
 (nix:devshell-env) [devshell]$ npm --v
 9.5.1
 ```
