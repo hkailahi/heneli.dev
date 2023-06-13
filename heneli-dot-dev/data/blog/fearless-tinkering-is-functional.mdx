@@ -400,7 +400,7 @@ Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity
   # ...
   ```
 
-  In addition, we can audit it by generating SBOMs with [`sbomnix`](https://github.com/tiiuae/sbomnix):
+  In addition, packages can be audited by generating SBOMs with [`sbomnix`](https://github.com/tiiuae/sbomnix):
   ```bash
   $ sbomnix $(which python) && head sbom.csv
   WARNING  Command line argument '--meta' missing: SBOM will not include license information (see '--help' for more details)
@@ -446,160 +446,11 @@ Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity
   Further documentation and examples can be found in the [Nixpkgs Manual](https://nixos.org/manual/nixpkgs/stable/#sec-pkgs-dockerTools). For better optimized containers, see [Optimising Docker Layers for Better Caching with Nix](https://grahamc.com/blog/nix-and-layered-docker-images/) and [`nix2container`](https://github.com/nlewo/nix2container).
 </details>
 
-### Haskell
+## To Be Continued...
 
-> Fixing a bug? No problem!
->
-> Need a new feature? Sure thing!
->
-> Did you read about that best practice? Incorporation was easy!
->
-> Handle another edge case? Say less!
->
-> Upgrading 50 libraries? 💯
+That's all for now. The second half of this article will continue with more examples of functional technologies in practice. Additionally, the follow-up will discuss how, beyond the functional paradigm, fearless experiences can be created by any technology that exploits its underlying algebra. Finally, the article will finish by introducing new and exciting functional technologies on the horizon and speculate about their fearless futures.
 
-Haskell is a general-purpose programming language that's statically-typed, lazy, and purely functional.
-
-
-As Gabriella Gonzalez noted in the [2016 State of the Haskell Ecosystem](https://github.com/Gabriella439/post-rfc/blob/main/sotu.md#server-side-web-programming), "where Haskell shines in usability is the runtime support for software transactional memory (which differentiates Haskell from Go), lightweight threads that use non-blocking I/O, and garbage collection (which differentiates Haskell from Rust)."[^12]
-
-
-#### Fearless Refactoring
-
-Refactoring in Haskell is fearless, thanks to the language's static type system and the principle of equational reasoning, which posits that expressions in your code can be substituted with their corresponding values without changing the program's behavior. When you refactor your code, the compiler and type system ensure your modifications maintain the same behavior as before. Even if changes span across numerous files, as long as it compiles, you can be confident it will work correctly.
-
-The Haskell type system makes your data model explicit, enhancing the expressiveness and eliminating ambiguity often found in loosely typed languages. Types act as a form of documentation and ensure that you can never misuse keys in a database table or make other similar errors. Haskell's emphasis on strong and static types supports type-safe operations, aiding refactoring by providing better guarantees at compile time.
-
-Fearless refactoring is further aided by Haskell's emphasis on data structures over code. As famously modernized from Fred Brooks' quote, "Show me your data structures, and I won’t usually need your code; it’ll be obvious." In Haskell, well-designed and well-typed data structures can tell more about the program than the actual code, contributing significantly to making refactoring less risky and more intuitive.
-
-<details>
-  <summary>Refactoring Made Mechanical</summary>
-
-  Translating functions into “generalized” forms is fairly mechanical. For example, one progression could be:
-
-  - function with several **hardcoded arguments**
-  - function on **several arguments**
-  - function on a **record of arguments** (configuration record)
-  - function on a **record of functions** computing arguments ([handle pattern](https://jaspervdj.be/posts/2018-03-08-handle-pattern.html))
-  - function, specified with a **type-level DSL**, **interpreted by translating polymorphic functions into concrete functions** computing arguments (final encoding, [finally tagless](https://youtu.be/JxC1ExlLjgw))
-  - function, defined with a **value-level eDSL**, **interpreted by translating an AST into functions** computing arguments (initial encoding, [defunctionalization](https://blog.sigplan.org/2019/12/30/defunctionalization-everybody-does-it-nobody-talks-about-it/))
-  - …and back again (refunctionalization)
-
-  Programmers can pick whatever individual or combination of these equivalent forms best suit their task.
-</details>
-
-#### Fearless Maintenance
-
-Haskell's static and expressive type system, strong emphasis on immutability, and pure functions contribute to making software maintenance in Haskell a more fearless process compared to other languages. These features remove entire classes of common runtime errors like null dereferencing and unchecked pattern matches. They provide robust safeguards that make the maintenance process more predictable and safer, thereby facilitating fearless maintenance.
-
-In a team setting, these features enable more effortless collaboration and effective code reviews. Changes proposed in a pull request can be substantial, but thanks to the type system, code reviewers can trust that the compiler has already performed a significant amount of checks. This mutual trust in types reduces cognitive load, enabling the team to focus on architectural decisions, design, and abstractions, rather than being bogged down by complex code baggage.
-
-Haskell's ecosystem adds to the fearlessness in maintenance. Despite the potential for occasional complications during upgrades due to the community's enthusiasm for change and improvements, the language's shared values and focus on simplicity and reusability make maintenance easier. Also, tools like QuickCheck enable broader test coverage, further enhancing the trust in the system's reliability.
-
-In conclusion, while maintenance is an inevitable part of the software lifecycle, Haskell’s strong typing, functional purity, and the benefits of equational reasoning all contribute to making maintenance not just manageable, but fearless.
-
-#### Supplementary Examples
-
-<details>
-  <summary>Deriving Behaviors for Free</summary>
-
-  Like Swift protocols or Rust traits, typeclasses in Haskell let programmers associate types with named sets of operations. This association is done by providing, inheriting, or generating an implementation on a given type.
-
-  For example, let's say I created a `PrimaryColor` type whose values could be `Red`, `Yellow`, or `Blue`. To make `PrimaryColor`s displayable and comparable, I could provide "instances" of the `Show` and `Eq` typeclasses:
-  ```hs
-  data PrimaryColor = Red | Yellow | Blue
-
-  instance Eq PrimaryColor where
-    -- An infix function that takes two colors and returns whether they match
-    (==) :: PrimaryColor -> PrimaryColor -> Bool
-    Red == Red       = True
-    Yellow == Yellow = True
-    Blue == Blue     = True
-    _ == _           = False
-
-  instance Show PrimaryColor where
-    -- A function that takes a color and outputs its string representation
-    show :: PrimaryColor -> String
-    show Red    = "Red"
-    show Yellow = "Yellow"
-    show Blue   = "Blue"
-  ```
-
-  Haskell can generate instances automatically using a typeclasses' default implementations, a type's shape, a type's field instances, or by borrowing instances from an identitically-shaped type.
-
-  ```hs
-  data Person = Person
-    {  name  :: String
-    ,  age   :: Int
-    }
-    deriving stock (Eq, Ord, Show)
-    deriving anyclass (FromJSON, ToJSON, FromCsv, ToCsv, FromDbRow, ToDbRow)
-  ```
-
-  The `Eq` instance generated above uses the underlying `Eq` instances on `String` and `Int`. This way two people are equal if and only if they share the same `name` and `age`. In addition to equality, we know at a glance that people can be ordered, displayed, serialized to JSON & CSV, and stored in a database.
-
-  ```hs
-  λ> let phil = Person "Phil" 25
-  λ> let zoe = Person "Zoe" 42
-  λ> phil > zoe
-  False
-  λ> zoe == zoe
-  True
-  ```
-</details>
-
-<br />
-
-<details>
-  <summary>Property-Based Testing</summary>
-
-  Property-based Testing originated from Haskell with the QuickCheck library. Rather than writing unit tests that check the behavior of a function for specific inputs (a la unit tests), property-based tests allow developers to define invariants that the function must hold for any input. The testing library then generates random inputs to test the function thoroughly. This approach provides stronger guarantees and finds edge cases that might have been missed with traditional unit tests, allowing developers to refactor and modify their code fearlessly.
-
-
-</details>
-
-<br />
-
-<details>
-  <summary>Concurrency but Headache-Free</summary>
-
-  Software Transactional Memory
-
-  Who knew that the same language known for avoiding shared mutable state could be so good at using shared mutable state?
-</details>
-
-### Functional Adjacent
-
-Beyond the strict constraints of functional programming, developing the algebra of one’s program, be it a subset of purely functional properties or different constraints, can greatly enhance the reliability and predictability of any paradigm. Many non-functional technologies exploit their inherent algebra to offer their own "fearless usages".
-
-For instance, consider the RESTful operations in the world of web services. The key to "fearless puts" in REST lies in the property of idempotence - the ability to apply an operation multiple times without changing the result beyond the initial application. This principle provides strong guarantees for the execution of read and upsert operations, as engineers can rely on informal reasoning about the absence of POSTs and DELETEs to enhance reliability and predictability.
-
-"Stateless" applications offer a further exploration of algebraic structures in software design. While such applications do have state, it is localized and, thus, unobservable to the outside world. Despite the potential momentary application state, heap state, open database connections, and the existence of unlucky client connections at the moment of failure, stateless applications can be fearlessly terminated and restarted thanks to their reproducible and immutable nature.
-
-However, as Bryan Cantrill points out, few applications are truly "stateless". At the moment of failure, your server will likely have local application state, heap state, open database connections, and unlucky client connections that will go home with a 500. Without a snapshotting mechanism for exploring and debugging true failure states, merely restarting “stateless” application failures might erode the application’s purported safety mechanisms.
-
-In the context of infrastructure, declarative solutions such as Terraform, Pulumi, and CDK empower developers to fearlessly modify systems without complex migrations. By describing the desired state, as opposed to the steps to achieve it (imperative programming), these technologies simplify system management and improve predictability. This concept can be seen with NixOS, where it enables fearless system deployments.
-
-Batch processing systems like MapReduce and Spark leverage the associativity property of their operations for fearless parallelization, allowing developers to focus on their core business logic rather than solving complex distributed systems problems. Similarly, Git offers an imperative interface over an immutable purely functional data structure, empowering developers with fearless sharing and rollbacks.
-
-Overall, embracing algebraic structures in software design can unlock powerful "fearless" capabilities, improving both the predictability and reliability of systems across the technology stack. It offers an additional tool in the toolbox for developers seeking to strengthen their system's guarantees. The algebraic approach is not restricted to functional programming, proving its value in various paradigms, be it declarative infrastructure or stateless application design.
-
-## A Fearless Future
-
----
-
-### Fearless Interoperability with Verse
-
-### Fearless DX with Unison
-
-## Wrap
-
-Thanks for reaching the end! Here are some options if you’d like to get started with functional programming:
-
-- If you’d like an entry point into application programming with functional languages, I recommend checking out [Elm](https://elm-lang.org/) and [Elixir](https://elixir-lang.org/).
-- If you’re interested in a functional devops experience, I recommend checking out [Nix](https://nixos.org/).[^13]
-- If you are looking for a follow-up on incorporating algebraic foundations into your daily work, I recommend reading [Algebra-Driven Design](https://algebradriven.design/).
-- If you want to fully immerse yourself in functional programming without familiar imperative crutches, I recommend checking out [Haskell](https://www.haskell.org/).[^14]
+✌️
 
 ## Footnotes
 
@@ -656,29 +507,3 @@ Thanks for reaching the end! Here are some options if you’d like to get starte
     λ> or (True, False)
     False
     ```
-[^12]:
-    The original quote differentiated Haskell's support for "lightweight threads that use non-blocking I/O" from the JVM. Java originally had green threads before before deprecating them in favor of using OS threads. As of 2022, lightweight threads have been re-introduced via [Project Loom](https://blogs.oracle.com/javamagazine/post/going-inside-javas-project-loom-and-virtual-threads) with [Java 19](https://www.oracle.com/news/announcement/oracle-releases-java-19-2022-09-20/).
-[^13]:
-    While I believe Nix is worth exploring for most developers, it's important that interested parties know what they're signing up for. Learning Nix is a significant undertaking. The explicit, build-from-source model means that package authors are forced to confront essential complexity up front rather than accruing tech debt that can be paid later. Roadblocks commonly manifest from the bizarre assumptions made by various software about their host environment and toolchain. The cruel reality is that many packaging tasks with Nix are actually just sophisticated ways of gluing [bash scripts](https://nixos.org/manual/nixpkgs/stable/#chap-stdenv) together. Fortunately for end-users, many predefined packages exist and are available for modification or cached download. In fact, the [Nix ecosystem's primary package repository](https://search.nixos.org/packages) contains the largest number of "fresh packages" [by a wide margin](https://repology.org/repositories/graphs). For everything else, end-users can use provided ["fetchers"](https://nixos.org/manual/nixpkgs/stable/#chap-pkgs-fetchers) to shortcut the build-from-source model while still benefiting from pinned dependencies. These fetchers allow callers to retrieve artifacts from various sources and verify their contents against a hash. Similar to `git`, Nix's underlying model is much simpler to grasp than the current interfaces for interacting with it. Ongoing contributions by generous individuals are being made towards reflecting this simplicity and polishing end-user interfaces.
-
-    Fortunately, there's been a surge of beginner-friendly tools that allow newcomers to get the benefits of Nix immediately. Some examples include [`flox`](https://floxdev.com/blog/homebrew), [`devenv`](https://devenv.sh/), [`fleek`](https://getfleek.dev/), and [`devbox`](https://www.jetpack.io/devbox/). These services build on top of Nix to provide access to things like package management, container development, and package/environment distribution.
-
-    To get started with Nix proper, I recommend following the [Zero to Nix](https://zero-to-nix.com/) Quick Start guide. From there, I recommend checking out [nix.dev](https://nix.dev/), the [Official NixOS learning page](https://nixos.org/learn.html), and the follow-up resources recommended at the end of the [Zero to Nix](https://zero-to-nix.com/start/learn-more) Quick Start guide. For video learners, Brian McKenna's [RootConf 2019 talk](https://youtu.be/RtqWE5lgaCg) and Burke Libbey's [Nix: What Even is it Though](https://youtu.be/6iVXaqUfHi4) are great introductory overviews of Nix and its ideas.
-
-    For intermediate audiences, check out the upcoming [NixOS in Production](https://leanpub.com/nixos-in-production) book.
-
-    Below are writings that I've particularly enjoyed:
-
-    - [Erase your darlings](https://grahamc.com/blog/erase-your-darlings/)
-    - [Paranoid NixOS Setup](https://xeiaso.net/blog/paranoid-nixos-2021-07-18) and [Paranoid NixOS on AWS](https://xeiaso.net/blog/paranoid-nixos-aws-2021-08-11)
-    - [Tidying up your $HOME with Nix](https://juliu.is/tidying-your-home-with-nix/)
-    - [Declarative management of dotfiles with Nix and Home Manager](https://www.bekk.christmas/post/2021/16/dotfiles-with-nix-and-home-manager)
-    - [Managing Firefox on macOS with Nix](https://cmacr.ae/post/2020-05-09-managing-firefox-on-macos-with-nix/)
-    - The original thesis, [The Purely Functional Software Deployment Model](https://edolstra.github.io/pubs/phd-thesis.pdf), and a modern review titled [The Nix Thesis](https://jonathanlorimer.dev/posts/nix-thesis.html)
-    - The NixOS paper, [NixOS: A Purely Functional Linux Distribution](https://edolstra.github.io/pubs/nixos-jfp-final.pdf)
-[^14]:
-    For video learners, Philipp Hagenlocher's [Haskell for Imperative Programmers](https://www.youtube.com/playlist?list=PLe7Ei6viL6jGp1Rfu0dil1JH1SHk9bgDV) playlist is a phenomenal introductory exposure.
-
-    If, like me, you like 1000+ page tutorials with ample hand-holding, you could learn with [Haskell from First Principles](https://haskellbook.com/). Otherwise, the upcoming [Effective Haskell](https://pragprog.com/titles/rshaskell/effective-haskell/) book seems, from my brief skim, like a promising early resource. Additionally, helpful online references like [Typeclasses](https://typeclasses.com/) and [Kowainik’s blog](https://kowainik.github.io/posts) can be very beginner-friendly. [fp-course](https://github.com/system-f/fp-course) and Brian McKenna's [video walkthrough](https://www.youtube.com/playlist?list=PLly9WMAVMrayYo2c-1E_rIRwBXG_FbLBW) is a great hands-on exercise that’s perfect for beginners struggling to grapple with fundamental abstractions. Finally, [What I Wish I Knew When Learning Haskell](https://github.com/sdiehl/wiwinwlh) can serve as a solid, free reference for checking your understanding of various topics.
-
-    For intermediate audiences, I can strongly recommend [Production Haskell](https://www.amazon.com/Production-Haskell-Succeeding-Industry/dp/B0BTNVFR2N), [Thinking with Types](https://thinkingwithtypes.com/), and the _Concurrent_ section of the classic [Parallel and Concurrent Programming in Haskell](https://www.amazon.com/Parallel-Concurrent-Programming-Haskell-Multithreaded/dp/1449335942). Additionally, promising works on the horizon like [The Haskell Optimization Handbook](https://github.com/input-output-hk/hs-opt-handbook.github.io) and some unannounced efforts make now a great time to get in.

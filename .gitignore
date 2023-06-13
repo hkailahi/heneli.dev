@@ -4,3 +4,6 @@ node_modules
 # Nix
 .direnv
 result
+
+# Future Blogpost
+heneli-dot-dev/data/blog/fearless-functional-future.mdx
