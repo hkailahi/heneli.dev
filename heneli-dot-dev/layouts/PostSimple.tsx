@@ -17,7 +17,7 @@ interface LayoutProps {
   prev?: { path: string; title: string }
 }
 
-const editUrl = (path) => `${siteMetadata.siteRepo}/blob/master/data/${path}`
+const editUrl = (path) => `${siteMetadata.siteRepo}/blob/master/heneli-dot-dev/data/${path}`
 const twitterUrl = (path) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`)}`
 const issueUrl = `https://github.com/hkailahi/heneli.dev/issues`

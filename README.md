@@ -31,8 +31,9 @@ Run lightly-modified version of [templater directions](https://github.com/timlrx
 $ nix-shell -p pkgs.nodejs-19_x
 nix-shell> $ npm install @pliny/cli
 nix-shell> $ ./node_modules/.bin/pliny new --template=starter-blog heneli-dot-dev
-nix-shell> $ npm uninstall @pliny/cli                                                      # FIXME NOTE - Haven't run yet
-nix-shell> $ rm -rf node_modules package.json package-lock.json                            # FIXME NOTE - Haven't run yet
+# Optional cleanup
+nix-shell> $ npm uninstall @pliny/cli
+nix-shell> $ rm -rf node_modules package.json package-lock.json
 ```
 
 NOTE: In future attempts, figure out how to avoid raw, non-`nix` managed interactions with `npm`.
