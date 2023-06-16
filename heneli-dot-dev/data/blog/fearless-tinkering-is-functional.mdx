@@ -15,7 +15,7 @@ layout: PostSimple
 import {Note} from './components/Note.tsx'
 
 <Note type='info'>
-👋 I'm currently in the market for backend and full-stack positions. My [resume](https://docs.google.com/document/d/1TNo88zndJ7TlMheWN7-V5teWo2kecwvblIp2PZBPL1g/edit) can be found on [Google Docs](https://docs.google.com/document/d/1TNo88zndJ7TlMheWN7-V5teWo2kecwvblIp2PZBPL1g/edit). Please send hiring inquiries via [Linkedin](https://www.linkedin.com/in/hkailahi?original_referer=heneli.dev) or [email](bright.tent7049@fastmail.com).
+👋 I'm currently in the market for backend and full-stack positions. My [resume](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view) can be found on [Google Docs](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view). Please send hiring inquiries via [Linkedin](https://www.linkedin.com/in/hkailahi?original_referer=heneli.dev) or [email](bright.tent7049@fastmail.com).
 </Note>
 
 <TOCInline toc={props.toc} toHeading={3} asDisclosure />
@@ -347,7 +347,7 @@ Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity
 
   Let's say I wanted to know the transitive dependencies of my local `python` installation.
 
-  A quick way to that verify a package was actually installed via Nix is to trace its location back to the [Nix Store](https://zero-to-nix.com/concepts/nix-store):
+  A quick way to verify that a package was actually installed via Nix is to trace its location back to the [Nix Store](https://zero-to-nix.com/concepts/nix-store):
   ```bash
   $ readlink $(which python)
   /nix/store/7fkcip5klr0gksrjgdb3xf0wiz89mdak-python3-3.11.3/bin/python
@@ -379,19 +379,46 @@ Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity
   ]
   ```
 
-  One could imagine recursively inspecting ancestral build plans to collect transitive dependencies. Instead, I'll use Nix's CLI to directly query the full dependency graph (called a [transitive closure](https://shopify.engineering/what-is-nix)) and temporarily install `graphviz` to visualize it:
+  One could imagine recursively inspecting ancestral build plans to collect transitive dependencies. Fortunately, there are already ways to do this with the Nix CLI:
   ```bash
+  $ nix path-info -r $(which python) | head
+  /nix/store/c3d1f6gg0lzfck5cx8yn86s9m5xdbxhg-nghttp2-1.51.0-lib
+  /nix/store/c834w8pg8ypl9lcaxqgj2bpsxbv518rn-Libsystem-1238.60.2
+  /nix/store/dr3pb8n9f7lq734ck2sq07r8c1nzs068-brotli-1.0.9-lib
+  /nix/store/fszqml5r6d35c95c0gf98j977nrlmj8j-zlib-1.2.13
+  /nix/store/7kc331g8kcpbrkaqyx7rnqd1mnkk08fm-bash-5.2-p15
+  /nix/store/ghaalrh55chsl4rgw1l74d8ibwzbk2fm-libkrb5-1.20.1
+  /nix/store/nxjqs8gv8al8j94p34vci1k3yxd5yb2r-openssl-3.0.8
+  /nix/store/jdqi02l76hzkpbxnjd4yl5y8rjbsjdgi-libssh2-1.10.0
+  /nix/store/ljsji154hcn08ipa5lnmq64qvvdjkiqi-libiconv-50
+  /nix/store/792ghrrsff5p51m13a7sf8bpwxc6isdx-libunistring-1.1
+  ```
+
+  The Nix CLI let's us directly query the full dependency graph (called a [transitive closure](https://shopify.engineering/what-is-nix)) and visualize it as either a directory tree or a `graphviz` image:
+  ```bash
+  $ nix-store --query $(which python) --tree | head
+  /nix/store/7fkcip5klr0gksrjgdb3xf0wiz89mdak-python3-3.11.3
+  ├───/nix/store/1ds96f193bdf7f3kz295rwf66q90vi71-swift-corefoundation-unstable-2018-09-14
+  │   ├───/nix/store/42j0x4w0g5jpnq0lhix73hqnff865ahl-curl-8.0.1
+  │   │   ├───/nix/store/c3d1f6gg0lzfck5cx8yn86s9m5xdbxhg-nghttp2-1.51.0-lib
+  │   │   │   └───/nix/store/c3d1f6gg0lzfck5cx8yn86s9m5xdbxhg-nghttp2-1.51.0-lib [...]
+  │   │   ├───/nix/store/c834w8pg8ypl9lcaxqgj2bpsxbv518rn-Libsystem-1238.60.2
+  │   │   │   └───/nix/store/c834w8pg8ypl9lcaxqgj2bpsxbv518rn-Libsystem-1238.60.2 [...]
+  │   │   ├───/nix/store/dr3pb8n9f7lq734ck2sq07r8c1nzs068-brotli-1.0.9-lib
+  │   │   │   └───/nix/store/dr3pb8n9f7lq734ck2sq07r8c1nzs068-brotli-1.0.9-lib [...]
+  │   │   ├───/nix/store/fszqml5r6d35c95c0gf98j977nrlmj8j-zlib-1.2.13
+
   $ nix-store --query $(which python) --graph | nix-shell --packages graphviz --command 'dot -Tpng > python_deps.png'
   ```
   ![Python Dependency Graph](/static/images/blog/python_deps.png)
 
-  Alternatively, I could explore these dependencies interactively with the `nix-tree` file browser.
+  Alternatively, we could interactively inspect these dependencies with the `nix-tree` derivation browser.
   ```bash
   $ nix-tree $(which python)
   ```
   ![Python Dependency Graph](/static/images/blog/nix_tree_python.png)
 
-  Let's say I wanted to distribute this dependency information to others in a commonly understood format. Like ingredient labels on food packaging, [SBOMs](https://about.gitlab.com/blog/2022/10/25/the-ultimate-guide-to-sboms/) are a standardized way of providing supply chain transparency for software. Below, I'll use [`sbomnix`](https://github.com/tiiuae/sbomnix) and a temporary `visidata` installation to graphically inspect the ingredients of my `python` package:
+  Let's say I wanted to distribute this dependency information to others in a commonly understood format. Like ingredient labels on food packaging, [SBOMs](https://about.gitlab.com/blog/2022/10/25/the-ultimate-guide-to-sboms/) are a standardized way of providing supply chain transparency for software. Below, I'll use [`sbomnix`](https://github.com/tiiuae/sbomnix) and a temporary `visidata` installation to tabularly inspect the ingredients of my `python` package:
   ```bash
   $ sbomnix $(which python)
   WARNING  Command line argument '--meta' missing: SBOM will not include license information (see '--help' for more details)
