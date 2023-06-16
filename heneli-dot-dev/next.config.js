@@ -8,7 +8,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 // 06-23: Enabled plausible following https://github.com/plausible/docs/issues/20
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app plausible.io;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app plausible.io vercel.live;
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src 'none';
