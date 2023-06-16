@@ -6,15 +6,16 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 // You might need to insert additional domains in script-src if you are using external services
 // 06-23: Enabled plausible following https://github.com/plausible/docs/issues/20
+// 06-23: Enabled vercel feedback scripts for preview deployments following https://vercel.com/docs/workflow-collaboration/comments/specialized-usage#using-a-content-security-policy
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app plausible.io vercel.live;
+  script-src 'self' 'unsafe-eval' 'unsafe-inline' giscus.app plausible.io vercel.live https://vercel.com;
   style-src 'self' 'unsafe-inline';
   img-src * blob: data:;
   media-src 'none';
   connect-src *;
   font-src 'self';
-  frame-src giscus.app vercel.live
+  frame-src giscus.app https://vercel.live/ https://vercel.com
 `
 
 const securityHeaders = [
