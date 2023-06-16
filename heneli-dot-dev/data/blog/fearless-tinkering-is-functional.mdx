@@ -192,7 +192,7 @@ One could rightly object that having to learn new mathematical abstractions is t
           ```
         </td>
         <td>Fearlessly compose and delegate</td>
-        <td>`GHC.Generics`, Profunctor Optics</td>
+        <td>Optics, Deriving, GHC Generics</td>
       </tr>
       <tr>
         <th scope="row" >
@@ -230,7 +230,7 @@ One could rightly object that having to learn new mathematical abstractions is t
           ```
         </td>
         <td>Fearlessly pattern match</td>
-        <td>Error-Handling in Rust</td>
+        <td>Rust's `Result` & `Option`</td>
       </tr>
     </tbody>
     <caption>Figure 1: A small sampling of properties and the powers they grant.</caption>
@@ -298,11 +298,11 @@ Nix offers a [rich set of structural properties](https://arxiv.org/abs/2004.0568
 >
 > - Patrick Thomson @  Strange Loop 2019, definitions from ["Building Haskell Programs with Fused Effects"](https://youtu.be/vfDazZfxlNs?t=145)
 
-Nix has <u>_**transactional semantics**_</u>. Whether installing a new package or upgrading one's system, changes through Nix are <u>_**atomic**_</u>. This means all changes happen at once or not at all. Even if a deployment operation is interrupted, users are never left in a partially updated state. If a completed upgrade causes issues, one can immediately roll back to the previous configuration. As a result, iterating on one's environment can be done without commitment. Users can trial packages with temporary installations that don't pollute their environments. Build-time dependencies and binaries for one-off commands can be pruned  beyond their usage. The combination of rollbacks and version control let's one recreate their environment from any point in the past. If one no longer needs a component, they can confidently remove it without fear of changing their mind. Package hoarding is made unnecessary and configurations can be made minimal.
+Nix has <u>_**transactional semantics**_</u>. Whether installing a new package or upgrading one's system, changes through Nix are <u>_**atomic**_</u>. This means all changes happen at once or not at all. Even if a deployment operation is interrupted, users are never left in a partially updated state. If a completed upgrade causes issues, one can immediately roll back to the previous configuration. As a result, iterating on one's environment can be done without commitment. Users can trial packages using ephemeral shells that don't pollute their environments. Build-time dependencies and binaries for one-off commands can be pruned  beyond their usage. The combination of rollbacks and version control let's one recreate their environment from any point in the past. If one no longer needs a component, they can confidently remove it without fear of changing their mind. Package hoarding is made unnecessary and configurations can be made minimal.
 
 As each package is stored in a <u>_**unique**_</u> path, different versions or variants of a package can coexist without conflict. Users can create and modify multiple developer environments for multiple projects without breaking one another. Users can decide the granularity of their environments like being project, user profile, and system level. One could define a completely isolated developer environment for a project that contained all tooling used like local commands, a fully-configured editor, a local database, and more. Alternatively, one could factor out general system configuration into a top-level repository, and have projects inherit various configurations explicitly.
 
-The Nix expression language is <u>_**purely functional**_</u> and thus <u>_**immutable**_</u> by default. While Nix exhibits observable mutability through top-level views, modified references can be reliably reverted thanks to the immutability of the underlying component store. For example, a user's current environment is simply a component in the Nix Store. Changing a user's environment will result in a new environment in the Nix Store that is then pointed to by the user's current view. Environments that share the same lineage are called 'generations', and can be 'rolled back' using Nix's CLI to recover a previous top-level view.
+Nix uses top-level views called [profiles](https://nixos.org/manual/nix/unstable/package-management/profiles.html) to present <u>_**immutable**_</u> environments to users. These views provide a native user experience through symlinks to store paths. For example, a user with a python package in their profile can simply type `python` in their shell instead of a fully qualified path like `/nix/store/7fkcip5k-python3-3.11.3/bin/python`. While these top-level views exhibit a form of mutability, modifications can be reliably reverted. Changing a user's environment will result in a new Nix Store component that is then pointed to by the user's current view. Environments that share the same lineage are called 'generations', and can be 'rolled back' using Nix's CLI to recover a previous profile.
 
 Every artifact in a Nix environment has a traceable origin, otherwise known as [_**provenance**_](https://zero-to-nix.com/concepts/provenance). Fetching software over the internet is made safe by requiring that the received contents have a matching hash to that of the expected contents. As detailed below, this same approach can be used to enable binary caches with the same compliance benefits of building from source.
 
@@ -347,13 +347,13 @@ Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity
 
   Let's say I wanted to know the transitive dependencies of my local `python` installation.
 
-  Outside of garbage collection, any package installed via Nix will be present in one's local Nix database (called the [Nix Store](https://zero-to-nix.com/concepts/nix-store)). This fact let's me verify that I installed the package via Nix by finding it in the Nix Store:
+  A quick way to that verify a package was actually installed via Nix is to trace its location back to the [Nix Store](https://zero-to-nix.com/concepts/nix-store):
   ```bash
   $ readlink $(which python)
   /nix/store/7fkcip5klr0gksrjgdb3xf0wiz89mdak-python3-3.11.3/bin/python
   ```
 
-  One route for finding dependencies would be to inspect the package's build plan (called a [derivation](https://zero-to-nix.com/concepts/derivations)) to find direct dependencies and their build plans:
+  From there, one possible route for gathering dependencies could be to inspect the package's build plan (called a [derivation](https://zero-to-nix.com/concepts/derivations)) to find direct dependencies and the build plans of those dependencies:
   ```bash
   $ nix derivation show $(which python) | jq '.[].inputDrvs | keys'
   [
@@ -379,52 +379,43 @@ Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity
   ]
   ```
 
-  One could imagine recursively inspecting ancestral build plans to collect transitive dependencies. Instead, I'll use Nix's CLI to query the full dependency graph directly (called the [transitive closure](https://shopify.engineering/what-is-nix)) and temporarily install `graphviz` to visualize it:
+  One could imagine recursively inspecting ancestral build plans to collect transitive dependencies. Instead, I'll use Nix's CLI to directly query the full dependency graph (called a [transitive closure](https://shopify.engineering/what-is-nix)) and temporarily install `graphviz` to visualize it:
   ```bash
   $ nix-store --query $(which python) --graph | nix-shell --packages graphviz --command 'dot -Tpng > python_deps.png'
   ```
   ![Python Dependency Graph](/static/images/blog/python_deps.png)
 
-  Or I could explore dependencies interactively with the `nix-tree` file browser.
+  Alternatively, I could explore these dependencies interactively with the `nix-tree` file browser.
   ```bash
   $ nix-tree $(which python)
   ```
   ![Python Dependency Graph](/static/images/blog/nix_tree_python.png)
 
-  As the entire build specification for my python installation exists in the Nix Store, tools like [vulnix](https://github.com/nix-community/vulnix) can be used to audit it against the NIST National Security Database.
+  Let's say I wanted to distribute this dependency information to others in a commonly understood format. Like ingredient labels on food packaging, [SBOMs](https://about.gitlab.com/blog/2022/10/25/the-ultimate-guide-to-sboms/) are a standardized way of providing supply chain transparency for software. Below, I'll use [`sbomnix`](https://github.com/tiiuae/sbomnix) and a temporary `visidata` installation to graphically inspect the ingredients of my `python` package:
   ```bash
-  $ vulnix $(which python)
-  5 derivations with active advisories
-
-  ------------------------------------------------------------------------
-  flex-2.6.4
-
-  /nix/store/0fjlvx3rfi9p4y8wb723hvz7q0f4ijs7-flex-2.6.4.drv
-  CVE                                                CVSSv3
-  https://nvd.nist.gov/vuln/detail/CVE-2019-6293     5.5
-
-  ------------------------------------------------------------------------
-  # ...
-  ```
-
-  In addition, packages can be audited by generating SBOMs with [`sbomnix`](https://github.com/tiiuae/sbomnix):
-  ```bash
-  $ sbomnix $(which python) && head sbom.csv
+  $ sbomnix $(which python)
   WARNING  Command line argument '--meta' missing: SBOM will not include license information (see '--help' for more details)
-  INFO     Loading runtime dependencies referenced by '/nix/store/blz0ndg2hnph226br17qrqbcj088yqsf-python3-3.10.11/bin/python3.10'
+  INFO     Loading runtime dependencies referenced by '/nix/store/7fkcip5klr0gksrjgdb3xf0wiz89mdak-python3-3.11.3/bin/python3.11'
   INFO     Wrote: sbom.cdx.json
   INFO     Wrote: sbom.spdx.json
   INFO     Wrote: sbom.csv
-  "name","pname","version","patches","system","out","cpe","purl","urls","store_path"
-  "ICU-66108","ICU","66108","","x86_64-darwin","['/nix/store/aas1khljq5sp40ryb578adg4yc0wgjdf-ICU-66108']","cpe:2.3:a:ICU:ICU:66108:*:*:*:*:*:*:*","pkg:nix/ICU@66108","","/nix/store/k6d279xzyqi0fin6408in8yfymqzis5q-ICU-66108.drv"
-  "Libsystem-1238.60.2","Libsystem","1238.60.2","","x86_64-darwin","['/nix/store/zg52hvdcbgkiybjn7w1n30l0skxrx08k-Libsystem-1238.60.2']","cpe:2.3:a:Libsystem:Libsystem:1238.60.2:*:*:*:*:*:*:*","pkg:nix/Libsystem@1238.60.2","","/nix/store/xlpi8lsqxb0mv3k34xrziff37andhpy2-Libsystem-1238.60.2.drv"
-  "Security-55471.14.18","Security","55471.14.18","","x86_64-darwin","['/nix/store/0d8xnyf5ijrqixg4n90098y5s9lk1cgr-Security-55471.14.18']","cpe:2.3:a:Security:Security:55471.14.18:*:*:*:*:*:*:*","pkg:nix/Security@55471.14.18","","/nix/store/m17yissf06s7f8gnyq37xr64j7d4b888-Security-55471.14.18.drv"
-  "bash-5.2-p15","bash-5.2-p15","5.2","/nix/store/a73wzcks7h2y814qxa1z3kv1hg205mpm-bash52-001 /nix/store/xc3h9isl5566i6a4pvdsgin26rchijrq-bash52-002 /nix/store/sxc8xmi7caxaiywzh15za9crpk3bw98z-bash52-003 /nix/store/2ynclzrdl0hy9miy6k8gcwgzw4mhsmd0-bash52-004 /nix/store/z76vsdh69cvwkwhwg69k7d1znwjmx6hf-bash52-005 /nix/store/1fw5..."
-  "brotli-1.0.9","brotli","1.0.9","","x86_64-darwin","['/nix/store/m0hh9mxbgvwp0pnvn4s1s7yzzic4kfcm-brotli-1.0.9-lib', '/nix/store/q906v945rq108jcpmfr5xzcgq9g70p4r-brotli-1.0.9']","cpe:2.3:a:brotli:brotli:1.0.9:*:*:*:*:*:*:*","pkg:nix/brotli@1.0.9","","/nix/store/7rd6lx3zkb2xbcy0a54pp9bpix060r1g-brotli-1.0.9.drv"
-  "bzip2-1.0.8","bzip2","1.0.8","/nix/store/ws73d521m0im6x7nhb0836i51z2yd9dq-bzip2-1.0.6.2-autoconfiscated.patch","x86_64-darwin","['/nix/store/6ckxm90hlpwhvzkzif384ric3xs3mdjd-bzip2-1.0.8']","cpe:2.3:a:bzip2:bzip2:1.0.8:*:*:*:*:*:*:*","pkg:nix/bzip2@1.0.8","","/nix/store/byvhbgf18yxwnqird6f423wyijd7izq1-bzip2-1.0.8.drv"
-  "configd-453.19","configd","453.19","","x86_64-darwin","['/nix/store/84irf9wyg2lfvblq1fr54qp6qqcqh0q1-configd-453.19']","cpe:2.3:a:configd:configd:453.19:*:*:*:*:*:*:*","pkg:nix/configd@453.19","","/nix/store/gbnwmrym9x104b1ywr3asmn12icgzp08-configd-453.19.drv"
-  "curl-8.1.1","curl","8.1.1","/nix/store/w1c7ihmg8ykp1ddpjldq7i5407cqsbz4-7.79.1-darwin-no-systemconfiguration.patch","x86_64-darwin","['/nix/store/jlayla89klra9qxlydqbrld8aizp8nf9-curl-8.1.1']","cpe:2.3:a:curl:curl:8.1.1:*:*:*:*:*:*:*","pkg:nix/curl@8.1.1","","/nix/store/d2j52ik1ykyr7v5641j5fp8225j4h6ll-curl-8.1.1.drv"
-  "expat-2.5.0","expat","2.5.0","","x86_64-darwin","['/nix/store/jldbmj8wpd81az2zlc6bql9f5cwi5y2b-expat-2.5.0']","cpe:2.3:a:expat:expat:2.5.0:*:*:*:*:*:*:*","pkg:nix/expat@2.5.0","","/nix/store/ld9l8jhgfdhrbqjl8rj9wq3addblwkja-expat-2.5.0.drv"
+  $ nix-shell --packages visidata --command 'vd sbom.csv'
+  ```
+  ![Python SBOM Visualized](/static/images/blog/sbom_visidata.png)
+
+  As the entire build specification for my `python` installation exists in the Nix Store, tools like [vulnix](https://github.com/nix-community/vulnix) can be used to audit it against the NIST National Vulnerability Database. Moreover, `vulnix --profile` can be used to validate all packages in my user environment while `vulnix --system` validates all packages in the Nix Store.
+  ```bash
+  $ vulnix $(which python) | head
+  9 derivations with active advisories
+
+  ------------------------------------------------------------------------
+  binutils-2.40
+
+  /nix/store/cwpwjv8f2pxfkc52m3ym78dkap6whl4y-binutils-2.40.drv
+  CVE                                                CVSSv3
+  https://nvd.nist.gov/vuln/detail/CVE-2023-1972     6.5
+
+  ------------------------------------------------------------------------
   ```
 
 </details>
