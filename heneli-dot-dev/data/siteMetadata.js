@@ -5,7 +5,7 @@ const siteMetadata = {
   title: 'Heap State',
   author: 'Heneli Kailahi',
   headerTitle: 'Heap State',
-  description: 'A blog about software from beyond the landpost',
+  description: 'A blog about software from beyond the lamp post',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://heneli.dev',
