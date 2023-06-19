@@ -68,7 +68,7 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
                 <Link href={editUrl(filePath)}>View on GitHub</Link>
               </div>
               <div className="pb-6 pt-6 text-xs text-gray-700 dark:text-gray-300">
-                <text>
+                <div>
                   Something incorrect? Addition to propose? Please file an{' '}
                   <Link href={issueUrl} className="text-cyan-400 underline" rel="nofollow">
                     issue
@@ -84,7 +84,7 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
                     here
                   </Link>
                   .
-                </text>
+                </div>
               </div>
             </div>
             {siteMetadata.comments && (
