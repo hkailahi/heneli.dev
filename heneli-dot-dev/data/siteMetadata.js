@@ -12,7 +12,8 @@ const siteMetadata = {
   siteRepo: 'https://github.com/hkailahi/heneli.dev',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
-  socialBanner: '/static/images/twitter-card.png',
+  // Use useless param to retrigger link preview indexes on social sites
+  socialBanner: '/static/images/twitter-card.png?uselessparam',
   email: 'bright.tent7049@fastmail.com',
   github: 'https://github.com/hkailahi',
   twitter: 'https://twitter.com/kat_getheny',
