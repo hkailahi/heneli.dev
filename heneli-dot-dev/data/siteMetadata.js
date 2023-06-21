@@ -13,7 +13,7 @@ const siteMetadata = {
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
   // Use useless param to retrigger link preview indexes on social sites
-  socialBanner: '/static/images/twitter-card.png?uselessparam',
+  socialBanner: '/static/images/twitter-card.png',
   email: 'bright.tent7049@fastmail.com',
   github: 'https://github.com/hkailahi',
   twitter: 'https://twitter.com/kat_getheny',
