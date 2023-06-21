@@ -12,7 +12,7 @@ const siteMetadata = {
   siteRepo: 'https://github.com/hkailahi/heneli.dev',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
-  socialBanner: '/static/images/link-preview-card.png',
+  socialBanner: '/static/images/twitter-card.png',
   email: 'bright.tent7049@fastmail.com',
   github: 'https://github.com/hkailahi',
   twitter: 'https://twitter.com/kat_getheny',
