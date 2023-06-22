@@ -203,13 +203,18 @@ One could rightly object that having to learn new mathematical abstractions is t
         </th>
         <td>
           ```jsx chrome=no
-          f(edits):
-              for edit in edits:
-                  x.async_append(edit)
+          $ git merge develop
+          Auto-merging index.html
+          CONFLICT (content): ...
+          CONFLICT (modify/delete): ...
+          Automatic merge failed;
 
-          >>> f([‘Hello’, ‘World’])
-          >>> get_x()
-          [‘Init’, ‘World’, ‘Hello’]
+          $ cat index.html
+          <<<<<<< HEAD
+            <h1>Fearless Tinkering is Functional</h1>
+          =======
+            <h1>Fearless Tinkering is Algebraic</h1>
+          >>>>>>> develop
           ```
         </td>
         <td>Fearlessly update and collaborate</td>
@@ -243,6 +248,8 @@ One could rightly object that having to learn new mathematical abstractions is t
 That's all for now! The [next part](./fearless-tinkering-nix) of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^8]
 
 ✌️
+
+<div className="prose-default prose dark:prose-dark">_Thanks to Aaron Sewall and others for reviewing drafts of this post._</div>
 
 ## Footnotes
 
