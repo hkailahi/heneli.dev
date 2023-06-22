@@ -240,7 +240,7 @@ One could rightly object that having to learn new mathematical abstractions is t
 
 ## To Be Continued...
 
-That's all for now! The [next part](./fearless-tinkering-two) of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.
+That's all for now! The [next part](./fearless-tinkering-nix) of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^8]
 
 ✌️
 
@@ -270,10 +270,18 @@ That's all for now! The [next part](./fearless-tinkering-two) of this article wi
 
     More seriously, I use “functional programming” as shorthand for a style that avoids mutation and implicit “effects”. I also define “functional languages” as those enabling the representation of programs with expressions that can be substituted for their evaluated value (as is the case for even [“impure” eDSLs like `State` or `IO`](https://twitter.com/lexi_lambda/status/1242878496076189702?s=20)).
 
-    Both the usefulness and accuracy of the term “functional” has been debated. Even the meaning and relation of commonly associated descriptors like “declarative” is contested. There doesn’t seem to be a minimal feature set (not even higher-order functions!) across languages that are widely considered functional. The heuristic for determining which languages are functional might as well be whether the language mentions ‘functional’ in its marketing material or shares a family origin with those listed on the sidebar of r/functionalprogramming.
+    Both the usefulness and accuracy of the term “functional” has been debated. Even the meaning and relation of commonly associated descriptors like “declarative” is contested. There doesn’t seem to be a minimal feature set (not even higher-order functions!) across languages that are widely considered functional. The heuristic for determining which languages are functional might as well be whether the language mentions ‘functional’ in its marketing material or shares a family origin with those listed on the sidebar of [r/functionalprogramming](https://old.reddit.com/r/functionalprogramming/).
 
     For the sake of this article, I am willing to tolerate the imprecision of ‘Fearless Tinkering is Functional’ over something that might better match like ‘expression-oriented’, ‘denotative’, ‘algebraic’, or 'structural' (definitional claims are unfalsifiable anyways). I am also willing, when a claim reflects my own opinions, to forgo small nuances (or bury them in footnotes) when speaking to unacquainted audiences. My goals with this specific article are more about connecting valuable ideas through familiar phrasing to a wider audience than advancing a discussion amongst those already equipped with understanding.
 
     I do think there are more general problems with various commonly-used terms by functional programmers, and that particular statements often lead to poor intuitions and mismatched discussions. I hope to publish more on this topic soon.
 [^7]:
-    No one needs to learn category theory to become a [great functional programmer](http://comonad.com/reader/2014/letter-to-a-young-haskell-enthusiast/)! Sure, some people have brought great ideas from category theory and other mathematical fields back to the realm of programming. But math gets invented to incorporate great ideas originating from programming (and everywhere else) as well. The [streelight effect](https://en.wikipedia.org/wiki/Streetlight_effect) goes both ways! Programmers should treat math as a tool that serves to give us understanding, rather than a tool we serve to give our understanding.
+    No one needs to learn category theory to become a [great functional programmer](http://comonad.com/reader/2014/letter-to-a-young-haskell-enthusiast/)! Sure, some people have brought great ideas from category theory and other mathematical fields back to the realm of programming. But math gets invented to incorporate great ideas originating from programming (and everywhere else) as well. The [streetlight effect](https://en.wikipedia.org/wiki/Streetlight_effect) goes both ways! Programmers should treat math as a tool that serves to give us understanding, rather than a tool we serve to give our understanding.
+[^8]:
+    Dear Reader,
+
+    Thanks to this final footnote, there are over twenty mentions of the word _fearless_ on this page. And I'm just warmed up...
+
+    Fearlessly,
+
+    Heneli

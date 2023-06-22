@@ -20,7 +20,12 @@ import {Note} from './components/Note.tsx'
 
 <TOCInline toc={props.toc} toHeading={3} asDisclosure />
 
-This is the second part of [Fearless Tinkering is Functional](./fearless-tinkering-is-functional).
+This is the second part of [Fearless Tinkering is Functional](./fearless-tinkering-is-functional):
+
+1. [Fearless Tinkering is Functional](./fearless-tinkering-is-functional)
+2. Fearless Tinkering with Nix 👈
+3. [Fearless Tinkering with Haskell](./fearless-tinkering-haskell)
+4. [Fearless. Functional. Future.](./fearless-functional-future)
 
 ## Fearless in Practice
 
@@ -84,7 +89,7 @@ Nix offers a [rich set of structural properties](https://arxiv.org/abs/2004.0568
 
 Nix has <u>_**transactional semantics**_</u>. Whether installing a new package or upgrading one's system, changes through Nix are <u>_**atomic**_</u>. This means all changes happen at once or not at all. Even if a deployment operation is interrupted, users are never left in a partially updated state. If a completed upgrade causes issues, one can immediately roll back to the previous configuration. As a result, iterating on one's environment can be done without commitment. Users can trial packages using ephemeral shells that don't pollute their environments. Build-time dependencies and binaries for one-off commands can be pruned  beyond their usage. The combination of rollbacks and version control let's one recreate their environment from any point in the past. If one no longer needs a component, they can confidently remove it without fear of changing their mind. Package hoarding is made unnecessary and configurations can be made minimal.
 
-As each package is stored in a <u>_**unique**_</u> path, different versions or variants of a package can coexist without conflict. Users can create and modify multiple developer environments for multiple projects without breaking one another. Users can decide the granularity of their environments like being project, user profile, or system level. One could define a completely isolated developer environment for a project that contained all tooling used like local commands, fully-configured editors, local databases, and more. Alternatively, one could factor out general system configuration into a top-level repository, and allow projects to inherit configurations while remaining explicit.
+As each package is stored in a <u>_**unique**_</u> path, different versions or variants of a package can coexist without conflict. Users can create and modify multiple developer environments for multiple projects without breaking one another. Users can decide the granularity of their environments. One could define a completely isolated developer environment for a project that contained all tooling used like local commands, fully-configured editors, local databases, and more. Alternatively, one could factor out general system configuration into a top-level repository, and allow projects to inherit configurations while remaining explicit.
 
 Nix uses top-level views called [profiles](https://nixos.org/manual/nix/unstable/package-management/profiles.html) to present <u>_**immutable**_</u> environments to users. These views provide a native user experience through symlinks to store paths. For example, a user with a python package in their profile can simply type `python` into their shell instead of a fully qualified path like `/nix/store/7fkcip5k-python3-3.11.3/bin/python`. While these top-level views exhibit a form of mutability, modifications can be reliably reverted. Changing a user's environment will result in a new Nix Store component that is then pointed to by the user's current view. Environments that share the same lineage are called 'generations', and can be 'rolled back' using Nix's CLI to recover a previous profile.
 
@@ -261,7 +266,7 @@ Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity
 
 ## To Be Continued...
 
-That's all for now! The next part of this article will continue with more examples of functional programming in practice. Additionally, the follow-up will discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.
+That's all for now! The [next part](./fearless-tinkering-haskell) of this article will continue with more examples of functional programming in practice. Additionally, the follow-up will discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the final part will introduce several promising functional technologies on the horizon and speculate about their fearless futures.
 
 ✌️
 
