@@ -87,13 +87,21 @@ Nix offers a [rich set of structural properties](https://arxiv.org/abs/2004.0568
 >
 > - Patrick Thomson @  Strange Loop 2019, definitions from ["Building Haskell Programs with Fused Effects"](https://youtu.be/vfDazZfxlNs?t=145)
 
-Nix has <u>_**transactional semantics**_</u>. Whether installing a new package or upgrading one's system, changes through Nix are <u>_**atomic**_</u>. This means all changes happen at once or not at all. Even if a deployment operation is interrupted, users are never left in a partially updated state. If a completed upgrade causes issues, one can immediately roll back to the previous configuration. As a result, iterating on one's environment can be done without commitment. Users can trial packages using ephemeral shells that don't pollute their environments. Build-time dependencies and binaries for one-off commands can be pruned  beyond their usage. The combination of rollbacks and version control let's one recreate their environment from any point in the past. If one no longer needs a component, they can confidently remove it without fear of changing their mind. Package hoarding is made unnecessary and configurations can be made minimal.
+Nix has <u>_**transactional semantics**_</u>. Package state is _isolated_, state transitions are _atomic_, and these state transitions are _consistent_. Builds are uniquely addressable, immutable, reproducibly resourced, and [always safe to interrupt, restart, or run in parallel.](https://www.infoq.com/articles/configuration-management-with-nix/) As elaborated below, these essential properties form transactional boundaries within which programmers can fearlessly develop and share environments.
+
+#### Atomic
+
+Whether installing a new package or upgrading one's system, changes through Nix happen at once or not at all. Even if a deployment operation is interrupted, users are never left in a partially updated state. If a completed upgrade causes issues, one can immediately roll back to their previous configuration.
+
+As a result, iterating on one's environment can be done without commitment. Users can trial packages using ephemeral shells that don't pollute their environments. Build-time dependencies and binaries for one-off commands can be pruned  beyond their usage. The combination of rollbacks and version control let's one recreate their environment from any point in the past. If one no longer needs a component, they can confidently remove it without fear of changing their mind. Package hoarding is made unnecessary and configurations can be made minimal.
+
+#### Isolated
 
 As each package is stored in a <u>_**unique**_</u> path, different versions or variants of a package can coexist without conflict. Users can create and modify multiple developer environments for multiple projects without breaking one another. Users can decide the granularity of their environments. One could define a completely isolated developer environment for a project that contained all tooling used like local commands, fully-configured editors, local databases, and more. Alternatively, one could factor out general system configuration into a top-level repository, and allow projects to inherit configurations while remaining explicit.
 
-Nix uses top-level views called [profiles](https://nixos.org/manual/nix/unstable/package-management/profiles.html) to present <u>_**immutable**_</u> environments to users. These views provide a native user experience through symlinks to store paths. For example, a user with a python package in their profile can simply type `python` into their shell instead of a fully qualified path like `/nix/store/7fkcip5k-python3-3.11.3/bin/python`. While these top-level views exhibit a form of mutability, modifications can be reliably reverted. Changing a user's environment will result in a new Nix Store component that is then pointed to by the user's current view. Environments that share the same lineage are called 'generations', and can be 'rolled back' using Nix's CLI to recover a previous profile.
+#### Immutable
 
-Every artifact in a Nix environment has a traceable origin, a property otherwise known as [_**provenance**_](https://zero-to-nix.com/concepts/provenance). Fetching software over the internet is made safe by requiring that the received contents have a matching hash to that of the expected contents. As detailed below, this same approach powers binary caches while retaining the same compliance benefits of building from source.
+Nix uses top-level views called [profiles](https://nixos.org/manual/nix/unstable/package-management/profiles.html) to present <u>_**immutable**_</u> environments to users. These views provide a native user experience through symlinks to store paths. For example, a user with a python package in their profile can simply type `python` into their shell instead of a fully qualified path like `/nix/store/7fkcip5k-python3-3.11.3/bin/python`. While these top-level views exhibit a form of mutability, modifications can be reliably reverted. Changing a user's environment will result in a new Nix Store component that is then pointed to by the user's current view. Environments that share the same lineage are called 'generations', and can be 'rolled back' using Nix's CLI to recover a previous profile.
 
 ### Fearless Sharing
 
@@ -103,11 +111,29 @@ Every artifact in a Nix environment has a traceable origin, a property otherwise
 >
 > - Julien Urraca @ Open Source 101 2023, ["From Nix to Docker - Everything You Need to Know About Polygot Package Management"](https://youtu.be/onBQhwuPOAc?t=231)
 
+The classic advice to "look both ways before crossing" is extremely applicable to software. Programmers producer _and_ consume software. There being multiple directions makes decisions around maintainability a tricky and indivualized calculus. Further, it's difficult to establish standards or policies without having transparent views both upstream and downstream. Mutability is a leaky abstraction, forcing problems downstream until someone confonts it.
+
+Sharing is intrinsic to Nix's programming model. Its model for treating internal and external dependency relations is explicit and uniform. Package users can be sure that package authors aren't implicitly offloading upstream problems on to them, while authors can expect the same of their dependencies. As identically built artifacts are placed in identical locations, the sum cost of immutability is negligible. These properties enable programmers to fearlessly contribute, distribute, and consume software.
+
+#### Transparent
+
+Open source is critical to most commercial software. As such, supply chain security is an increasingly prevalent concern. Across 1,703 commercial codebases scanned in Synopsys' [2023 OSSRA Report](https://www.synopsys.com/content/dam/synopsys/sig-assets/reports/rep-ossra-2023.pdf):
+- 76% of code in codebases came from open source
+- 54% of codebases had license conflicts
+- 89% of codebases contained open source code more than four years out-of-date
+- 48% of codebases contained high-risk vulnerabilities[^4]
+
+This makes it clear that programmers need better tools for safely distributing and consuming external software. These should be simple enough that anyone (independent of specialized security researchers) can audit their supply chain. Nix is no silver bullet, but it does provide supply chain tranparency. Every artifact in a Nix environment has a traceable origin, a property otherwise known as [_**provenance**_](https://zero-to-nix.com/concepts/provenance). Fetching software over the internet is made safe by requiring that the received contents have a matching hash to that of the expected contents.
+
+#### Mutual
+
 <u>_**Reproducibility**_</u> enables reliable distribution of Nix-based infrastructure. Nix enables [<u>_**cloud builds**_</u>](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf), meaning that native builds are amortized across machines. Whether from [Nixpkgs](https://search.nixos.org/packages), a CI server, or a developer machine, packages can be built once and shared anywhere. Nix can recover sharing benefits within infrastructure that isn't Nix-based like [optimally-layered docker images](https://grahamc.com/blog/nix-and-layered-docker-images/) and [system-pinned Bazel builds](https://nix-bazel.build/). Additionally, Nix has [world-class support for cross compilation](https://nix.dev/tutorials/cross-compilation#cross-compilation).
 
-Nix's [<u>_**persistent**_</u>](https://www.cambridge.org/core/books/purely-functional-data-structures/0409255DA1B48FA731859AC72E34D494) model allows components to safely and efficiently share dependencies. When multiple local projects require an identically-built executable, Nix will know to never unnecessarily rebuild or redownload it across projects. As the shared executable is protected within an <u>_**immutable**_</u> component store, any changes to a project containing the mutual dependency won't affect the others. Packages can be shared, modified, and upgraded, all without risk of conflict or interference.
-
 Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity) builds with <u>_**input-addressable**_</u> storage. With Nix, code sharing extends beyond the mere transfer of source files. Environments are authenticated by their derivations and encompass the entire context within which the code is intended to run. This allows Nix to blend the best aspects of both source and binary deployment models, while dodging their respective drawbacks. Building from source provides greater trustworthiness, availability, and configurability, while incurring greater retrieval, compute, and storage costs. Binary caches are cheaper by comparison, but require users that only need what's available. Support for <u>_**content-addressable**_</u> storage in the future will make components self-authenticating and enable greater de-duplication.
+
+#### Persistent
+
+Nix's [<u>_**persistent**_</u>](https://www.cambridge.org/core/books/purely-functional-data-structures/0409255DA1B48FA731859AC72E34D494) model allows components to safely and efficiently share dependencies. When multiple local projects require an identically-built executable, Nix will know to never unnecessarily rebuild or redownload it across projects. As the shared executable is protected within an <u>_**immutable**_</u> component store, any changes to a project containing the mutual dependency won't affect the others. Packages can be shared, modified, and upgraded, all without risk of conflict or interference.
 
 ### Supplementary Examples
 
@@ -296,3 +322,5 @@ That's all for now! In the next part, we'll dive into Haskell and discuss non-fu
     λ> or (True, False)
     False
     ```
+[^4]:
+    The [report](https://www.synopsys.com/content/dam/synopsys/sig-assets/reports/rep-ossra-2023.pdf) defines "high-risk vulnerabilities" as "those that have been actively exploited, already have documented proof-of-concept exploits, or are classified as remote code execution vulnerabilities".
