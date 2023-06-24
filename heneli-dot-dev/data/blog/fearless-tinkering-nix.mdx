@@ -123,7 +123,7 @@ Open source is critical to most commercial software. As such, supply chain secur
 - 89% of codebases contained open source code more than four years out-of-date
 - 48% of codebases contained high-risk vulnerabilities[^4]
 
-This makes it clear that programmers need better tools for safely distributing and consuming external software. These should be simple enough that anyone (independent of specialized security researchers) can audit their supply chain. Nix is no silver bullet, but it does provide supply chain tranparency. Every artifact in a Nix environment has a traceable origin, a property otherwise known as [_**provenance**_](https://zero-to-nix.com/concepts/provenance). Fetching software over the internet is made safe by requiring that the received contents have a matching hash to that of the expected contents.
+It is clear that programmers need better tools for safely working with external software. Programmers need to be able to easily audit their supply chain, and get actionable feedback without needing specialized security researchers. Nix is no silver bullet, but it does provide supply chain tranparency. Every artifact in a Nix environment has a traceable origin, a property otherwise known as [_**provenance**_](https://zero-to-nix.com/concepts/provenance). Fetching software over the internet is made safe by requiring that the received contents have a matching hash to that of the expected contents.
 
 #### Mutual
 
