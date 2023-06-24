@@ -71,7 +71,7 @@ Functional languages _<u>make stateful complexity explicit</u>_. By pairing immu
 
 With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements that break compositionality are replaced with expressions that can be substituted for their value. Bigger programs can be faithfully decomposed into smaller ones. This allows local reasoning on individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get”.
 
-_<u>Compositionality</u>_ also addresses program volume in functional languages. Programs and their domains can be _<u>mechanically decomposed</u>_ into their essential concepts. For instance, verbose wrangling code can be collapsed into neat reusable patterns using higher-order functions and composition. Typed functional languages use various polymorphisms to replace infinitely-many functions over one domain with an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto programmer’s better-suited counterparts in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. Judicious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and wider ecosystems.
+_<u>Compositionality</u>_ also addresses program volume in functional languages. Programs and their domains can be _<u>mechanically decomposed</u>_ into their essential concepts. For instance, verbose wrangling code can be collapsed into neat reusable patterns using higher-order functions and composition. Typed functional languages use various flavors of polymorphism to replace infinitely-many functions over one domain with an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto programmer’s better-suited counterparts in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. Judicious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and wider ecosystems.
 
 Armed with the properties of functional languages, programmers can reclaim their cognitive sovereignty and fearlessly explore software in action.
 
@@ -81,13 +81,16 @@ Armed with the properties of functional languages, programmers can reclaim their
 >
 > - a sage functional programmer, probably
 
-If language is a tool for thought, then one should value dialects enabling the natural communication of them. Blunted alternatives that intersperse anything meaningful with robotic recitations of language internals or error-prone adaptations to outside alterations are frustrating to tolerate. A language that yields such fragile mental models debilitates a programmer’s ability to handle real-world scenarios like context-switching, requirements evolution, and the eventuality of a system’s growth beyond what can be kept in one’s head. The essential complexity programmers face is already challenging enough.
+If language is a tool for thought, then one should value dialects enabling the natural communication of them. Blunted alternatives that intersperse anything meaningful with robotic recitations of language internals or error-prone adaptations to outside alterations are frustrating to tolerate. A language that yields such fragile mental models breaks down in real-world scenarios like context-switching, requirements evolution, and the eventuality of a system’s growth beyond what can be kept in one’s head. The essential complexity programmers face is already challenging enough.
 
 When the business calls for an algorithm to determine how many users visited their website last week, no one’s first thought should have to be about for-loops, heap allocations, hash indexes, logic gates, or cosmic rays. No, an API that’s better suited to immediate communication might yield something like:
 
-```jsx
-all_users -> filter_by(visited_since(-7 days)) -> count()
-```
+<table>
+  ```jsx
+  all_users -> filter_by(visited_since(-7 days)) -> count()
+  ```
+  <caption>All users, filtered by those who visited in the last seven days, counted.</caption>
+</table>
 
 Declarative programming simplifies the act of learning because it 1) meets one at their layer of abstraction and 2) let’s one focus solely on what’s in front of them. A well-designed declarative API lays out all the vocabulary and structure one should need, such that formulating solutions through sentences is as natural as placing blocks in a game of Tetris. Learners can focus on describing the place they actually care about instead of the windy road taken to get there. By only necessitating specification of a goal state, programmers are unburdened by the interconnected history of their model's state transitions.
 

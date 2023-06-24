@@ -3,20 +3,13 @@ title: 'Fearless Tinkering with Nix (Draft)'
 date: '2023-06-25'
 lastmod: '2023-06-25'
 version: '0.1'
-tags: ['functional', 'complexity', 'nix', 'containers', 'devops', 'reproducible']
+tags: ['functional', 'declarative', 'nix', 'containers', 'devops', 'reproducible']
 draft: false
-summary: 'A fearless tinkerer sails a ship where entire classes of leakage are rendered an impossibility.'
+summary: 'Fearless, shared environments with Nix.'
 images: []
 authors: ['default']
 layout: PostSimple
 ---
-
-{/* Per https://github.com/mdx-js/mdx/blob/main/docs/guides/math.server.mdx for 'important' and 'note' boxes on https://mdxjs.com/guides/math */}
-import {Note} from './components/Note.tsx'
-
-<Note type='info'>
-👋 I'm currently in the market for backend and full-stack positions. My [resume](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view) can be found on [Google Docs](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view). Please send hiring inquiries via [Linkedin](https://www.linkedin.com/in/hkailahi?original_referer=heneli.dev) or [email](mailto:bright.tent7049@fastmail.com).
-</Note>
 
 <TOCInline toc={props.toc} toHeading={3} asDisclosure />
 
@@ -25,7 +18,8 @@ This is the second installation of [Fearless Tinkering is Functional](./fearless
 1. [Fearless Tinkering is Functional](./fearless-tinkering-is-functional)
 2. Fearless Tinkering with Nix 👈
 3. Fearless Tinkering with Haskell
-4. Fearless. Functional. Future.
+4. Fearless Tinkering is Algebraic
+5. Fearless Functional Future
 
 ## Fearless in Practice
 
@@ -39,7 +33,7 @@ Programmers make mistakes. As such, our tools should aspire not to punish us for
 
 Approaches that meet each critique with an independent solution are prone to local maxima. Breakthroughs require recognition of the systemic complexities underpinning individual occurrences. Ideally, tools should proactively seek out their fundamental weaknesses, rather than waiting to reactively patch ailments.[^1] Hence, selecting tools by their **structural guarantees** is about using one's **values** to elect the ways in which their software _can’t_ go wrong. A fearless tinkerer knows they can be wrong, strong!
 
-In this and upcoming installations, I’ll introduce several functional technologies and illustrate how their structural properties enable **fearless tinkering**. These alone won’t do functional ecosystems justice.[^2] Even amongst the tools mentioned, there are plenty of assurances I won't cover. Conversely, I won't spend much time on their structural deficiencies, vestigial quirks, and footguns[^3]. Much more important than any specific technology are the ideas that underlie them. Calling out the need for fearless approaches to the pain points of daily work will help future technologies incorporate the relevant structural guarantees.
+In this and upcoming posts, I’ll introduce several functional technologies and illustrate how their structural properties enable **fearless tinkering**. These alone won’t do functional ecosystems justice.[^2] Even amongst the tools mentioned, there are plenty of assurances I won't cover. Conversely, I won't spend much time on their structural deficiencies or notable footguns[^3]. Much more important than any specific technology are the ideas that underlie them. Calling out the need for safe approaches to common pain points will help future technologies incorporate the relevant structural guarantees.
 
 
 ## Nix & NixOS
