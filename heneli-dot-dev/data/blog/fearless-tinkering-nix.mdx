@@ -20,7 +20,7 @@ import {Note} from './components/Note.tsx'
 
 <TOCInline toc={props.toc} toHeading={3} asDisclosure />
 
-This is the second part of [Fearless Tinkering is Functional](./fearless-tinkering-is-functional):
+This is the second installation of [Fearless Tinkering is Functional](./fearless-tinkering-is-functional):
 
 1. [Fearless Tinkering is Functional](./fearless-tinkering-is-functional)
 2. Fearless Tinkering with Nix 👈
@@ -39,7 +39,7 @@ Programmers make mistakes. As such, our tools should aspire not to punish us for
 
 Approaches that meet each critique with an independent solution are prone to local maxima. Breakthroughs require recognition of the systemic complexities underpinning individual occurrences. Ideally, tools should proactively seek out their fundamental weaknesses, rather than waiting to reactively patch ailments.[^1] Hence, selecting tools by their **structural guarantees** is about using one's **values** to elect the ways in which their software _can’t_ go wrong. A fearless tinkerer knows they can be wrong, strong!
 
-In the upcoming parts, I’ll introduce several functional technologies and illustrate how their structural properties enable **fearless tinkering**. These alone won’t do functional ecosystems justice.[^2] Even amongst the tools mentioned, there are plenty of assurances I won't cover. Conversely, I won't spend much time on their structural deficiencies, vestigial quirks, and footguns[^3]. Much more important than any specific technology are the ideas that underlie them. Calling out the need for fearless approaches to the pain points of daily work will help future technologies incorporate the relevant structural guarantees.
+In this and upcoming installations, I’ll introduce several functional technologies and illustrate how their structural properties enable **fearless tinkering**. These alone won’t do functional ecosystems justice.[^2] Even amongst the tools mentioned, there are plenty of assurances I won't cover. Conversely, I won't spend much time on their structural deficiencies, vestigial quirks, and footguns[^3]. Much more important than any specific technology are the ideas that underlie them. Calling out the need for fearless approaches to the pain points of daily work will help future technologies incorporate the relevant structural guarantees.
 
 
 ## Nix & NixOS
@@ -70,7 +70,7 @@ Meanwhile, Nix has developed to fill these gaps. Nix can fit neatly within exist
 
 In the Nix language, everything is an expression. This includes Nix's central data structure, the [derivation](https://zero-to-nix.com/concepts/derivations). **Derivations** can be thought of as recipes for building software components. These recipes include stable references to the nested build plans of their direct dependencies.  A key part of keeping Nix "purely functional" is the separation of evaluation and execution. This distinction is shown by the two steps that make up a Nix build:
 
-1. _**Instantiation**_ - evaluation of Nix expression for assembling a derivation
+1. _**Instantiation**_ - pure evaluation of Nix expression for assembling a derivation
 2. _**Realisation**_ - execution of derivation's instructions + addition of outputted component to the Nix Store
 
 The **Nix Store** is an append-only graph database that stores components in the host's file system (typically under `/nix/store`). Every package, service, and configuration is stored in an immutable way, meaning it cannot be modified after being created. Instead, changes result in new component versions, leaving the previous ones intact.
@@ -87,17 +87,17 @@ Nix offers a [rich set of structural properties](https://arxiv.org/abs/2004.0568
 >
 > - Patrick Thomson @  Strange Loop 2019, definitions from ["Building Haskell Programs with Fused Effects"](https://youtu.be/vfDazZfxlNs?t=145)
 
-Nix has <u>_**transactional semantics**_</u>. Package state is _isolated_, state transitions are _atomic_, and these state transitions are _consistent_. Builds are uniquely addressable, immutable, reproducibly resourced, and [always safe to interrupt, restart, or run in parallel.](https://www.infoq.com/articles/configuration-management-with-nix/) As elaborated below, these essential properties form transactional boundaries within which programmers can fearlessly develop and share environments.
+Nix's package manager is <u>_**transactional**_</u>. Package state is _isolated_, state transitions are _atomic_, and these state transitions are _consistent_. Builds are uniquely addressed, immutable, reproducibly resourced, and [always safe to interrupt, restart, or run in parallel.](https://www.infoq.com/articles/configuration-management-with-nix/) As elaborated below, these essential properties form transactional boundaries within which programmers can fearlessly develop environments.
 
 #### Atomic
 
-Whether installing a new package or upgrading one's system, changes through Nix happen at once or not at all. Even if a deployment operation is interrupted, users are never left in a partially updated state. If a completed upgrade causes issues, one can immediately roll back to their previous configuration.
+Whether installing a new package or upgrading one's system, changes through Nix happen all at once or not at all. Even if a deployment operation is interrupted, users are never left in a partially updated state. If a completed upgrade causes issues, one can immediately roll back to their previous configuration.
 
-As a result, iterating on one's environment can be done without commitment. Users can trial packages using ephemeral shells that don't pollute their environments. Build-time dependencies and binaries for one-off commands can be pruned  beyond their usage. The combination of rollbacks and version control let's one recreate their environment from any point in the past. If one no longer needs a component, they can confidently remove it without fear of changing their mind. Package hoarding is made unnecessary and configurations can be made minimal.
+As a result, iterating on one's environment can be done without commitment. Users can trial packages using [ephemeral shells](https://nixos.org/manual/nix/stable/command-ref/nix-shell.html) that don't pollute their environments. Build-time dependencies and binaries for one-off commands can be pruned  beyond their usage. The combination of rollbacks and version control let's one recreate their environment from any point in the past. If one no longer needs a component, they can confidently remove it without fear of changing their mind. This results in less package hoarding and more minimal configurations.
 
 #### Isolated
 
-As each package is stored in a <u>_**unique**_</u> path, different versions or variants of a package can coexist without conflict. Users can create and modify multiple developer environments for multiple projects without breaking one another. Users can decide the granularity of their environments. One could define a completely isolated developer environment for a project that contained all tooling used like local commands, fully-configured editors, local databases, and more. Alternatively, one could factor out general system configuration into a top-level repository, and allow projects to inherit configurations while remaining explicit.
+As each package is stored in a <u>_**unique**_</u> path, different versions or variants of a package can coexist without conflict. Users can create and modify multiple developer environments for multiple projects without breaking one another. One could define a completely isolated developer environment for a project that contained all tooling used like local commands, fully-configured editors, local databases, and more. Alternatively, one could factor out general system configuration into a top-level repository, and allow projects to inherit configurations while remaining explicit.
 
 #### Immutable
 
@@ -111,9 +111,9 @@ Nix uses top-level views called [profiles](https://nixos.org/manual/nix/unstable
 >
 > - Julien Urraca @ Open Source 101 2023, ["From Nix to Docker - Everything You Need to Know About Polygot Package Management"](https://youtu.be/onBQhwuPOAc?t=231)
 
-The classic advice to "look both ways before crossing" is extremely applicable to software. Programmers producer _and_ consume software. There being multiple directions makes decisions around maintainability a tricky and indivualized calculus. Further, it's difficult to establish standards or policies without having transparent views both upstream and downstream. Mutability is a leaky abstraction, forcing problems downstream until someone confonts it.
+The classic advice to "look both ways before crossing" is extremely applicable to software. Most programmers are both producers _and_ consumers of software. Without transparent views upstream and downstream, maintainence strategies are tricky and individualized. Mutability is a leaky abstraction that forces problems downstream unless explicitly confonted.
 
-Sharing is intrinsic to Nix's programming model. Its model for treating internal and external dependency relations is explicit and uniform. Package users can be sure that package authors aren't implicitly offloading upstream problems on to them, while authors can expect the same of their dependencies. As identically built artifacts are placed in identical locations, the sum cost of immutability is negligible. These properties enable programmers to fearlessly contribute, distribute, and consume software.
+Sharing is intrinsic to Nix's programming model. Nix allows users to handle internal and external dependency relations in an explicit and uniform manner. Package users can be sure that package authors aren't implicitly offloading upstream problems on to them, while authors can expect the same of their dependencies. As identically built artifacts are placed in identical locations, the sum cost of immutability is negligible. These properties enable programmers to fearlessly contribute, distribute, and consume software.
 
 #### Transparent
 
