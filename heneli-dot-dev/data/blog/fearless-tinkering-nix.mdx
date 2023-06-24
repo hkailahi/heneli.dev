@@ -133,7 +133,7 @@ Nix ensures [<u>_**hermetic**_</u>](https://zero-to-nix.com/concepts/hermeticity
 
 #### Persistent
 
-Nix's [<u>_**persistent**_</u>](https://www.cambridge.org/core/books/purely-functional-data-structures/0409255DA1B48FA731859AC72E34D494) model allows components to safely and efficiently share dependencies. When multiple local projects require an identically-built executable, Nix will know to never unnecessarily rebuild or redownload it across projects. As the shared executable is protected within an <u>_**immutable**_</u> component store, any changes to a project containing the mutual dependency won't affect the others. Packages can be shared, modified, and upgraded, all without risk of conflict or interference.
+Nix's [<u>_**persistent**_</u>](https://www.cambridge.org/core/books/purely-functional-data-structures/0409255DA1B48FA731859AC72E34D494) data model allows components to safely and efficiently share dependencies. When multiple local projects require an identically-built executable, Nix will know to never unnecessarily rebuild or redownload it across projects. As the shared executable is protected within an <u>_**immutable**_</u> component store, any changes to a project containing the mutual dependency won't affect the others. Packages can be shared, modified, and upgraded, all without risk of conflict or interference.
 
 ### Supplementary Examples
 
