@@ -121,7 +121,7 @@ One could rightly object that the need to learn new mathematical abstractions is
               upload_ssn()
               return “info: ” + msg
           ```
-          <caption className="flex justify-center prose prose-sm dark:prose-dark">Side Effect</caption>
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Performs side-effect</caption>
         </td>
         <td>Fearlessly execute, reproduce, and cache</td>
         <td>Haskell</td>
@@ -156,7 +156,7 @@ One could rightly object that the need to learn new mathematical abstractions is
           >>> average(average(1, 2), 3)
           2.25
           ```
-          <caption className="flex justify-center prose prose-sm dark:prose-dark">Left-to-right is different from Right-to-left</caption>
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Left-to-right evaluation is different from right-to-left</caption>
         </td>
         <td>Fearlessly parallelize and rebalance operations</td>
         <td>MapReduce</td>
@@ -192,20 +192,20 @@ One could rightly object that the need to learn new mathematical abstractions is
         </th>
         <td>
           ```jsx chrome=no
-          neg_to_null(x: int) -> Optional[int]:
-              if x < 0: return None
+          neg_to_bool(x: int) -> Union[int, bool]:
+              if x < 0: return False
               else: return x
 
           square(a: int) -> int:
               return a * a
 
-          >>> square(neg_to_null(-10))
+          >>> square(neg_to_bool(-10))
           *** error!
           ```
-          <caption className="flex justify-center prose prose-sm dark:prose-dark">`square` does not accepts nulls</caption>
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Non-composable functions as `square` can't accept booleans</caption>
         </td>
         <td>Fearlessly compose and delegate</td>
-        <td>Optics, Deriving, GHC Generics</td>
+        <td>Optics</td>
       </tr>
       <tr>
         <th scope="row" >
@@ -247,7 +247,7 @@ One could rightly object that the need to learn new mathematical abstractions is
           >>> is_odd(10000)
           *** error!
           ```
-          <caption className="flex justify-center prose prose-sm dark:prose-dark">Non-exhaustive handling of inputs</caption>
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Missed edge case from non-exhaustive handling of inputs</caption>
         </td>
         <td>Fearlessly pattern match</td>
         <td>Rust's `Result` & `Option`</td>
