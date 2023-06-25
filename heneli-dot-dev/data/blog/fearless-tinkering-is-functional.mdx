@@ -40,14 +40,14 @@ There’s an endless list of things that invoke fear in programmers:
 <div className="overflow-x-auto">
   |  |  |  |   |
   | - | :- | -: | :-: |
-  | consistency | rolling upgrades | concurrency | bit rot |
-  | year-out deadlines | service alerts | tech debt | stale builds |
-  | nondeterminism | clocks | ambiguous requirements | hardware faults |
+  | clocks | rolling upgrades | concurrency | bit rot |
+  | far out deadlines | service alerts | tech debt | stale builds |
+  | nondeterminism | consistency | ambiguous requirements | hardware faults |
   | software rewrites | network partitions | scope creep | security |
 </div>
 ...and on and on. Each of these areas can be terrifying on their own. To make matters worse, software rarely contains just a single source of horror. Very simple programs written by very thoughtful programmers can host a multitude.
 
-Without the right tools, conquering these fears can feel impossible. How can one's contributions be trusted if the tools used can't be trusted? Some adopt a defensive programming style, but institutionalizing apprehension isn't an end in itself. What use is an infinite roll of duct tape when a ship takes water? If tape can’t solve the first leak, should one patch the next, pick their battles, or accept fate and lose hope in the voyage? Does a decision even matter when the ship is already sinking? Maybe swimming to shore and joining a new boat would suffice… at least until that crew wants to tape their leaks. By then, that too will be someone else’s problem. The cognitive burden of faulty software is real and difficult to remedy. Programming is a social exercise, and teams will burn out accommodating learned helplessness.
+Without the right tools, conquering these fears can feel impossible. How can one produce trustworthy software with untrustrworthy tools? Some adopt a defensive programming style, but institutionalizing apprehension isn't an end in itself. What use is an infinite roll of duct tape when a ship takes water? If tape can’t solve the first leak, should one patch the next, pick their battles, or accept fate and lose hope in the voyage? Does a decision even matter when the ship is already sinking? Maybe swimming to shore and joining a new boat would suffice… at least until that crew wants to tape their leaks. By then, that too will be someone else’s problem. The cognitive burden of faulty software is real and difficult to remedy. Programming is a social exercise, and teams will burn out accommodating learned helplessness.
 
 Most fears boil down to uncertainty about **complexity**. As Fred Brooks explained in [No Silver Bullet](https://en.wikipedia.org/wiki/No_Silver_Bullet), there exists **essential complexity** that cannot be avoided and **accidental complexity** that can.[^4] [Out of the Tar Pit](https://github.com/papers-we-love/papers-we-love/blob/2eb8d21/design/out-of-the-tar-pit.pdf) followed up by diagnosing **state**, **control flow**, and **code volume** as the most frequent culprits underlying accidental complexity. The nature of complexity is festering and exponential, so tackling root causes is always better than addressing symptoms. Put another way, preventing leaks by addressing the inherent structural deficiencies of a ship’s build is favorable to being skilled at plugging holes.
 
@@ -55,23 +55,23 @@ Most fears boil down to uncertainty about **complexity**. As Fred Brooks explain
 
 ### On Functional Programming
 
-The functional style encourages transformation-based workflows over state-based workflows. To motivate this approach, functional languages commonly offer a collection[^5] of characteristics:[^6]
+The functional style encourages transformation-based workflows over state-based workflows. To motivate this approach, functional languages offer an assortment[^5] of party tricks:[^6]
 <div className="overflow-x-auto">
   |  |  |  |   |
   | - | :- | -: | :-: |
-  | Referential Transparency | Pure functions | Declarative | Immutability |
-  | First-Class Functions | Higher-Order Functions | Expression-Oriented | Pattern Matching |
-  | Tail Call Elimination | Managed Effects | Algebraic Datatypes | Compositionality |
+  | Referential Transparency | Pure functions | Immutability |  Declarative Programming |
+  | First-Class Functions | Higher-Order Functions | Pattern Matching | Tail Call Elimination |
+  | Compositionality |  Managed Effects | Algebraic Datatypes | Expression-Oriented Programming |
   | Recursive Datatypes | Equational Reasoning | | |
 </div>
 
-Functional programming doesn’t solve complexity but helps one meet it by surfacing its roots. To do this, functional languages deliver several successful and battle-tested approaches to the state, control flow, and volume.
+Functional programming doesn’t solve complexity but helps one meet it by surfacing its roots. To do this, functional languages deliver battle-tested approaches to the state, control flow, and volume.
 
-Functional languages _<u>make stateful complexity explicit</u>_. By pairing immutable defaults with performant and easy-to-use APIs, functional languages minimize the need for mutable state. Introducing any mutable state thus becomes an intentional and visible action. Given the elimination of destructive updates, compilers are empowered to reward programmers with greater [expressiveness](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) and [safety](https://en.wikipedia.org/wiki/Software_transactional_memory) at less cost. Some functional languages make explicit their “effects” with types, creating a distinction that allows separate reasoning of “effect-free” and “effectful” code.
+Functional languages _<u>make stateful complexity explicit</u>_. By pairing immutable defaults with performant and easy-to-use APIs, functional languages minimize the need for mutable state. Introducing any mutable state thus becomes an intentional and highly visible action. Given the elimination of destructive updates, compilers are empowered to reward programmers with greater [expressiveness](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) and [safety](https://en.wikipedia.org/wiki/Software_transactional_memory) at less cost. Some functional languages make explicit their “effects” with types, creating a distinction that allows separate reasoning of “effect-free” and “effectful” code.
 
-With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements that break compositionality are replaced with expressions that can be substituted for their value. Bigger programs can be faithfully decomposed into smaller ones. This allows local reasoning on individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get.”
+With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements that break compositionality are replaced with expressions that can be substituted for their value. Bigger programs can be faithfully decomposed into smaller ones. This allows for [local reasoning](https://www.inner-product.com/posts/fp-what-and-why/) on individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get.”
 
-_<u>Compositionality</u>_ also addresses program volume in functional languages. Programs and their domains can be _<u>mechanically decomposed</u>_ into their essential concepts. For instance, programmers can collapse verbose wrangling code into neat reusable patterns using higher-order functions and composition. Typed functional languages use various flavors of polymorphism to replace infinitely-many functions over one domain with an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto the programmer’s better-suited counterparts in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. Judicious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and broader ecosystems.
+_<u>Compositionality</u>_ also addresses program volume in functional languages. Programs and their domains can be _<u>mechanically decomposed</u>_ into their essential concepts. For instance, programmers can collapse verbose wrangling and glue-code into neat reusable patterns using higher-order functions and composition. Typed functional languages use various flavors of polymorphism to replace infinitely-many functions over one domain with an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto the programmer’s better-suited counterpart in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. Judicious use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and broader ecosystems.
 
 Armed with the properties of functional languages, programmers can reclaim their cognitive sovereignty and fearlessly explore software in action.
 
@@ -81,9 +81,9 @@ Armed with the properties of functional languages, programmers can reclaim their
 >
 > - a sage functional programmer, probably
 
-If language is a tool for thought, then one should value dialects enabling natural communication with them. Blunted alternatives that intersperse anything meaningful with robotic recitations of language internals or error-prone adaptations to outside alterations are frustrating to tolerate. A language that yields such fragile mental models breaks down in real-world scenarios like context-switching, requirements evolution, and the eventuality of a system’s growth beyond what can be kept in one’s head. The essential complexity programmers face is already challenging enough.
+If language is a tool for thought, then one should value dialects enabling natural communication. Blunted alternatives that intersperse anything meaningful with robotic recitations of language internals or error-prone adaptations to outside alterations are frustrating to tolerate. A language that yields such fragile mental models is ill-fit for real-world scenarios like context-switching, requirements evolution, and the eventuality of a system’s growth beyond what can be kept in one’s head. The essential complexity programmers face is already challenging enough.
 
-When the business calls for an algorithm to determine how many users visited their website last week, no one’s first thought should have to be about for-loops, heap allocations, hash indexes, logic gates, or cosmic rays. No, an API that’s better suited to immediate communication might yield something like:
+When the business calls for an algorithm to determine how many users visited their website last week, no one’s first thought should have to be about for-loops, heap allocations, hashing strategies, logic gates, or cosmic rays. No, an API that’s better suited for immediate communication might yield something like:
 
 ```jsx
 all_users -> filter_by(visited_since(-7 days)) -> count()
@@ -100,7 +100,7 @@ Declarative programming simplifies the act of learning because it 1) meets one a
 
 Observing the underlying properties of a program is the key to unlocking its simplification. Pure functions are simple because of the numerous constraints imposed on them. The restriction of mapping input sets onto output sets eases the discovery of additional relationships in one’s program. Employing popular [functional](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) [techniques](https://kowainik.github.io/posts/haskell-mini-patterns#phantom-type-parameters) to prune superfluous code paths can make further invariants lurking in our programs more apparent. By building an arsenal of common operations with associated constraints, one can unlock a valuable toolkit of powers to call upon in various programming situations.
 
-One could rightly object that needing new mathematical abstractions trades one kind of complexity for another. In practice, there are but a small handful of core abstractions that programmers will typically run into and are thus worth their collective weight.[^7] Learning frequently occurring abstractions is useful for formalizing one's understanding of the domains they characterize. The major benefit of learning said abstractions is that once you’ve understood them, you’ve understood them for all their applications.
+One could rightly object that the need to learn new mathematical abstractions is trading one kind of complexity for another. In practice, there are but a small handful of core abstractions that programmers will typically run into and are thus worth their collective weight.[^7] Learning frequently occurring abstractions is useful for formalizing one's understanding of the domains they characterize. The major benefit of learning said abstractions is that once you’ve understood them, you’ve understood them for all their applications.
 
 <div className="overflow-x-auto">
   <table>
@@ -121,6 +121,7 @@ One could rightly object that needing new mathematical abstractions trades one k
               upload_ssn()
               return “info: ” + msg
           ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Side Effect</caption>
         </td>
         <td>Fearlessly execute, reproduce, and cache</td>
         <td>Haskell</td>
@@ -132,7 +133,13 @@ One could rightly object that needing new mathematical abstractions trades one k
           f(x):
             global += x
             return global
+
+          >>> f(5)
+          5
+          >>> f(5)
+          10
           ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">`global` changes its value</caption>
         </td>
         <td>Fearlessly rollback and share dependencies</td>
         <td>Nix</td>
@@ -149,6 +156,7 @@ One could rightly object that needing new mathematical abstractions trades one k
           >>> average(average(1, 2), 3)
           2.25
           ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Left-to-right is different from Right-to-left</caption>
         </td>
         <td>Fearlessly parallelize and rebalance operations</td>
         <td>MapReduce</td>
@@ -172,6 +180,7 @@ One could rightly object that needing new mathematical abstractions trades one k
             -100, -25 (overdraw fee)
           Current Balance: -$50
           ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Reordering changes result</caption>
         </td>
         <td>Fearlessly reorder executions</td>
         <td>Pijul</td>
@@ -193,6 +202,7 @@ One could rightly object that needing new mathematical abstractions trades one k
           >>> square(neg_to_null(-10))
           *** error!
           ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">`square` does not accepts nulls</caption>
         </td>
         <td>Fearlessly compose and delegate</td>
         <td>Optics, Deriving, GHC Generics</td>
@@ -219,6 +229,7 @@ One could rightly object that needing new mathematical abstractions trades one k
             <h1>Fearless Tinkering is Algebraic</h1>
           >>>>>>> develop
           ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Permits conflicts when synchronizing</caption>
         </td>
         <td>Fearlessly update and collaborate</td>
         <td>Electric SQL</td>
@@ -236,6 +247,7 @@ One could rightly object that needing new mathematical abstractions trades one k
           >>> is_odd(10000)
           *** error!
           ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Non-exhaustive handling of inputs</caption>
         </td>
         <td>Fearlessly pattern match</td>
         <td>Rust's `Result` & `Option`</td>
@@ -248,7 +260,7 @@ One could rightly object that needing new mathematical abstractions trades one k
 
 ## To Be Continued...
 
-That's all for now! The [next part](./fearless-tinkering-nix) of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^8]
+That's all for now! The [next part](./fearless-tinkering-nix) of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the final article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^8]
 
 ✌️
 
@@ -276,7 +288,7 @@ That's all for now! The [next part](./fearless-tinkering-nix) of this article wi
     The definition of accidental complexity in 'Out of the Tar Pit' is more specific. For the sake of this article, it can be treated more broadly as meaning self-inflicted or avoidable complexity.
 [^5]: Overlapping, non-compulsory, non-exhaustive
 [^6]:
-    I have cowardly deferred to others the task of formally defining “functional programming.” The fact of the matter is that FP is a vibe.
+    I have cowardly deferred to others the task of formally defining “functional programming.” This is because FP is a vibe.
 
     More seriously, I use “functional programming” as shorthand for a style that avoids mutation and implicit “effects”. I also define “functional languages” as those enabling the representation of programs with expressions that can be substituted for their evaluated value (as is the case for even [“impure” eDSLs like `State` or `IO`](https://twitter.com/lexi_lambda/status/1242878496076189702?s=20)).
 
@@ -286,7 +298,7 @@ That's all for now! The [next part](./fearless-tinkering-nix) of this article wi
 
     More general problems exist with various commonly-used terms by functional programmers. Particular statements often lead to poor intuitions and mismatched discussions. I hope to publish more on this topic soon.
 [^7]:
-    No one needs to learn category theory to become a [great functional programmer](http://comonad.com/reader/2014/letter-to-a-young-haskell-enthusiast/)! Sure, some people have brought great ideas from category theory and other mathematical fields back to the realm of programming. But math gets invented to incorporate great ideas originating from programming (and everywhere else) as well. The [streetlight effect](https://en.wikipedia.org/wiki/Streetlight_effect) goes both ways! Programmers should treat math as a tool that serves to give us understanding, rather than a tool we serve to give our understanding.
+    No one needs to learn category theory to become a [great functional programmer](http://comonad.com/reader/2014/letter-to-a-young-haskell-enthusiast/)! Sure, some people have brought great ideas from category theory and other mathematical fields back to the realm of programming. But math gets invented to incorporate great ideas originating from programming (and everywhere else) as well. The [streetlight effect](https://en.wikipedia.org/wiki/Streetlight_effect) goes both ways! Programmers should treat math as a tool that serves to give one understanding, rather than a tool one serves to give up their understanding.
 [^8]:
     Dear Reader,
 
