@@ -184,6 +184,8 @@ https://heneli.dev/blog/fearless-tinkering-is-functional#fearless-and-complexity
 - https://celery1124.github.io/memory-consistence-and-memory-order/
 - https://blog.developer.atlassian.com/programming-with-algebra/
 - https://iagoleal.com/posts/algebraic-path/
+- https://proofwiki.org/wiki/Definition:Composition_of_Morphisms
+- https://math.stackexchange.com/questions/3093758/is-there-a-formal-connection-between-transitivity-and-compositionality
 
 ## Fearless in Practice
 https://www.heneli.dev/blog/fearless-tinkering-is-functional#fearless-in-practice
