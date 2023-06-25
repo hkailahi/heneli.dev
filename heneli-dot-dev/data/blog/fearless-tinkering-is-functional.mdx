@@ -85,12 +85,10 @@ If language is a tool for thought, then one should value dialects enabling natur
 
 When the business calls for an algorithm to determine how many users visited their website last week, no one’s first thought should have to be about for-loops, heap allocations, hash indexes, logic gates, or cosmic rays. No, an API that’s better suited to immediate communication might yield something like:
 
-<table>
-  ```jsx
-  all_users -> filter_by(visited_since(-7 days)) -> count()
-  ```
-  <caption>All users, filtered by those who visited in the last seven days, counted</caption>
-</table>
+```jsx
+all_users -> filter_by(visited_since(-7 days)) -> count()
+```
+<caption className="flex justify-center">All users, filtered by those who visited in the last seven days, counted</caption>
 
 Declarative programming simplifies the act of learning because it 1) meets one at their layer of abstraction and 2) lets one focus solely on what’s in front of them. A well-designed declarative API lays out all the vocabulary and structure one should need, such that formulating solutions through sentences is as natural as placing blocks in a game of Tetris. Learners can focus on describing the place they actually care about instead of the windy road taken to get there. By only necessitating the specification of a goal state, programmers are unburdened by the interconnected history of their model's state transitions.
 
