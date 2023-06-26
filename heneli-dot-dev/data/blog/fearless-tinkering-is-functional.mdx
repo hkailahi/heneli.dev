@@ -15,10 +15,10 @@ layout: PostSimple
 import {Note} from './components/Note.tsx'
 
 <Note type='info'>
-👋 I'm currently in the market for backend and full-stack positions. My [resume](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view) can be found on [Google Docs](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view). Please send hiring inquiries via [Linkedin](https://www.linkedin.com/in/hkailahi?original_referer=heneli.dev) or [email](mailto:bright.tent7049@fastmail.com).
+👋 I'm currently in the market for backend, platform, or full-stack software engineering positions. My [resume](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view) can be found on [Google Docs](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view). Please send hiring inquiries via [Linkedin](https://www.linkedin.com/in/hkailahi?original_referer=heneli.dev) or [email](mailto:bright.tent7049@fastmail.com).
 </Note>
 
-_Is functional programming worth learning? This series is the sales pitch I wish I had received before starting._
+_Is functional programming worth learning? This series is the sales pitch I wish I had received when first being introduced to the world of functions._
 
 <TOCInline toc={props.toc} toHeading={3} asDisclosure />
 
@@ -26,9 +26,9 @@ _Is functional programming worth learning? This series is the sales pitch I wish
 
 Sometimes functional programming gets a bad rap. Critics from industry cite a laundry list of issues, including lack of commercial validation, high barrier of entry, a sparse library catalog, poor documentation, unfamiliar academic culture, and a dismal entry-level job market. Advocates counter [with](https://blog.janestreet.com/why-ocaml/) [a](https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users) [number](https://blog.replit.com/nix) [of](https://serokell.io/blog/haskell-in-production-meta) [success](https://www.pagerduty.com/blog/tag/elixir/) [stories](https://serokell.io/blog/haskell-in-production-mercury) and appeals pointing [to](https://elixir-lang.org/blog/2022/10/05/my-future-with-elixir-set-theoretic-types/) [ongoing](https://blog.janestreet.com/oxidizing-ocaml-locality/) [improvements](https://haskell.foundation/projects/). “[Things](https://www.amazon.com/Production-Haskell-Succeeding-Industry/dp/B0BTNVFR2N) _[really](https://zero-to-nix.com/) [are](https://pijul.org/posts/2023-05-23-nest-a-new-hope/)_ [getting](https://fsharp.org/mentorship/) [better](https://leanpub.com/fp-made-easier)!” Deserved or otherwise, skepticism is hard to overcome.
 
-It’s certainly never been the case that a functional language was the de facto industry standard like all of Java, Python, and JavaScript have been. By choice[^1] or by fate, the benefits of iterating a language independent of widespread reliance have had predictable costs on functional ecosystems. When 10,000 new programmers are learning an imperative language to every individual learning a functional one, can a functional approach really compete?[^2]
+It’s certainly never been the case that a functional language was the de facto industry standard like Java, Python, and JavaScript have been. By choice[^1] or by fate, the lack of mainstream adoption has had predictable costs on functional ecosystems. When 10,000 new programmers are learning an imperative language to every individual learning a functional one, can a functional approach really compete?[^2]
 
-My answer is yes. While the above critiques have merit, I don’t believe that any of them are inherent. In fact, I’ll argue that the functional paradigm already has best-in-class discoverability and experimentation thanks to **fearless tinkering**.[^3]
+My answer is yes. While they have merit, none of the above critiques are inherent. In fact, I’ll argue that the functional paradigm already has best-in-class discoverability and experimentation thanks to **fearless tinkering**.[^3]
 
 ## Fearless in Theory
 
@@ -36,7 +36,7 @@ My answer is yes. While the above critiques have merit, I don’t believe that a
 
 ### Fear and Complexity
 
-There’s an endless list of things that invoke fear in programmers:
+There’s an endless list of things that invoke fear in programmers, such as:
 <div className="overflow-x-auto">
   |  |  |  |   |
   | - | :- | -: | :-: |
@@ -45,9 +45,9 @@ There’s an endless list of things that invoke fear in programmers:
   | nondeterminism | consistency | ambiguous requirements | hardware faults |
   | software rewrites | network partitions | scope creep | security |
 </div>
-...and on and on. Each of these areas can be terrifying on their own. To make matters worse, software rarely contains just a single source of horror. Very simple programs written by very thoughtful programmers can host a multitude.
+Each of these areas can be terrifying on their own. To make matters worse, software rarely contains just a single source of horror. Very simple programs written by very thoughtful programmers can host a multitude.
 
-Without the right tools, conquering these fears can feel impossible. How can one produce trustworthy software with untrustrworthy tools? Some adopt a defensive programming style, but institutionalizing apprehension isn't an end in itself. What use is an infinite roll of duct tape when a ship takes water? If tape can’t solve the first leak, should one patch the next, pick their battles, or accept fate and lose hope in the voyage? Does a decision even matter when the ship is already sinking? Maybe swimming to shore and joining a new boat would suffice… at least until that crew wants to tape their leaks. By then, that too will be someone else’s problem. The cognitive burden of faulty software is real and difficult to remedy. Programming is a social exercise, and teams will burn out accommodating learned helplessness.
+Without the right tools, conquering these fears can feel impossible. How can one produce trustworthy software with untrustrworthy tools? Some adopt a defensive programming style, but institutionalizing apprehension isn't an end in itself. What use is an infinite roll of duct tape when a ship takes water? If tape can’t solve the first leak, should one patch the next, or accept fate and lose hope in the voyage? Does a decision even matter when the ship is already sinking? Maybe swimming to shore and joining a new boat would suffice… at least until that crew wants to tape their leaks. By then, that too will be someone else’s problem. The cognitive burden of faulty software is real and difficult to remedy. Programming is a social exercise, and teams will burn out accommodating learned helplessness.
 
 Most fears boil down to uncertainty about **complexity**. As Fred Brooks explained in [No Silver Bullet](https://en.wikipedia.org/wiki/No_Silver_Bullet), there exists **essential complexity** that cannot be avoided and **accidental complexity** that can.[^4] [Out of the Tar Pit](https://github.com/papers-we-love/papers-we-love/blob/2eb8d21/design/out-of-the-tar-pit.pdf) followed up by diagnosing **state**, **control flow**, and **code volume** as the most frequent culprits underlying accidental complexity. The nature of complexity is festering and exponential, so tackling root causes is always better than addressing symptoms. Put another way, preventing leaks by addressing the inherent structural deficiencies of a ship’s build is favorable to being skilled at plugging holes.
 
@@ -59,7 +59,7 @@ The functional style encourages transformation-based workflows over state-based 
 <div className="overflow-x-auto">
   |  |  |  |   |
   | - | :- | -: | :-: |
-  | Referential Transparency | Pure functions | Immutability |  Declarative Programming |
+  | Referential Transparency | Pure Functions | Immutability |  Declarative Programming |
   | First-Class Functions | Higher-Order Functions | Pattern Matching | Tail Call Elimination |
   | Compositionality |  Managed Effects | Algebraic Datatypes | Expression-Oriented Programming |
   | Recursive Datatypes | Equational Reasoning | | |
@@ -90,7 +90,7 @@ all_users -> filter_by(visited_since(-7 days)) -> count()
 ```
 <caption className="flex justify-center">All users, filtered by those who visited in the last seven days, counted</caption>
 
-Declarative programming simplifies the act of learning because it 1) meets one at their layer of abstraction and 2) lets one focus solely on what’s in front of them. A well-designed declarative API lays out all the vocabulary and structure one should need, such that formulating solutions through sentences is as natural as placing blocks in a game of Tetris. Learners can focus on describing the place they actually care about instead of the windy road taken to get there. By only necessitating the specification of a goal state, programmers are unburdened by the interconnected history of their model's state transitions.
+Declarative programming simplifies the act of learning because it a) meets one at their layer of abstraction and b) lets one focus solely on what’s in front of them. A well-designed declarative API lays out all the vocabulary and structure one should need, such that formulating solutions through sentences is as natural as placing blocks in a game of Tetris. Learners can focus on describing the place they actually care about instead of the windy road taken to get there. By only necessitating the specification of a goal state, programmers are unburdened by the interconnected history of their model's state transitions.
 
 ### Constraints Liberate
 
@@ -260,7 +260,7 @@ One could rightly object that the need to learn new mathematical abstractions is
 
 ## To Be Continued...
 
-That's all for now! The [next part](./fearless-tinkering-nix) of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the final article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^8]
+That's all for now! The next part of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the final article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^8]
 
 ✌️
 
@@ -283,7 +283,7 @@ That's all for now! The [next part](./fearless-tinkering-nix) of this article wi
 
     Of course, learning a language in practice has as much to do with the language itself as with its peripherals. Pedagogy, tooling, industrial opportunities, marketing, and community are all essential for initial exposure to ideas and a holistic learning experience. While the peripherals around a paradigm or language can change, the fundamentals are more sticky. The software industry has shown a large appetite for new language variations but a minimal appetite for new language foundations. While functional languages haven't been popular, they've certainly been influential. A slow yet constant trickle of functional language features into mainstream paradigms has persisted as the need to overcome accidental complexity remains.
 
-    This all isn’t to say that functional programming is the ultimate destination. Comparisons to mainstream paradigms are limited as none of the existing incarnations are particularly “learnable”. While the functional paradigm can offer greater safeguards than imperative alternatives, neither has yielded a satisfactory and industrial-grade experience embodying other qualities of a [learnable experience](https://web.archive.org/web/20201105061430/http://worrydream.com/LearnableProgramming/) (ex. interactivity, visualization, uniformity, immediacy, etc). It’s possible that achieving this will require new paradigms built on top of functional foundations. More on that in the future…
+    This all isn’t to say that functional programming is the ultimate destination. Comparisons to mainstream paradigms are limited as none of the existing incarnations are particularly “learnable”. While the functional paradigm can offer greater safeguards than imperative alternatives, neither has yielded a satisfactory and industrial-grade experience embodying other qualities of a [learnable experience](https://web.archive.org/web/20201105061430/http://worrydream.com/LearnableProgramming/) (e.g. interactivity, visualization, uniformity, immediacy, etc.). It’s possible that achieving this will require new paradigms built on top of functional foundations. More on that in the future…
 [^4]:
     The definition of accidental complexity in 'Out of the Tar Pit' is more specific. However, for the sake of this article, it can be treated more broadly as meaning self-inflicted or avoidable complexity.
 [^5]: Overlapping, non-compulsory, non-exhaustive
