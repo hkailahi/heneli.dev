@@ -114,8 +114,8 @@ One could rightly object that the need to learn new mathematical abstractions is
     </thead>
     <tbody>
       <tr>
-        <th scope="row">Functional Purity</th>
-        <td>
+        <th scope="row" className="align-middle">Functional Purity</th>
+        <td className="align-middle">
           ```jsx chrome=no
           log4Info(msg):
               upload_ssn()
@@ -123,12 +123,12 @@ One could rightly object that the need to learn new mathematical abstractions is
           ```
           <caption className="flex justify-center prose prose-sm dark:prose-dark">Performs side-effect</caption>
         </td>
-        <td>Fearlessly execute, reproduce, and cache</td>
-        <td>Haskell</td>
+        <td className="align-middle">Fearlessly execute, reproduce, and cache</td>
+        <td className="align-middle">Haskell</td>
       </tr>
       <tr>
-        <th scope="row">Immutable</th>
-        <td>
+        <th scope="row" className="align-middle">Immutable</th>
+        <td className="align-middle">
           ```jsx chrome=no
           f(x):
             global += x
@@ -141,15 +141,15 @@ One could rightly object that the need to learn new mathematical abstractions is
           ```
           <caption className="flex justify-center prose prose-sm dark:prose-dark">`global` changes its value</caption>
         </td>
-        <td>Fearlessly rollback and share dependencies</td>
-        <td>Nix</td>
+        <td className="align-middle">Fearlessly rollback and share dependencies</td>
+        <td className="align-middle">Nix</td>
       </tr>
       <tr>
-        <th scope="row">
+        <th scope="row" className="align-middle">
           <p>Associative:</p>
           <p>`(A <> B) <> C == A <> (B <> C)`</p>
         </th>
-        <td>
+        <td className="align-middle">
           ```jsx chrome=no
           >>> average(1, average(2, 3))
           1.75
@@ -158,15 +158,15 @@ One could rightly object that the need to learn new mathematical abstractions is
           ```
           <caption className="flex justify-center prose prose-sm dark:prose-dark">Left-to-right evaluation is different from right-to-left</caption>
         </td>
-        <td>Fearlessly parallelize and rebalance operations</td>
-        <td>MapReduce</td>
+        <td className="align-middle">Fearlessly parallelize and rebalance operations</td>
+        <td className="align-middle">MapReduce</td>
       </tr>
       <tr>
-        <th scope="row">
+        <th scope="row" className="align-middle">
           <p>Commutative:</p>
           <p>`A <> B == B <> A`</p>
         </th>
-        <td>
+        <td className="align-middle">
           ```jsx chrome=no
           >>> wells_fargo.make_transations([
             deposit($200),
@@ -182,15 +182,15 @@ One could rightly object that the need to learn new mathematical abstractions is
           ```
           <caption className="flex justify-center prose prose-sm dark:prose-dark">Reordering changes result</caption>
         </td>
-        <td>Fearlessly reorder executions</td>
-        <td>Pijul</td>
+        <td className="align-middle">Fearlessly reorder executions</td>
+        <td className="align-middle">Pijul</td>
       </tr>
       <tr>
         <th scope="row" >
           <p>Transitive:</p>
           <p>`F: A -> B`, <br/> `G: B -> C` <br/> => `G ∘ F: A -> C`</p>
         </th>
-        <td>
+        <td className="align-middle">
           ```jsx chrome=no
           neg_to_bool(x: int) -> Union[int, bool]:
               if x < 0: return False
@@ -204,17 +204,17 @@ One could rightly object that the need to learn new mathematical abstractions is
           ```
           <caption className="flex justify-center prose prose-sm dark:prose-dark">Non-composable functions as `square` can't accept booleans</caption>
         </td>
-        <td>Fearlessly compose and delegate</td>
-        <td>Optics</td>
+        <td className="align-middle">Fearlessly compose and delegate</td>
+        <td className="align-middle">Optics</td>
       </tr>
       <tr>
-        <th scope="row" >
+        <th scope="row" className="align-middle">
           <p>Join-Semilattice:</p>
           <p>`Associative: (A <> B) <> C == A <> (B <> C)`</p>
           <p>`Commutative: A <> B == B <> A`</p>
           <p>`Idempotent: A <> A == A`</p>
         </th>
-        <td>
+        <td className="align-middle">
           ```jsx chrome=no
           $ git merge develop
           Auto-merging index.html
@@ -231,12 +231,12 @@ One could rightly object that the need to learn new mathematical abstractions is
           ```
           <caption className="flex justify-center prose prose-sm dark:prose-dark">Permits conflicts when synchronizing</caption>
         </td>
-        <td>Fearlessly update and collaborate</td>
-        <td>Electric SQL</td>
+        <td className="align-middle">Fearlessly update and collaborate</td>
+        <td className="align-middle">Electric SQL</td>
       </tr>
       <tr>
-        <th scope="row" >Finite + Enumerable</th>
-        <td>
+        <th scope="row" className="align-middle">Finite + Enumerable</th>
+        <td className="align-middle">
           ```jsx chrome=no
           is_odd(x: int) -> bool:
               if x == 0: False
@@ -249,8 +249,8 @@ One could rightly object that the need to learn new mathematical abstractions is
           ```
           <caption className="flex justify-center prose prose-sm dark:prose-dark">Missed edge case from non-exhaustive handling of inputs</caption>
         </td>
-        <td>Fearlessly pattern match</td>
-        <td>Rust's `Result` & `Option`</td>
+        <td className="align-middle">Fearlessly pattern match</td>
+        <td className="align-middle">Rust's `Result` & `Option`</td>
       </tr>
     </tbody>
     <caption>Figure 1: A small sampling of properties and the powers they grant.</caption>
