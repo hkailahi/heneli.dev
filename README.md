@@ -1,5 +1,9 @@
 # heneli.dev
 
+<p align="center" width="100%">
+  <img src="./heneli-dot-dev/public/static/images/twitter-card.png" alt="Heap State Logo - heneli.dev" width=75% height=75%>
+</p>
+
 ## Contents
 - [heneli.dev](#henelidev)
   - [Contents](#contents)

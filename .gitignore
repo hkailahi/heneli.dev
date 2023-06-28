@@ -9,3 +9,5 @@ result
 heneli-dot-dev/data/blog/fearless-functional-future.mdx
 heneli-dot-dev/data/blog/fearless-tinkering-haskell.mdx
 heneli-dot-dev/data/blog/fearless-tinkering-is-algebraic.mdx
+heneli-dot-dev/data/blog/fearless-tinkering-nix-copy.mdx
+# ^ See https://stackoverflow.com/a/73568239 for moving file to new branch while retaining history
