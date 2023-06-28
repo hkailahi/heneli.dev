@@ -42,7 +42,7 @@ There’s an endless list of things that invoke fear in programmers, such as:
   | - | :- | -: | :-: |
   | clocks | rolling upgrades | concurrency | bit rot |
   | far out deadlines | service alerts | tech debt | stale builds |
-  | nondeterminism | consistency | ambiguous requirements | hardware faults |
+  | nondeterminism | replication | ambiguous requirements | hardware faults |
   | software rewrites | network partitions | scope creep | security |
 </div>
 Each of these areas can be terrifying on their own. To make matters worse, software rarely contains just a single source of horror. Very simple programs written by very thoughtful programmers can host a multitude.
@@ -202,10 +202,10 @@ One could rightly object that the need to learn new mathematical abstractions is
           >>> square(neg_to_bool(-10))
           *** error!
           ```
-          <caption className="flex justify-center prose prose-sm dark:prose-dark">Non-composable functions as `square` can't accept booleans</caption>
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Non-composable as `square` can't accept booleans</caption>
         </td>
         <td className="align-middle">Fearlessly compose and delegate</td>
-        <td className="align-middle">Optics</td>
+        <td className="align-middle">Relational Databases</td>
       </tr>
       <tr>
         <th scope="row" className="align-middle">
@@ -233,6 +233,28 @@ One could rightly object that the need to learn new mathematical abstractions is
         </td>
         <td className="align-middle">Fearlessly update and collaborate</td>
         <td className="align-middle">Electric SQL</td>
+      </tr>
+      <tr>
+        <th scope="row" >
+          <p>Invertible:</p>
+          <p>A `<>` A<sup>-1</sup> == 1</p>
+          <p>A<sup>-1</sup> `<>` A == 1</p>
+          <p>`Identity: A <> 1 == A`</p>
+        </th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          from_list = lambda input: set(input)
+          to_list = lambda input: list(input)
+
+          >>> x = ['foo', 'bar', 'bar']
+          >>> x == to_list(from_list(x))
+          False
+          // ['foo', 'bar', 'bar'] vs ['foo', 'bar']
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Roundtrip failure</caption>
+        </td>
+        <td className="align-middle">Fearlessly revert and swap domains</td>
+        <td className="align-middle">Optics, Deriving-Via</td>
       </tr>
       <tr>
         <th scope="row" className="align-middle">Finite + Enumerable</th>
