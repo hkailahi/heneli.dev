@@ -64,8 +64,8 @@ Meanwhile, Nix has developed to fill these gaps. Nix can fit neatly within exist
 
 In the Nix language, everything is an expression. This includes Nix's central data structure, the [derivation](https://zero-to-nix.com/concepts/derivations). **Derivations** can be thought of as recipes for building software components. These recipes include stable references to the nested build plans of their direct dependencies.  A crucial part of keeping Nix "purely functional" is the separation of evaluation and execution. This distinction is shown by the two steps that make up a Nix build:
 
-1. _**Instantiation**_ - pure evaluation of Nix expression for assembling a derivation
-2. _**Realisation**_ - execution of derivation's instructions + addition of outputted component to the Nix Store
+1. [_**Instantiation**_](https://comono.id/posts/2020-03-20-how-nix-instantiation-works/) - pure evaluation of Nix expression for assembling a derivation
+2. [_**Realisation**_](https://zero-to-nix.com/concepts/realisation) - execution of derivation's instructions + addition of outputted component to the Nix Store
 
 The **Nix Store** is an append-only graph database that stores components in the host's file system (typically under `/nix/store`). Every package, service, and configuration is stored in an immutable way, meaning it cannot be modified after creation. Instead, changes result in new component versions, leaving the previous ones intact.
 
@@ -121,7 +121,7 @@ It is clear that programmers need better tools for safely working with external 
 
 [_Reproducibility_](https://zero-to-nix.com/concepts/reproducibility) enables the reliable distribution of Nix-based infrastructure. Nix enables [_cloud builds_](https://www.microsoft.com/en-us/research/uploads/prod/2018/03/build-systems.pdf), meaning that native builds are amortized across machines. Whether from [Nixpkgs](https://search.nixos.org/packages), a CI server, or a developer machine, packages can be built once and shared anywhere. Nix can recover sharing benefits within an infrastructure that isn't Nix-based, like with [optimally-layered docker images](https://grahamc.com/blog/nix-and-layered-docker-images/) and [system-pinned Bazel builds](https://nix-bazel.build/). Additionally, Nix has [world-class support for cross-compilation](https://nix.dev/tutorials/cross-compilation#cross-compilation).
 
-With Nix, code sharing extends beyond the mere transfer of source files. Nix ensures [_hermetic_](https://zero-to-nix.com/concepts/hermeticity) and [_reproducible_](https://zero-to-nix.com/concepts/reproducibility) builds using _input-addressable_ storage. Environments are authenticated by their derivations and encompass the entire context within which the code is intended to run. Support for _content-addressable_ storage in the future will make components self-authenticating and enable greater de-duplication.
+With Nix, code sharing extends beyond the mere transfer of source files. Environments are authenticated by their derivations and encompass the entire context within which the code is intended to run. Nix ensures [_hermetic_](https://zero-to-nix.com/concepts/hermeticity) and [_reproducible_](https://zero-to-nix.com/concepts/reproducibility) build inputs through _input-addressable_ storage. Support for _content-addressable_ storage in the future will make components self-authenticating and enable greater de-duplication.
 
 Building from source provides greater trustworthiness, availability, and configurability while incurring greater retrieval, compute, and storage costs. Binary caches are cheaper by comparison but require users that only need what's available. The reproducibility of Nix allows it to blend source and binary deployment models' best aspects while dodging their respective drawbacks.
 
