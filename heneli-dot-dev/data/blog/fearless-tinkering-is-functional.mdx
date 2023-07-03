@@ -187,7 +187,7 @@ One could rightly object that the need to learn new mathematical abstractions is
       </tr>
       <tr>
         <th scope="row" >
-          <p>Transitive:</p>
+          <p>Transitive:[^8]</p>
           <p>`F: A -> B`, <br/> `G: B -> C` <br/> => `G ∘ F: A -> C`</p>
         </th>
         <td className="align-middle">
@@ -204,8 +204,8 @@ One could rightly object that the need to learn new mathematical abstractions is
           ```
           <caption className="flex justify-center prose prose-sm dark:prose-dark">Non-composable as `square` can't accept booleans</caption>
         </td>
-        <td className="align-middle">Fearlessly compose and delegate</td>
-        <td className="align-middle">Relational Databases</td>
+        <td className="align-middle">Fearlessly link and delegate</td>
+        <td className="align-middle">ORMs</td>
       </tr>
       <tr>
         <th scope="row" className="align-middle">
@@ -282,7 +282,7 @@ One could rightly object that the need to learn new mathematical abstractions is
 
 ## To Be Continued...
 
-That's all for now! The next part of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the final article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^8]
+That's all for now! The next part of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the final article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^9]
 
 ✌️
 
@@ -322,6 +322,10 @@ That's all for now! The next part of this article will continue with examples of
 [^7]:
     No one needs to learn category theory to become a [great functional programmer](http://comonad.com/reader/2014/letter-to-a-young-haskell-enthusiast/)! Sure, some people have brought great ideas from category theory and other mathematical fields back to the realm of programming. But math gets invented to incorporate great ideas originating from programming (and everywhere else) as well. The [streetlight effect](https://en.wikipedia.org/wiki/Streetlight_effect) goes both ways! Programmers should treat math as a tool that serves to give one understanding, rather than a tool one serves to give up their understanding.
 [^8]:
+    Transitive with respect to `->`: If there exists a path from `A` to `B` (`F`) and a path from `B` to `C` (`G`), then there exists a path from `A` to `C` (`G ∘ F`). I like the idea of focusing on the transitive property since it is widely understood, simple to model with equations, and largely taken for granted. Note that the examples in this row are [modular rather than compositional](https://blog.statebox.org/modularity-vs-compositionality-a-history-of-misunderstandings-be0150033568).
+
+    I've yet to decide whether I'm abusing terminology above (or care), so this row may be rewritten later. That would suck since I'm halfway done with another post on the same topic...
+[^9]:
     Dear Reader,
 
     Thanks to this final footnote, there are over twenty mentions of the word _fearless_ on this page. And I'm just warmed up...
