@@ -17,10 +17,17 @@ interface LayoutProps {
   prev?: { path: string; title: string }
 }
 
+const editUrl = (path) => `${siteMetadata.siteRepo}/blob/master/heneli-dot-dev/data/${path}`
+const twitterUrl = (path) =>
+  `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`)}`
+const issueUrl = `https://github.com/hkailahi/heneli.dev/issues`
+const discussUrl = `https://github.com/hkailahi/heneli.dev/discussions`
+const trashUrl = `https://news.ycombinator.com/`
+
 export default function PostLayout({ content, next, prev, children }: LayoutProps) {
   const [loadComments, setLoadComments] = useState(false)
 
-  const { path, slug, date, title } = content
+  const { filePath, path, slug, date, title, version, readingTime } = content
 
   return (
     <SectionContainer>
@@ -40,12 +47,47 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
               </dl>
               <div>
                 <PageTitle>{title}</PageTitle>
+                <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                  v{version}
+                </div>
+                <br />
+                <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                  {readingTime.text} ({readingTime.words} words)
+                </div>
               </div>
             </div>
           </header>
           <div className="grid-rows-[auto_1fr] divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:divide-y-0">
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
-              <div className="prose max-w-none pb-8 pt-10 dark:prose-dark">{children}</div>
+              <div className="prose-default prose max-w-none pb-8 pt-10 dark:prose-dark sm:prose-xl">
+                {children}
+              </div>
+              <div className="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">
+                <Link href={twitterUrl(path)} rel="nofollow">
+                  Discuss on Twitter
+                </Link>
+                {` • `}
+                <Link href={editUrl(filePath)}>View on GitHub</Link>
+              </div>
+              <div className="pb-6 pt-6 text-xs text-gray-700 dark:text-gray-300">
+                <div>
+                  Something incorrect? Addition to propose? Please file an{' '}
+                  <Link href={issueUrl} className="text-cyan-400 underline" rel="nofollow">
+                    issue
+                  </Link>
+                  . Comment to add? Join the discussion below by authorizing Giscus or commenting
+                  directly on the{' '}
+                  <Link href={discussUrl} className="text-cyan-400 underline" rel="nofollow">
+                    Github Discussion
+                  </Link>
+                  . Off-topic remarks, unfunny jokes, weirdly overfamiliar internet-speak, and
+                  bootlicking will be moved{' '}
+                  <Link href={trashUrl} className="text-cyan-400 underline" rel="nofollow">
+                    here
+                  </Link>
+                  .
+                </div>
+              </div>
             </div>
             {siteMetadata.comments && (
               <div className="pb-6 pt-6 text-center text-gray-700 dark:text-gray-300" id="comment">

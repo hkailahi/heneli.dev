@@ -2,4 +2,12 @@
 node_modules
 
 # Nix
+.direnv
 result
+
+# Future Blogpost
+heneli-dot-dev/data/drafts/fearless-functional-future.mdx
+heneli-dot-dev/data/drafts/fearless-tinkering-haskell.mdx
+heneli-dot-dev/data/drafts/fearless-tinkering-is-algebraic.mdx
+heneli-dot-dev/data/drafts/fearless-tinkering-nix-copy.mdx
+# ^ See https://stackoverflow.com/a/73568239 for moving file to new branch while retaining history

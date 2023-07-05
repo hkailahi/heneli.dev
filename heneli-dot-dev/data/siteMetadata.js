@@ -5,14 +5,15 @@ const siteMetadata = {
   title: 'Heap State',
   author: 'Heneli Kailahi',
   headerTitle: 'Heap State',
-  description: 'A blog about alternative approaches for programming and industry',
+  description: 'A blog about software from beyond the lamp post',
   language: 'en-us',
   theme: 'system', // system, dark or light
   siteUrl: 'https://heneli.dev',
   siteRepo: 'https://github.com/hkailahi/heneli.dev',
   siteLogo: '/static/images/logo.png',
   image: '/static/images/avatar.png',
-  socialBanner: '/static/images/twitter-card.png', // TODO - Add alternative graphic
+  // Use useless param to retrigger link preview indexes on social sites
+  socialBanner: '/static/images/twitter-card.png',
   email: 'bright.tent7049@fastmail.com',
   github: 'https://github.com/hkailahi',
   twitter: 'https://twitter.com/kat_getheny',
@@ -24,7 +25,7 @@ const siteMetadata = {
     // If you want to use an analytics provider you have to add it to the
     // content security policy in the `next.config.js` file.
     // supports plausible, simpleAnalytics, umami or googleAnalytics
-    plausibleDataDomain: '', // e.g. tailwind-nextjs-starter-blog.vercel.app
+    plausibleDataDomain: 'heneli.dev', // e.g. tailwind-nextjs-starter-blog.vercel.app
     // simpleAnalytics: false, // true or false
     // umamiWebsiteId: '', // e.g. 123e4567-e89b-12d3-a456-426614174000
     // posthogProjectApiKey: '', // e.g. AhnJK8392ndPOav87as450xd
@@ -36,8 +37,6 @@ const siteMetadata = {
     provider: 'buttondown',
   },
   comments: {
-    // If you want to use an analytics provider you have to add it to the
-    // content security policy in the `next.config.js` file.
     // Select a provider and use the environment variables associated to it
     // https://vercel.com/docs/environment-variables
     provider: 'giscus', // supported providers: giscus, utterances, disqus

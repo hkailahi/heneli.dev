@@ -1,0 +1,335 @@
+---
+title: 'Fearless Tinkering is Functional'
+date: '2023-07-06'
+lastmod: '2023-07-06'
+version: '0.1'
+tags: ['functional', 'complexity', 'algebra', 'declarative']
+draft: false
+summary: 'A fearless tinkerer sails a ship where entire classes of leakage are rendered an impossibility.'
+images: []
+authors: ['default']
+layout: PostSimple
+---
+
+{/* Per https://github.com/mdx-js/mdx/blob/main/docs/guides/math.server.mdx for 'important' and 'note' boxes on https://mdxjs.com/guides/math */}
+import {Note} from './components/Note.tsx'
+
+<Note type='info'>
+👋 I'm currently in the market for backend, platform, or full-stack software engineering positions. My [resume](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view) can be found on [Google Docs](https://drive.google.com/file/d/1R4bgTakzudfKtADqJeaGchP6g_kXamI8/view). Please send hiring inquiries via [Linkedin](https://www.linkedin.com/in/hkailahi?original_referer=heneli.dev) or [email](mailto:bright.tent7049@fastmail.com).
+</Note>
+
+_Is functional programming worth learning? This series is the sales pitch I wish I had received when first being introduced to the world of functions._
+
+<TOCInline toc={props.toc} toHeading={3} asDisclosure />
+
+🪝
+
+Sometimes functional programming gets a bad rap. Critics from industry cite a laundry list of issues, including a lack of commercial validation, high barrier of entry, sparse library catalog, poor documentation, unfamiliar academic culture, and dismal entry-level job market. Advocates counter [with](https://blog.janestreet.com/why-ocaml/) [a](https://discord.com/blog/how-discord-scaled-elixir-to-5-000-000-concurrent-users) [number](https://blog.replit.com/nix) [of](https://serokell.io/blog/haskell-in-production-meta) [success](https://www.pagerduty.com/blog/tag/elixir/) [stories](https://serokell.io/blog/haskell-in-production-mercury) and appeals pointing [to](https://elixir-lang.org/blog/2022/10/05/my-future-with-elixir-set-theoretic-types/) [ongoing](https://blog.janestreet.com/oxidizing-ocaml-locality/) [improvements](https://haskell.foundation/projects/). “[Things](https://www.amazon.com/Production-Haskell-Succeeding-Industry/dp/B0BTNVFR2N) _[really](https://zero-to-nix.com/) [are](https://pijul.org/posts/2023-05-23-nest-a-new-hope/)_ [getting](https://fsharp.org/mentorship/) [better](https://leanpub.com/fp-made-easier)!” Deserved or otherwise, skepticism is hard to overcome.
+
+It’s certainly never been the case that a functional language was the de facto industry standard like Java, Python, and JavaScript have been. By choice[^1] or by fate, the lack of mainstream adoption has had predictable costs on functional ecosystems. When 10,000 new programmers are learning an imperative language to every individual learning a functional one, can a functional approach really compete?[^2]
+
+My answer is yes. While they have merit, none of the above critiques are inherent. In fact, I’ll argue that the functional paradigm already has best-in-class discoverability and experimentation thanks to **fearless tinkering**.[^3]
+
+## Fearless in Theory
+
+---
+
+### Fear and Complexity
+
+There’s an endless list of things that invoke fear in programmers, such as:
+<div className="overflow-x-auto">
+  |  |  |  |   |
+  | - | :- | -: | :-: |
+  | clocks | rolling upgrades | concurrency | bit rot |
+  | far out deadlines | service alerts | tech debt | stale builds |
+  | nondeterminism | replication | ambiguous requirements | hardware faults |
+  | software rewrites | network partitions | scope creep | security |
+</div>
+Each of these areas can be terrifying on their own. To make matters worse, software rarely contains just a single source of horror. Very simple programs written by very thoughtful programmers can host a multitude.
+
+Without the right tools, conquering these fears can feel impossible. How can one produce trustworthy software with untrustrworthy tools? Some adopt a defensive programming style, but institutionalizing apprehension isn't an end in itself. What use is an infinite roll of duct tape when a ship takes water? If tape can’t solve the first leak, should one patch the next, or accept fate and lose hope in the voyage? Does a decision even matter when the ship is already sinking? Maybe swimming to shore and joining a new boat would suffice… at least until that crew wants to tape their leaks. By then, that too will be someone else’s problem. The cognitive burden of faulty software is real and difficult to remedy. Programming is a social exercise, and teams will burn out accommodating learned helplessness.
+
+Most fears boil down to uncertainty about **complexity**. As Fred Brooks explained in [No Silver Bullet](https://en.wikipedia.org/wiki/No_Silver_Bullet), there exists **essential complexity** that cannot be avoided and **accidental complexity** that can.[^4] [Out of the Tar Pit](https://github.com/papers-we-love/papers-we-love/blob/2eb8d21/design/out-of-the-tar-pit.pdf) followed up by diagnosing **state**, **control flow**, and **code volume** as the most frequent culprits underlying accidental complexity. The nature of complexity is festering and exponential, so tackling root causes is always better than addressing symptoms. Put another way, preventing leaks by addressing the inherent structural deficiencies of a ship’s build is favorable to being skilled at plugging holes.
+
+**Fearless tinkering** is the ability to engage a domain and confidently reason about it while unencumbered by accidental complexity. Whether the domain is concurrency, software upgrades, or something else, a fearless tinkerer can rely on the structural guarantees of their context to safely explore their domain and target the essential complexity of the task at hand. A fearless tinkerer sails a ship where entire classes of leakage are rendered an impossibility. What kinds of leaks are prevented? How are they decided? As discussed in the following sections, these guarantees are determined by the algebra of one’s program.
+
+### On Functional Programming
+
+The functional style encourages transformation-based workflows over state-based workflows. To motivate this approach, functional languages offer an assortment[^5] of party tricks:[^6]
+<div className="overflow-x-auto">
+  |  |  |  |   |
+  | - | :- | -: | :-: |
+  | Referential Transparency | Pure Functions | Immutability |  Declarative Programming |
+  | First-Class Functions | Higher-Order Functions | Pattern Matching | Tail Call Elimination |
+  | Compositionality |  Managed Effects | Algebraic Datatypes | Expression-Oriented Programming |
+  | Recursive Datatypes | Equational Reasoning | | |
+</div>
+
+Functional programming doesn’t solve complexity but helps one meet it by surfacing its roots. To do this, functional languages deliver battle-tested approaches to the state, control flow, and volume.
+
+Functional languages _<u>make stateful complexity explicit</u>_. By pairing immutable defaults with performant and easy-to-use APIs, functional languages minimize the need for mutable state. Introducing any mutable state thus becomes an intentional and highly visible action. Given the elimination of destructive updates, compilers are empowered to reward programmers with greater [expressiveness](https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29) and [safety](https://en.wikipedia.org/wiki/Software_transactional_memory) at less cost. Some functional languages make explicit their “effects” with types, creating a distinction that allows separate reasoning of “effect-free” and “effectful” code.
+
+With a greater reliance on _<u>declarative constructs</u>_ (expressions) over _<u>imperative ones</u>_ (statements), functional languages eliminate a number of control flow complexities. Jump-based statements that break compositionality are replaced with expressions that can be substituted for their value. Bigger programs can be faithfully decomposed into smaller ones. This allows for [local reasoning](https://www.inner-product.com/posts/fp-what-and-why/) on individual parts to hold up when global reasoning is needed about the whole. Thanks to the sole determination of a function’s outputs on its inputs, purely functional programming creates an experience where “what you see is what you get.”
+
+_<u>Compositionality</u>_ also addresses program volume in functional languages. Programs and their domains can be _<u>mechanically decomposed</u>_ into their essential concepts. For instance, programmers can collapse verbose wrangling and glue-code into neat reusable patterns using higher-order functions and composition. Typed functional languages use various flavors of polymorphism to replace infinitely-many functions over one domain with an economy of functions over infinite domains. Typed functional languages also reduce cognitive volume by offloading the rote calculations of dynamism onto the programmer’s better-suited counterpart in computers. As elaborated in the following section, relegating implementation details to the relevant semantic layer makes declarative APIs naturally terse. [Judicious](https://youtu.be/HCuCKeK1l6g) use of abstraction capabilities assists in uncovering rock-solid, lean foundations for APIs and broader ecosystems.
+
+Armed with the properties of functional languages, programmers can reclaim their cognitive sovereignty and fearlessly explore software in action.
+
+### Ideas over Implementation Details
+
+> Declare it. Answer how with what. Break the causal chain and unshackle from the past. The world is simply what you say it is.
+>
+> - a sage functional programmer, probably
+
+If language is a tool for thought, then one should value dialects enabling natural communication. Blunted alternatives that intersperse anything meaningful with robotic recitations of language internals or error-prone adaptations to outside alterations are frustrating to tolerate. A language that yields such fragile mental models is ill-fit for real-world scenarios like context-switching, requirements evolution, and the eventuality of a system’s growth beyond what can be kept in one’s head. The essential complexity programmers face is already challenging enough.
+
+When the business calls for an algorithm to determine how many users visited their website last week, no one’s first thought should have to be about for-loops, heap allocations, hashing strategies, logic gates, or cosmic rays. No, an API that’s better suited for immediate communication might yield something like:
+
+```jsx
+all_users -> filter_by(visited_since(-7 days)) -> count()
+```
+<caption className="flex justify-center">All users, filtered by those who visited in the last seven days, counted</caption>
+
+Declarative programming simplifies the act of learning because it a) meets one at their layer of abstraction and b) lets one focus solely on what’s in front of them. A well-designed declarative API lays out all the vocabulary and structure one should need, such that formulating solutions through sentences is as natural as placing blocks in a game of Tetris. Learners can focus on describing the place they actually care about instead of the windy road taken to get there. By only necessitating the specification of a goal state, programmers are unburdened by the interconnected history of their model's state transitions.
+
+### Constraints Liberate
+
+> Freedom at one level leads to restriction at another. A constraint at one level leads to freedom and power at another level.
+>
+> - Rúnar Bjarnason @ Scala World 2015, [Constraints liberate, Liberties constrain](https://youtu.be/GqmsQeSzMdw)
+
+Observing the underlying properties of a program is the key to unlocking its simplification. Pure functions are simple because of the numerous constraints imposed on them. The restriction of mapping input sets onto output sets eases the discovery of additional relationships in one’s program. Employing popular [functional](https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/) [techniques](https://kowainik.github.io/posts/haskell-mini-patterns#phantom-type-parameters) to prune superfluous code paths can make further invariants lurking in our programs more apparent. By building an arsenal of common operations with associated constraints, one can unlock a valuable toolkit of powers to call upon in various programming situations.
+
+One could rightly object that the need to learn new mathematical abstractions is trading one kind of complexity for another. In practice, there are but a small handful of core abstractions that programmers will typically run into and are thus worth their collective weight.[^7] Learning frequently occurring abstractions is useful for formalizing one's understanding of the domains they characterize. The major benefit of learning said abstractions is that once you’ve understood them, you’ve understood them for all their applications.
+
+<div className="overflow-x-auto">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Property</th>
+        <th scope="col">Disallows</th>
+        <th scope="col">Power</th>
+        <th scope="col">Example</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row" className="align-middle">Functional Purity</th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          log4Info(msg):
+              upload_ssn()
+              return “info: ” + msg
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Performs side-effect</caption>
+        </td>
+        <td className="align-middle">Fearlessly execute, reproduce, and cache</td>
+        <td className="align-middle">Haskell</td>
+      </tr>
+      <tr>
+        <th scope="row" className="align-middle">Immutable</th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          f(x):
+            global += x
+            return global
+
+          >>> f(5)
+          5
+          >>> f(5)
+          10
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">`global` changes its value</caption>
+        </td>
+        <td className="align-middle">Fearlessly rollback and share dependencies</td>
+        <td className="align-middle">Nix</td>
+      </tr>
+      <tr>
+        <th scope="row" className="align-middle">
+          <p>Associative:</p>
+          <p>`(A <> B) <> C == A <> (B <> C)`</p>
+        </th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          >>> average(1, average(2, 3))
+          1.75
+          >>> average(average(1, 2), 3)
+          2.25
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Left-to-right evaluation is different from right-to-left</caption>
+        </td>
+        <td className="align-middle">Fearlessly parallelize and rebalance operations</td>
+        <td className="align-middle">MapReduce</td>
+      </tr>
+      <tr>
+        <th scope="row" className="align-middle">
+          <p>Commutative:</p>
+          <p>`A <> B == B <> A`</p>
+        </th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          >>> wells_fargo.make_transations([
+            deposit($200),
+            withdraw($100),
+            withdraw($100)
+          ])
+          >>> wells_fargo.show_activity()
+          Transaction Log:
+            -100, -25 (overdraw fee),
+            +200,
+            -100, -25 (overdraw fee)
+          Current Balance: -$50
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Reordering changes result</caption>
+        </td>
+        <td className="align-middle">Fearlessly reorder executions</td>
+        <td className="align-middle">Pijul</td>
+      </tr>
+      <tr>
+        <th scope="row" >
+          <p>Transitive:[^8]</p>
+          <p>`F: A -> B`, <br/> `G: B -> C` <br/> => `G ∘ F: A -> C`</p>
+        </th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          neg_to_bool(x: int) -> Union[int, bool]:
+              if x < 0: return False
+              else: return x
+
+          square(a: int) -> int:
+              return a * a
+
+          >>> square(neg_to_bool(-10))
+          *** error!
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Non-composable as `square` can't accept booleans</caption>
+        </td>
+        <td className="align-middle">Fearlessly link and delegate</td>
+        <td className="align-middle">Relational Databases</td>
+      </tr>
+      <tr>
+        <th scope="row" className="align-middle">
+          <p>Join-Semilattice:</p>
+          <p>`Associative: (A <> B) <> C == A <> (B <> C)`</p>
+          <p>`Commutative: A <> B == B <> A`</p>
+          <p>`Idempotent: A <> A == A`</p>
+        </th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          $ git merge develop
+          Auto-merging index.html
+          CONFLICT (content): ...
+          CONFLICT (modify/delete): ...
+          Automatic merge failed;
+
+          $ cat index.html
+          <<<<<<< HEAD
+            <h1>Fearless Tinkering is Functional</h1>
+          =======
+            <h1>Fearless Tinkering is Algebraic</h1>
+          >>>>>>> develop
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Permits conflicts when synchronizing</caption>
+        </td>
+        <td className="align-middle">Fearlessly update and collaborate</td>
+        <td className="align-middle">Electric SQL</td>
+      </tr>
+      <tr>
+        <th scope="row" >
+          <p>Invertible:</p>
+          <p>A `<>` `id` == A</p>
+          <p>=> A `<>` A<sup>-1</sup> == `id`</p>
+          <p>=> A<sup>-1</sup> `<>` A == `id`</p>
+        </th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          from_list = lambda input: set(input)
+          to_list = lambda input: list(input)
+
+          >>> x = ['foo', 'bar', 'bar']
+          >>> x == to_list(from_list(x))
+          False
+          // ['foo', 'bar', 'bar'] vs ['foo', 'bar']
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Roundtrip failure</caption>
+        </td>
+        <td className="align-middle">Fearlessly revert and swap domains</td>
+        <td className="align-middle">Optics, Deriving-Via</td>
+      </tr>
+      <tr>
+        <th scope="row" className="align-middle">Finite + Enumerable</th>
+        <td className="align-middle">
+          ```jsx chrome=no
+          is_odd(x: int) -> bool:
+              if x == 0: False
+              if x == 1: True
+              if x == 2: False
+              if x == 17: True
+
+          >>> is_odd(10000)
+          *** error!
+          ```
+          <caption className="flex justify-center prose prose-sm dark:prose-dark">Missed edge case from non-exhaustive handling of inputs</caption>
+        </td>
+        <td className="align-middle">Fearlessly pattern match</td>
+        <td className="align-middle">Rust's `Result` & `Option`</td>
+      </tr>
+    </tbody>
+    <caption>Figure 1: A small sampling of properties and the powers they grant.</caption>
+
+  </table>
+</div>
+
+## To Be Continued...
+
+That's all for now! The next two parts of this article will continue with examples of functional programming in practice. Then, we'll discuss how exploiting one's underlying algebra allows any technology to create fearless experiences. Lastly, the final article will introduce several promising functional technologies on the horizon and speculate about their fearless futures.[^9]
+
+✌️
+
+<div className="prose-default prose dark:prose-dark">_Thanks to Aaron Sewall and others for reviewing drafts of this article._</div>
+
+## Footnotes
+
+[^1]:
+    The prelude section of the [Haskell Foundation Whitepaper](https://haskell.foundation/whitepaper/) captures the previous success of the “Avoid success at all costs” slogan as well as the industry need to evolve beyond the phrase.
+[^2]:
+    Source: I made it up. The best I could find was the [2022 Stack Overflow Developer Survey](https://survey.stackoverflow.co/2022/#technology) and the [March 2023 TIOBE index](https://www.tiobe.com/tiobe-index/), which can’t directly validate my claim but weakly support its order of magnitude.
+
+    Per Stack Overflow, Scala (2.59%), Haskell (2.22%), Elixir (2.15%), Clojure (1.51%), F# (1.03%), Erlang (0.9%), and OCaml (0.59%) make up a combined 10.4% of 71,547 responses for [Most Popular Technologies](https://survey.stackoverflow.co/2022/#technology-most-popular-technologies) survey, none of which meet the 5000 connection minimum in the 69,362 respondent [Work With vs Want to Work With](https://survey.stackoverflow.co/2022/#worked-with-vs-want-to-work-with-language-worked-want) survey.
+
+    Per the TIOBE popularity index, only #25 F# (0.53%), #31 Haskell (0.34%), and #38 Scala (0.23%) make the top 50, with all of Elixir, Erlang, Common Lisp, Scheme, Clojure, F#, Erlang, and OCaml landing between #51 to #100.
+[^3]:
+    In the draft versions of this article, I made the stronger claim that functional programming already had best-in-class *learnability*. I suspect that many of my peers would find this absurd. I'll acknowledge that countless have bounced off of functional languages and that huge efforts by functional advocates have been motivated directly because of these approachability issues.
+
+    When I say the functional paradigm has best-in-class *learnability*, my focus is on the inherent qualities of functional languages. One could substitute my use of *learnability* for *understandability*, and that would be a fair starting point. However, that wouldn’t capture my view that learnability is directly correlated to how far one can explore without consequence. The functional style achieves this freedom by explicating assumptions and enabling both the composition and decomposition of programs. This burdenless discoverability is why the functional paradigm is more learnable (and continually so) for beginner, intermediate, and advanced practitioners. Functional shops should be doing a [better job](https://eevie.ro/posts/2019-12-30-junior-developers.html) of wielding this market advantage, and yet many have found ways to turn this strength into a weakness.
+
+    Of course, learning a language in practice has as much to do with the language itself as with its peripherals. Pedagogy, tooling, industrial opportunities, marketing, and community are all essential for initial exposure to ideas and a holistic learning experience. While the peripherals around a paradigm or language can change, the fundamentals are more sticky. The software industry has shown a large appetite for new language variations but a minimal appetite for new language foundations. While functional languages haven't been popular, they've certainly been influential. A slow yet constant trickle of functional language features into mainstream paradigms has persisted as the need to overcome accidental complexity remains.
+
+    This all isn’t to say that functional programming is the ultimate destination. Comparisons to mainstream paradigms are limited as none of the existing incarnations are particularly “learnable”. While the functional paradigm can offer greater safeguards than imperative alternatives, neither has yielded a satisfactory and industrial-grade experience embodying other qualities of a [learnable experience](https://web.archive.org/web/20201105061430/http://worrydream.com/LearnableProgramming/) (e.g. interactivity, visualization, uniformity, immediacy, etc.). It’s possible that achieving this will require new paradigms built on top of [functional foundations](https://youtu.be/yLTgPuOrUmI). More on that in the future…
+[^4]:
+    The definition of accidental complexity in 'Out of the Tar Pit' is more specific. However, for the sake of this article, it can be treated more broadly as meaning self-inflicted or avoidable complexity.
+[^5]: Overlapping, non-compulsory, non-exhaustive
+[^6]:
+    I have cowardly deferred to others the task of formally defining “functional programming.” This is because FP is a vibe™️.
+
+    More seriously, I use “functional programming” as shorthand for a style that avoids mutation and implicit “effects”. I also define “functional languages” as those enabling the representation of programs with expressions that can be substituted for their value (as is even the case for [“impure” eDSLs like `State` or `IO`](https://twitter.com/lexi_lambda/status/1242878496076189702?s=20)).
+
+    Both the usefulness and accuracy of the term “functional” has been debated. Even the meaning and relation of commonly associated descriptors like “declarative” are contested. There doesn’t seem to be a minimal feature set across languages that are widely considered functional. Not even [lexical closures](https://youtu.be/l0ruvPCQh9I?t=410)! The heuristic for determining which languages are functional might as well be whether the language mentions ‘functional’ in its marketing material or shares a family origin with those listed on the sidebar of [r/functionalprogramming](https://old.reddit.com/r/functionalprogramming/).
+
+    For the sake of this article, I am willing to tolerate the imprecision of ‘Fearless Tinkering is Functional’ over something that might better match like ‘expression-oriented’, ‘denotative’, ‘algebraic’, or 'structural' (definitional claims are unfalsifiable anyways). When a claim reflects my own opinions, I am also willing to forgo small nuances (or bury them in footnotes) when speaking to unacquainted audiences. My goals with this specific article are more about connecting valuable ideas through familiar phrasing to a broader audience than advancing a discussion amongst those already equipped with understanding.
+
+    More general problems exist with various commonly-used terms by functional programmers. There are particular statements that often lead to poor intuitions and mismatched discussions. I hope to publish more on this topic.
+[^7]:
+    No one needs to learn category theory to become a [great functional programmer](http://comonad.com/reader/2014/letter-to-a-young-haskell-enthusiast/)! Sure, some people have brought great ideas from category theory and other mathematical fields back to the realm of programming. But math gets invented to incorporate great ideas originating from programming (and everywhere else) as well. The [streetlight effect](https://en.wikipedia.org/wiki/Streetlight_effect) goes both ways! Programmers should treat math as a tool that serves to give one understanding, rather than a tool one serves to give up their understanding.
+[^8]:
+    Transitive with respect to `->`: If there exists a path from `A` to `B` (`F`) and a path from `B` to `C` (`G`), then there exists a path from `A` to `C` (`G ∘ F`). I like the idea of focusing on the transitive property since it is widely understood, simple to model with equations, and largely taken for granted. Note that the examples in this row are [modular rather than compositional](https://blog.statebox.org/modularity-vs-compositionality-a-history-of-misunderstandings-be0150033568).
+
+    I've yet to decide whether I'm abusing terminology above (or care), so this row may be rewritten later. That would suck since I'm halfway done with another post on the same topic...
+[^9]:
+    Dear Reader,
+
+    Thanks to this final footnote, there are twenty-five mentions of the word _fearless_ on this page. And I'm just warmed up...
+
+    Fearlessly,
+
+    Heneli

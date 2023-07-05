@@ -21,7 +21,10 @@ import rehypePresetMinify from 'rehype-preset-minify'
 const root = process.cwd()
 
 const computedFields: ComputedFields = {
-  readingTime: { type: 'json', resolve: (doc) => readingTime(doc.body.raw) },
+  readingTime: {
+    type: 'json',
+    resolve: (doc) => readingTime(doc.body.raw, { wordsPerMinute: 200 })
+  },
   slug: {
     type: 'string',
     resolve: (doc) => doc._raw.flattenedPath.replace(/^.+?(\/)/, ''),
@@ -44,6 +47,7 @@ export const Blog = defineDocumentType(() => ({
   fields: {
     title: { type: 'string', required: true },
     date: { type: 'date', required: true },
+    version: { type: 'string', required: true },
     tags: { type: 'list', of: { type: 'string' } },
     lastmod: { type: 'date' },
     draft: { type: 'boolean' },

@@ -11,9 +11,12 @@ import Tag from '@/components/Tag'
 import siteMetadata from '@/data/siteMetadata'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 
-const editUrl = (path) => `${siteMetadata.siteRepo}/blob/master/data/${path}`
-const discussUrl = (path) =>
+const editUrl = (path) => `${siteMetadata.siteRepo}/blob/master/heneli-dot-dev/data/${path}`
+const twitterUrl = (path) =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`)}`
+const issueUrl = `https://github.com/hkailahi/heneli.dev/issues`
+const discussUrl = `https://github.com/hkailahi/heneli.dev/discussions`
+const trashUrl = `https://news.ycombinator.com/`
 
 const postDateTemplate: Intl.DateTimeFormatOptions = {
   weekday: 'long',
@@ -31,7 +34,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { filePath, path, slug, date, title, tags } = content
+  const { filePath, path, slug, date, title, version, tags, readingTime } = content
   const basePath = path.split('/')[0]
   const [loadComments, setLoadComments] = useState(false)
 
@@ -55,6 +58,9 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               </dl>
               <div>
                 <PageTitle>{title}</PageTitle>
+                <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                  v{version}
+                </div>
               </div>
             </div>
           </header>
@@ -92,16 +98,56 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                     </li>
                   ))}
                 </ul>
+                <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
+                  {tags && (
+                    <div className="py-4 xl:py-8">
+                      <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                        Tags
+                      </h2>
+                      <div className="flex flex-wrap">
+                        {tags.map((tag) => (
+                          <Tag key={tag} text={tag} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </ul>
+                <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
+                  <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                    {readingTime.text} ({readingTime.words} words)
+                  </div>
+                </ul>
               </dd>
             </dl>
             <div className="divide-y divide-gray-200 dark:divide-gray-700 xl:col-span-3 xl:row-span-2 xl:pb-0">
-              <div className="prose max-w-none pb-8 pt-10 dark:prose-dark">{children}</div>
+              <div className="prose-default prose max-w-none pb-8 pt-10 dark:prose-dark sm:prose-xl">
+                {children}
+              </div>
               <div className="pb-6 pt-6 text-sm text-gray-700 dark:text-gray-300">
-                <Link href={discussUrl(path)} rel="nofollow">
+                <Link href={twitterUrl(path)} rel="nofollow">
                   Discuss on Twitter
                 </Link>
                 {` • `}
                 <Link href={editUrl(filePath)}>View on GitHub</Link>
+              </div>
+              <div className="pb-6 pt-6 text-xs text-gray-700 dark:text-gray-300">
+                <div>
+                  Something incorrect? Addition to propose? Please file an{' '}
+                  <Link href={issueUrl} className="text-cyan-400 underline" rel="nofollow">
+                    issue
+                  </Link>
+                  . Comment to add? Join the discussion below by authorizing Giscus or commenting
+                  directly on the{' '}
+                  <Link href={discussUrl} className="text-cyan-400 underline" rel="nofollow">
+                    Github Discussion
+                  </Link>
+                  . Off-topic remarks, unfunny jokes, weirdly overfamiliar internet-speak, and
+                  bootlicking will be moved{' '}
+                  <Link href={trashUrl} className="text-cyan-400 underline" rel="nofollow">
+                    here
+                  </Link>
+                  .
+                </div>
               </div>
               {siteMetadata.comments && (
                 <div
@@ -117,18 +163,6 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             </div>
             <footer>
               <div className="divide-gray-200 text-sm font-medium leading-5 dark:divide-gray-700 xl:col-start-1 xl:row-start-2 xl:divide-y">
-                {tags && (
-                  <div className="py-4 xl:py-8">
-                    <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                      Tags
-                    </h2>
-                    <div className="flex flex-wrap">
-                      {tags.map((tag) => (
-                        <Tag key={tag} text={tag} />
-                      ))}
-                    </div>
-                  </div>
-                )}
                 {(next || prev) && (
                   <div className="flex justify-between py-4 xl:block xl:space-y-8 xl:py-8">
                     {prev && (

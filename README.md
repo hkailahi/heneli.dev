@@ -1,10 +1,23 @@
 # heneli.dev
 
+<p align="center" width="100%">
+  <img src="./heneli-dot-dev/public/static/images/twitter-card.png" alt="Heap State Logo - heneli.dev" width=75% height=75%>
+</p>
+
 ## Contents
 - [heneli.dev](#henelidev)
   - [Contents](#contents)
+  - [About](#about)
   - [Blog Discussions](#blog-discussions)
   - [Initial Setup](#initial-setup)
+
+## About
+
+This is my blog. Articles are written in MDX/Markdown files in `heneli-dot-dev/data/blog`. Bibliographies and research notes for each article are found in the `references` directory. Some of my posts include:
+
+- [Fearless Tinkering is Functional](https://www.heneli.dev/blog/fearless-tinkering-is-functional)
+
+This site is written in React + Next.js, and deployed via Vercel. Cookieless, privacy-first analytics are provided through Plausible. Comments are provided through Github Discussions and Giscus.
 
 ## Blog Discussions
 
@@ -22,8 +35,9 @@ Run lightly-modified version of [templater directions](https://github.com/timlrx
 $ nix-shell -p pkgs.nodejs-19_x
 nix-shell> $ npm install @pliny/cli
 nix-shell> $ ./node_modules/.bin/pliny new --template=starter-blog heneli-dot-dev
-nix-shell> $ npm uninstall @pliny/cli                                                      # FIXME NOTE - Haven't run yet
-nix-shell> $ rm -rf node_modules package.json package-lock.json                            # FIXME NOTE - Haven't run yet
+# Optional cleanup
+nix-shell> $ npm uninstall @pliny/cli
+nix-shell> $ rm -rf node_modules package.json package-lock.json
 ```
 
 NOTE: In future attempts, figure out how to avoid raw, non-`nix` managed interactions with `npm`.
@@ -139,11 +153,11 @@ $ nix flake lock
 $ nix develop
 # warning: Git tree '/Users/hkailahi/dev/sites/heneli.dev' is dirty
 # 🔨 Welcome to devshell
-# 
+#
 # [general commands]
-# 
+#
 #   menu - prints this menu
-# 
+#
 (nix:devshell-env) [devshell]$ npm --v
 9.5.1
 ```
