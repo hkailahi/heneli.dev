@@ -5,7 +5,7 @@ lastmod: '2023-07-13'
 version: '0.1'
 tags: ['functional', 'declarative', 'nix', 'containers', 'devops', 'reproducible']
 draft: false
-summary: 'Fearless, shared environments with Nix.'
+summary: 'Liberate your DevOps! Move fast and save things with Nix.'
 images: []
 authors: ['default']
 layout: PostSimple
@@ -61,6 +61,10 @@ Similarly, IaC solutions that advertise themselves as "immutable infrastructure"
 Meanwhile, Nix has developed to fill these gaps. Nix can fit neatly within existing infrastructure, letting engineers recover [compositionality](https://nixos.org/manual/nix/stable/language/index.html) and [reproducibility](https://r13y.com/) while using [IaC](https://nix.dev/tutorials/nixos/build-and-deploy/deploying-nixos-using-terraform), [containers](https://floxdev.com/blog/flox-and-containers), and other solutions. Nix can also subsume various existing tools with alternatives like NixOS, Home-Manager, Cachix, Hydra, and `deploy-rs`. This versatility allows Nix to be introduced piecemeal into projects and organizations.
 
 ### Nix: A Minimal Primer
+
+> Move fast and save things.
+>
+> - Mark Functorberg, probably
 
 In the Nix language, everything is an expression. This includes Nix's central data structure, the [derivation](https://zero-to-nix.com/concepts/derivations). **Derivations** can be thought of as recipes for building software components. These recipes include stable references to the nested build plans of their direct dependencies.  A crucial part of keeping Nix "purely functional" is the separation of evaluation and execution. This distinction is shown by the two steps that make up a Nix build:
 
