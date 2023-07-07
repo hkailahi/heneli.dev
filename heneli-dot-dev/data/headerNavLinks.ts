@@ -3,6 +3,7 @@ const headerNavLinks = [
   { href: '/tags', title: 'Tags' },
   // { href: '/projects', title: 'Projects' },
   // { href: '/drafts', title: 'Blog Drafts' }, // anti-instance, intentionally unlinked
+  { href: '/feed.xml', title: 'RSS' },
   { href: '/about', title: 'About' },
 ]
 
