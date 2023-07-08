@@ -13,7 +13,9 @@ import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/heneli-dot-dev/data/${path}`
 const twitterUrl = (path) =>
-  `https://mobile.twitter.com/search?q=${encodeURIComponent(`${siteMetadata.siteUrl}/${path}`.replace(/^https:\/\//, ''))}`
+  `https://mobile.twitter.com/search?q=${encodeURIComponent(
+    `${siteMetadata.siteUrl}/${path}`.replace(/^https:\/\//, '')
+  )}`
 const issueUrl = `https://github.com/hkailahi/heneli.dev/issues`
 const discussUrl = `https://github.com/hkailahi/heneli.dev/discussions`
 const trashUrl = `https://news.ycombinator.com/`
