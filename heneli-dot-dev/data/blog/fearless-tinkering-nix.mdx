@@ -1,11 +1,11 @@
 ---
 title: 'Fearless Tinkering with Nix (Draft)'
-date: '2023-07-13'
-lastmod: '2023-07-13'
+date: '2023-07-14'
+lastmod: '2023-07-14'
 version: '0.1'
 tags: ['functional', 'declarative', 'nix', 'containers', 'devops', 'reproducible']
 draft: false
-summary: 'Liberate your DevOps! Move fast and save things with Nix.'
+summary: 'Move fast and save things with Nix: A purely functional DevOps ecosystem.'
 images: []
 authors: ['default']
 layout: PostSimple
@@ -46,7 +46,7 @@ Nix attempts to solve these problems by introducing a purely functional DevOps e
 
 ### Road to Reproducibility
 
-For many developers, infrastructure is an uncomfortable area. Whether it’s the state of a cluster on `us-east-2` or a [configuration](https://utcc.utoronto.ca/~cks/space/blog/sysadmin/ReportConfigFileLocations) outside one’s project repository, reasoning about [action at a distance](https://en.wikipedia.org/wiki/Action_at_a_distance_%28computer_programming%29) can be treacherous. Further, the stakes are often high when managing software deployments. A tangled web of mutual, implicit dependencies means modifying one’s system could lead to invalid and unrecoverable states. Tolerating a “working” yet unsatisfactory environment is frequently preferable to the risks of transitioning to something better. As experimentation with alternatives is difficult, iterating is normally restricted to when one’s hand is forced, or the alternative has already been intimately understood. Even the modern practice of automated upgrades for existing dependencies is [fraught](https://arxiv.org/abs/2109.11921v1). Tools for managing remote infrastructure tend to remain unfamiliar as the consequences of trying them out might yield an expensive `$CLOUD_PROVIDER` bill.
+For many developers, infrastructure is an uncomfortable area. Whether it’s the state of a cluster on `us-east-1` or a [configuration](https://utcc.utoronto.ca/~cks/space/blog/sysadmin/ReportConfigFileLocations) outside one’s project repository, reasoning about [action at a distance](https://en.wikipedia.org/wiki/Action_at_a_distance_%28computer_programming%29) can be treacherous. Further, the stakes are often high when managing software deployments. A tangled web of mutual, implicit dependencies means modifying one’s system could lead to invalid and unrecoverable states. Tolerating a “working” yet unsatisfactory environment is frequently preferable to the risks of transitioning to something better. As experimentation with alternatives is difficult, iterating is normally restricted to when one’s hand is forced, or the alternative has already been intimately understood. Even the modern practice of automated upgrades for existing dependencies is [fraught](https://arxiv.org/abs/2109.11921v1). Tools for managing remote infrastructure tend to remain unfamiliar as the consequences of trying them out might yield an expensive `$CLOUD_PROVIDER` bill.
 
 A horrible culmination of these frictions is found in operational firefighting. Operators are tasked with debugging a live system whose interface, tools, and symptoms are typically only practiced against when problems occur. Even in organizations with significant platform investments, the exploratory surface of test deployments rarely reflects the time and space pollution built up across all contributing local developer and remote production environments.
 
@@ -64,7 +64,7 @@ Meanwhile, Nix has developed to fill these gaps. Nix can fit neatly within exist
 
 > Move fast and save things.
 >
-> - Mark Functorberg, probably
+> - Mark Functorberg explaining immutability, probably
 
 In the Nix language, everything is an expression. This includes Nix's central data structure, the [derivation](https://zero-to-nix.com/concepts/derivations). **Derivations** can be thought of as recipes for building software components. These recipes include stable references to the nested build plans of their direct dependencies.  A crucial part of keeping Nix "purely functional" is the separation of evaluation and execution. This distinction is shown by the two steps that make up a Nix build:
 
@@ -107,7 +107,7 @@ Nix uses top-level views called [profiles](https://nixos.org/manual/nix/unstable
 >
 > - Julien Urraca @ Open Source 101 2023, ["From Nix to Docker - Everything You Need to Know About Polygot Package Management"](https://youtu.be/onBQhwuPOAc?t=231)
 
-The classic advice to "look both ways before crossing" is extremely applicable to software development. Most programmers are both producers _and_ consumers of software. Without transparent views upstream and downstream, maintenance strategies are tricky and individualized. Mutability creates a [big ball of mud](https://en.wikipedia.org/wiki/Anti-pattern#Big_ball_of_mud) that rolls downstream and quickly grows out of control until explicitly confronted.
+The classic advice to "look both ways before crossing" is extremely applicable to software development. Most programmers are both producers _and_ consumers of software. Without transparent views upstream and downstream, maintenance strategies are tricky and individualized. Untracked mutability creates a [big ball of mud](https://en.wikipedia.org/wiki/Anti-pattern#Big_ball_of_mud) that rolls downstream and quickly grows out of control until explicitly confronted.
 
 Sharing is intrinsic to Nix's programming model. Nix allows users to handle internal and external dependency relations in an explicit and uniform manner. Package users can be sure that package authors aren't implicitly offloading upstream problems onto them, while authors can expect the same of their dependencies. As identically-built artifacts appear in identical locations, the sum cost of immutability is negligible. These properties enable programmers to fearlessly contribute, distribute, and inherit software.
 
