@@ -13,7 +13,7 @@ layout: PostSimple
 
 <TOCInline toc={props.toc} toHeading={3} asDisclosure />
 
-This is the second installment of [Fearless Tinkering is Functional](./fearless-tinkering-is-functional):
+This is the second installment of [Fearless Tinkering is Functional](./fearless-tinkering-is-functional) and can be read standalone:
 
 1. [Fearless Tinkering is Functional](./fearless-tinkering-is-functional)
 2. Fearless Tinkering with Nix 👈
@@ -52,11 +52,11 @@ A horrible culmination of these frictions is found in operational firefighting. 
 
 Application programming, in contrast, can give developers a sense of power and ease. Assuming a stable working environment, the behavior and outputs of a local program are far more observable. Equipped with a test harness, REPL, and breakpoints, an interactive view of one’s program, including local bindings and available operations, can be explored. An application programmer can wield static analyzers, linters, IDE feedback, and all their most familiar tools to iteratively coax their programs into the desired shape. The ultimate execution of their developments can be safely gated behind various evaluation stages like continuous integration, peer review, staging deployments, and quality assurance.
 
-The extent to which work is disposable is the extent to which work is safe to do. While it may mean tremendous pain in the short term, application programmers can usually throw their hands up and start over from scratch when a local problem arises. If developers tie their local project repository into a knot, they can blow it away and pull down a fresh copy. During development, application programmers regularly break their domain in ways that would be intolerable anywhere else. Though the behavior of real-world programs are inseparable from their execution environments, application programmers can approximate control over time and space by fixing their efforts against their own environment.
+The extent to which work is disposable is the extent to which work is safe to do. While it may mean tremendous pain in the short term, application programmers can usually throw their hands up and start over from scratch when a local problem arises. If developers tie their local project repository into a knot, they can blow it away and pull down a fresh copy from version control. During development, application programmers regularly break their domain in ways that would be intolerable anywhere else. Though the behavior of real-world programs are inseparable from their execution environments, application programmers can approximate control over time and space by fixing their efforts against their own environment.
 
 Can the boons of application programming extend to infrastructure? _Containers_ and _Infrastructure as Code_ (IaC) are frequently touted as solutions, yet their standard implementations fall short. Containers and microVMs offer [various levels of isolation](https://fly.io/blog/sandboxing-and-workload-isolation/); however, these "encapsulated" environments lack innate compositionality and reproducibility. Docker, for instance, is ["repeatable, but not reproducible."](https://youtu.be/0uixRE8xlbY) Delineating the steps for constructing an image and subsequently executing those steps won't guarantee a uniform result. At most, a `Dockerfile` in version control can be nominally linked to an image within a container registry. Although containers can mitigate configuration drift when the same image is employed, they don't ensure consistency when creating a new image or even rebuilding an existing one. The mutable nature of prevalent base images propels users onto unstable grounds and introduces numerous compliance issues. Even more troubling is the fact that standard auditing methods, such as container vulnerability scanners, are [easily thwarted](https://youtu.be/9weGi0csBZM). Containers merely shift around the complexities of imperativity rather than discharging them. Instead of "works on my machine," containers settle for "works with my image."
 
-Similarly, IaC solutions that advertise themselves as "immutable infrastructure", yet don't guarantee reproducibility, leave a lot to be desired. These tools introduce an inconsistent experience, where environments are delivered declaratively but developed imperatively. Masking a leaky abstraction like mutation with a 'declarative' interface obscures pathologies and undermines the original appeal: simplicity.
+Similarly, IaC solutions that advertise themselves as "immutable infrastructure", yet don't offer compositionality or reproducibility, leave a lot to be desired. These tools introduce an inconsistent experience, where environments are delivered declaratively but developed imperatively. Masking a leaky abstraction like mutation with a 'declarative' interface obscures pathologies and undermines the original appeal: simplicity.
 
 Meanwhile, Nix has developed to fill these gaps. Nix can fit neatly within existing infrastructure, letting engineers recover [compositionality](https://nixos.org/manual/nix/stable/language/index.html) and [reproducibility](https://r13y.com/) while using [IaC](https://nix.dev/tutorials/nixos/build-and-deploy/deploying-nixos-using-terraform), [containers](https://floxdev.com/blog/flox-and-containers), and other solutions. Nix can also subsume various existing tools with alternatives like NixOS, Home-Manager, Cachix, Hydra, and `deploy-rs`. This versatility allows Nix to be introduced piecemeal into projects and organizations.
 
@@ -64,14 +64,14 @@ Meanwhile, Nix has developed to fill these gaps. Nix can fit neatly within exist
 
 > Move fast and save things.
 >
-> - Mark Functorberg explaining immutability, probably
+> - Mark Functorberg on immutability, probably
 
 In the Nix language, everything is an expression. This includes Nix's central data structure, the [derivation](https://zero-to-nix.com/concepts/derivations). **Derivations** can be thought of as recipes for building software components. These recipes include stable references to the nested build plans of their direct dependencies.  A crucial part of keeping Nix "purely functional" is the separation of evaluation and execution. This distinction is shown by the two steps that make up a Nix build:
 
 1. [_**Instantiation**_](https://comono.id/posts/2020-03-20-how-nix-instantiation-works/) - pure evaluation of Nix expression for assembling a derivation
 2. [_**Realisation**_](https://zero-to-nix.com/concepts/realisation) - execution of derivation's instructions + addition of outputted component to the Nix Store
 
-The **Nix Store** is an append-only graph database that stores components in the host's file system (typically under `/nix/store`). Every package, service, and configuration is stored in an immutable way, meaning it cannot be modified after creation. Instead, changes result in new component versions, leaving the previous ones intact.
+The **Nix Store** is an append-only graph database that stores software components in the host's file system (typically under `/nix/store`). Every package, service, and configuration is stored in an immutable way, meaning it cannot be modified after creation. Instead, changes result in new component versions, leaving the previous ones intact.
 
 The location of a component in the Nix Store is determined by the [hash](https://samwho.dev/hashing/) of its derivation. As a derivation contains references to its exact inputs, Nix can ensure that a given component is built the same way every time. This property is called _input-addressable_ and is how Nix works by default. For example, a `foo` component whose derivation hashes to `9fjirpbq` will be stored at `/nix/store/9fjirpbq-foo`. Any change to a transitive dependency in the Nix expression defining `foo` will result in a different derivation and, thus, a new component being written to the Nix Store (ex. `/nix/store/3wby0ym3-foo`).
 
