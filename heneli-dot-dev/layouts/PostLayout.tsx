@@ -122,7 +122,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                       </h2>
                       <div className="flex flex-wrap">
                         {audience.map((item) => (
-                          <div>{item}</div>
+                          <div key={item}>{item}</div>
                           // FIXME - Do I need a `key` here? https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key
                         ))}
                       </div>
