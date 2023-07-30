@@ -36,7 +36,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { filePath, path, slug, date, title, version, tags, readingTime } = content
+  const { filePath, path, slug, date, title, version, tags, readingTime, audience } = content
   const basePath = path.split('/')[0]
   const [loadComments, setLoadComments] = useState(false)
 
@@ -109,6 +109,21 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                       <div className="flex flex-wrap">
                         {tags.map((tag) => (
                           <Tag key={tag} text={tag} />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </ul>
+                <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
+                  {audience && (
+                    <div className="py-4 xl:py-8">
+                      <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                        Audience
+                      </h2>
+                      <div className="flex flex-wrap">
+                        {audience.map((item) => (
+                          <div>{item}</div>
+                          // FIXME - Do I need a `key` here? https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key
                         ))}
                       </div>
                     </div>
