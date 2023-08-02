@@ -84,9 +84,9 @@ Triggering a compilation error with the above anti-instance can be seen below:
     • In the expression: reflexiveEq (1 :: Double) (1 :: Double)
 ```
 
-Custom type errors enable user-defined error messages and provide concrete pointers for code documentation and reference in discussions. This also improves developer experience by enhancing library accessibility, IDE tool tips, and user interactions with the compiler.
+Custom type errors enable user-defined error messages and provide concrete pointers for code documentation and reference in discussions. `TypeError` improves developer experience by enhancing library accessibility, IDE tool tips, and user interactions with the compiler.
 
-One downside of `TypeError` is its implementation as a type-level function.[^3] This provides flexibility, but makes it more difficult to understand [when exactly custom errors will be thrown](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0433-unsatisfiable.rst#motivation).
+One downside of `TypeError` is its implementation as a type-level function.[^3] This provides flexibility, but makes it more difficult to understand [when exactly a `TypeError` will be thrown](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0433-unsatisfiable.rst#motivation).
 
 While `TypeError` usage has been minor within the Haskell ecosystem, there are some very cool examples of them appearing in several libraries.[^4]
 
@@ -134,6 +134,8 @@ This results in more predictable error reporting and fixes buggy behavior seen w
 What if you _really need_ an operation from an outlawed instance? Whether facing an implicit anti-instance by omission or an explicit anti-instance by custom type error, the solution is to use a newtype.
 
 Newtypes overcome anti-instances by creating a wrapper type upon which fresh instances can be created without polluting the underlying type.
+
+For example, we can implement a `Monoid` instance on `UnsafeFirst` without worrying about the `Monoid` anti-instance on `First`:
 
 ```hs
 {-# OPTIONS_GHC -fno-warn-orphans #-}
@@ -191,7 +193,7 @@ instance Monoid (First a) where
   mempty = First Nothing
 ```
 
-Combining values under `Data.Semigroup.First` means taking the first value, while combining values under `Data.Monoid.First` means taking the first "non-empty" value.
+Combining values under `Data.Semigroup.First` means selecting the first value, while combining values under `Data.Monoid.First` means selecting the first "non-empty" value.
 
 ```hs:ghci
 λ> First Nothing <> First Nothing <> First Nothing
@@ -204,9 +206,9 @@ First {getFirst = Just 99}
 
 ### Verified Counterexamples
 
-One of Haskell's strengths is its ability to rewards explicitness.[^5] Rather than implicitly omitting impossible instances, Haskellers can communicate intent with anti-instances. Further, claims about why an anti-instance exists can be strenghtened by incorporating machine-checked validations.
+One of Haskell's strengths is its facilities for making assumptions explicit.[^5] Rather than implicitly omitting impossible instances, Haskellers can communicate intent with anti-instances. Further, claims about why an anti-instance exists can be strenghtened by incorporating machine-checked validations.
 
-Using property-based testing with [doctests](https://serokell.io/blog/doctests-in-haskell), we can provide verification of typeclass instance and anti-instance laws directly in our documentation. The presence or absence of verified counter examples makes it clear which typeclass instances are legitimately law-abiding or anti-instances which are intentionally law-breaking, respectively.
+Using property-based testing with [doctests](https://serokell.io/blog/doctests-in-haskell), we can provide the verification of typeclass instances and anti-instances directly in our documentation. The presence of counterexamples from generated values makes it clear which anti-instances are legitimately law-breaking. Likewise, the absence of counterexamples from generated values makes it clear which typeclass instances are legitimately law-abiding.
 
 ![Anti-instance Doctest](/static/images/blog/anti-instance-doctest.png)
 
@@ -251,7 +253,7 @@ Thanks for reading!
 
 [^1]:
     * Associativity Law: An operation is associative if parenthesizing its usage from left-to-right and right-to-left evaluates to the same value. Types with operations obeying the associative law can be given a [`Semigroup`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:Semigroup) instance.
-    * Identity Law: An operation has a neutral element, or [identity](https://en.wikipedia.org/wiki/Identity_element). Types with an identity value and an operation obeying the associative law can be given a `Monoid` instance.
+    * Identity Law: An operation has a neutral element, or [identity](https://en.wikipedia.org/wiki/Identity_element), if there exists an element that can be combined with any other element without changing the other element. Types with an operation obeying the associative law and an identity element for that operation can be given a `Monoid` instance.
 
     <div className="overflow-x-auto">
       <table>
@@ -316,31 +318,30 @@ Thanks for reading!
     </div>
 
 [^2]:
-    A `Semigroup` instance tells us when our type is combinable such that left-to-right and right-to-left combinations are equivalent. The [Semigroup](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:Semigroup)-[Monoid](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Monoid.html#t:Monoid)-[Group](https://hackage.haskell.org/package/groups-0.5.3/docs/Data-Group.html#t:Group) hierarchy distinguishes types are merely associative from those that are combinable with an identity and an inverse.
+    The [Semigroup](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:Semigroup)-[Monoid](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Monoid.html#t:Monoid)-[Group](https://hackage.haskell.org/package/groups-0.5.3/docs/Data-Group.html#t:Group) hierarchy distinguishes types with an operation that is merely associative from those that can also be combined against an identity value and an inverse value.
 
-    [Counterexamples of Type Classes](https://blog.functorial.com/posts/2015-12-06-Counterexamples.html) explores several typeclass heirarchies in Purescript by illustrating their reverse heirarchies of intentionally omitted instances concretely.
-
-    Here are some classic typeclass heirarchies for implict yet intentional omitted instances:
+    Here are some classic typeclass heirarchies for implict yet intentionally omitted instances:
     * [Typeclassopedia](https://wiki.haskell.org/wikiupload/e/e9/Typeclassopedia.pdf)
     * [A Brief Guide to A Few Algebraic Structures](https://argumatronic.com/posts/2019-06-21-algebra-cheatsheet.html)
     * [A guide to the PureScript numeric hierarchy](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/) (Purescript)
-    * [Numhask](https://hackage.haskell.org/package/numhask-0.11.0.2/docs/NumHask.html#g:2) (Alternative numeric hierarchy for Haskell)
+    * [`NumHask`](https://hackage.haskell.org/package/numhask-0.11.0.2/docs/NumHask.html#g:2) (Alternative numeric hierarchy for Haskell)
+
+    [Counterexamples of Type Classes](https://blog.functorial.com/posts/2015-12-06-Counterexamples.html) explores several anti-instance heirarchies in Purescript with counterexamples.
 
 [^3]:
     Otherwise known as a type family.
 
 [^4]:
     `TypeError` has powered:
-    * [`mezzo`](https://github.com/DimaSamoz/mezzo/tree/master) for type-safe (Western) music composition   [enforcing the rules of counterpoint](https://github.com/DimaSamoz/mezzo/blob/master/src/Mezzo/Model/Errors.hs)
-    * [`silica`](https://github.com/evertedsphere/silica) for more accessible optics with high-quality type   errors.
-    https://twitter.com/evertedsphere/status/975660017738309632
+    * [`mezzo`](https://github.com/DimaSamoz/mezzo/tree/master) for type-safe (Western) music composition that [enforces](https://github.com/DimaSamoz/mezzo/blob/master/src/Mezzo/Model/Errors.hs) the rules of counterpoint
+    * [`silica`](https://github.com/evertedsphere/silica) for more accessible optics with high-quality type errors.
 
 [^5]:
-    You can read more about the benefits of being explicit in my [Fearless Tinkering is Functional](./fearless-tinkering-is-functional) blog series, including the forthcoming installment - [Fearless Tinkering in Haskell](./fearless-tinkering-haskell).
+    You can read more about the benefits of being explicit in my [Fearless Tinkering is Functional](./fearless-tinkering-is-functional) blog series.
 
 [^6]:
-    For good reason, testing against something like `monoidLaws` in [`quickcheck-classes`](https://hackage.haskell.org/package/quickcheck-classes) or [`hedgehog-classes`](https://hackage.haskell.org/package/hedgehog-classes) won't work because there's no typeclass instance for providing operations to assert against (again, this is a good thing). However, we can pass implementation as a record/value instead of through a typeclass to do achieve this.
+    Testing anti-instances against something like `monoidLaws` in [`quickcheck-classes`](https://hackage.haskell.org/package/quickcheck-classes) or [`hedgehog-classes`](https://hackage.haskell.org/package/hedgehog-classes) won't work. This is a good thing, as those checkers require operations from typeclass instances that we want to assert _don't exist_.
 
-    (lightly-modified html to fit on page)
+    One workaround is to provide a false implementation of the typeclass operations as a record, and pass it around manually like a typeclass would if it was handling the plumbing. This is the approach taken in the Figure 2. That examples false implementation turned out to be problematic as it relied on any non-generated values. As point was more about co-locating lawful testing and instances within documentation, I've decided to leave the example as is for now.
 
-    Two interesting things to explore would be a) making law-checking without a valid instance more ergonomic and b) a fancier anti-instance wrapper that takes a type-level proof of violation as input and returns an `Unsatisfiable` constraint.
+    Two interesting things to explore would be a) making law-checking without a valid instance more ergonomic and b) a fancier anti-instance wrapper that takes a counterexample as input before returning an `Unsatisfiable` constraint.
