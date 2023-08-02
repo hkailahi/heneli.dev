@@ -30,7 +30,7 @@ An anti-instance is the intentional rejection of a possible typeclass instance. 
 
 The easiest and most common method for dissallowing a typeclass operation on a given type is to simply not provide the corresponding typeclass instance.
 
-As an example, let's look explore omitted instances on [`Data.Semigroup.First`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:First):
+As an example, let's look at omitted instances on [`Data.Semigroup.First`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:First):
 
 ```hs:Data.Semigroup
 newtype First a = First { getFirst :: a }
