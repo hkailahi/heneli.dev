@@ -54,7 +54,7 @@ First 12
 
 On the other hand, there is no `Monoid` instance provided for `First`. No value can be supplied to `First` that, when combined a distinct second value, would result in the second value. Therefore [`mempty`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Monoid.html#v:mempty), an "empty" value satisfying the identity law[^1], cannot be implemented for `First`.
 
-Typeclass heirarchies let users distinguish how different types behave through the operations they implement and laws they satisfy. Looking at heirarchies in the reverse direction makes them an easy place to discover intentionally omitted instances.[^2]
+Typeclass hierarchies let users distinguish how different types behave through the operations they implement and laws they satisfy. Looking at hierarchies in the reverse direction makes them an easy place to discover intentionally omitted instances.[^2]
 
 ### Using `TypeError`
 
@@ -320,13 +320,13 @@ Thanks for reading!
 [^2]:
     The [Semigroup](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:Semigroup)-[Monoid](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Monoid.html#t:Monoid)-[Group](https://hackage.haskell.org/package/groups-0.5.3/docs/Data-Group.html#t:Group) hierarchy distinguishes types with an operation that is merely associative from those that can also be combined against an identity value and an inverse value.
 
-    Here are some classic typeclass heirarchies for implict yet intentionally omitted instances:
+    Here are some classic typeclass hierarchies for implict yet intentionally omitted instances:
     * [Typeclassopedia](https://wiki.haskell.org/wikiupload/e/e9/Typeclassopedia.pdf)
     * [A Brief Guide to A Few Algebraic Structures](https://argumatronic.com/posts/2019-06-21-algebra-cheatsheet.html)
     * [A guide to the PureScript numeric hierarchy](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/) (Purescript)
     * [`NumHask`](https://hackage.haskell.org/package/numhask-0.11.0.2/docs/NumHask.html#g:2) (Alternative numeric hierarchy for Haskell)
 
-    [Counterexamples of Type Classes](https://blog.functorial.com/posts/2015-12-06-Counterexamples.html) explores several anti-instance heirarchies in Purescript with counterexamples.
+    [Counterexamples of Type Classes](https://blog.functorial.com/posts/2015-12-06-Counterexamples.html) explores several anti-instance hierarchies in Purescript with counterexamples.
 
 [^3]:
     Otherwise known as a type family.
