@@ -3,7 +3,7 @@ title: 'Anti-Instances in Haskell (Draft)'
 date: '2023-08-01'
 lastmod: '2023-08-01'
 version: '0.1'
-tags: ['haskell', 'typeclasses', 'short-read']
+tags: ['haskell', 'typeclasses', 'algebra']
 draft: false
 summary: 'Anti-instances with Unsatisfiable.'
 images: []
@@ -24,15 +24,25 @@ Typeclass instances are a powerful tool for specifying which overloaded operatio
 
 ## Anti-Instances: Past and Present
 
-An anti-instance is the intentional rejection of a possible typeclass instance. Anti-instances can either be implicitly defined by omission or explicitly defined by custom type error.
+An anti-instance is the intentional rejection of a possible typeclass instance. Anti-instances can be defined implicitly by omission or explicitly by custom type error.
 
 ### Omitted Instances
 
-The easiest and most common method for dissallowing typeclass operations on a given type is to simply not provide it a typeclass instance.
+The easiest and most common method for dissallowing a typeclass operation on a given type is to simply not provide the corresponding typeclass instance.
 
-For example, there is no `Monoid` instance provided for [`Data.Semigroup.First`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:First). `First` does come with a `Semigroup` instance as appending `First` values obeys the associativity law[^1].
+As an example, let's look explore omitted instances on [`Data.Semigroup.First`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:First):
 
-<caption className="flex justify-center text-base">Fig 1: Combining by returning whatever is first</caption>
+```hs:Data.Semigroup
+newtype First a = First { getFirst :: a }
+
+instance Semigroup (First a) where
+    (<>) :: First a -> First a -> First a
+    a <> _ = a
+```
+
+`First` comes with a `Semigroup` instance as [`(<>)`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#v:-60--62-), an append operation obeying the associativity law[^1], can be implemented for combining `First` values.
+
+<caption className="flex justify-center text-base">Fig 1: Combines two values by selecting the first</caption>
 ```hs:ghci
 λ> First 99 <> First 12 <> First 30 <> First 7
 First 99
@@ -42,9 +52,9 @@ First 12
 First 12
 ```
 
-`First` cannot have a lawful `Monoid` instance as it cannot satisfy the identity law[^1]. This means no value can be supplied to `First` that, when combined a distinct second value, would result in the second value.
+On the other hand, there is no `Monoid` instance provided for `First`. No value can be supplied to `First` that, when combined a distinct second value, would result in the second value. Therefore [`mempty`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Monoid.html#v:mempty), an "empty" value satisfying the identity law[^1], cannot be implemented for `First`.
 
-Typeclass heirarchies[^2] are often created to distinguish different typeclasses by the laws they require. This makes them an easy place to discover intentionally omitted instances. [*Counterexamples of Type Classes*](https://blog.functorial.com/posts/2015-12-06-Counterexamples.html) covers several intentionally omitted instances in the Purescript language and has a lot of overlap with Haskell.
+Typeclass heirarchies let users distinguish how different types behave through the operations they implement and laws they satisfy. Looking at heirarchies in the reverse direction makes them an easy place to discover intentionally omitted instances.[^2]
 
 ### Using `TypeError`
 
@@ -59,7 +69,7 @@ class ReflexiveEq a where
     reflexiveEq :: a -> a -> Bool
 
 instance TypeError
-  (Text "Equality is not reflexive on Double: Nan /= NaN")
+  (Text "Equality is not reflexive on Double: NaN /= NaN")
   => ReflexiveEq Double where
     reflexiveEq _ _ = False
 ```
@@ -70,15 +80,15 @@ Triggering a compilation error with the above anti-instance can be seen below:
 λ> reflexiveEq (1 :: Double) (1 :: Double)
 
 <interactive>:30:1: error: [GHC-64725]
-    • Equality is not reflexive on Double: Nan /= NaN
+    • Equality is not reflexive on Double: NaN /= NaN
     • In the expression: reflexiveEq (1 :: Double) (1 :: Double)
 ```
 
-Custom type errors enable user-defined error messages and provide static pointers for adding documentation, displaying with IDE tool tips, and referencing in discussions.
+Custom type errors enable user-defined error messages and provide concrete pointers for code documentation and reference in discussions. This also improves developer experience by enhancing library accessibility, IDE tool tips, and user interactions with the compiler.
 
-One downside of `TypeError` is its implementation as a type family (AKA a type-level function). This provides flexibility, but also requires greater type-level sophistication from users.
+One downside of `TypeError` is its implementation as a type-level function.[^3] This provides flexibility, but makes it more difficult to understand [when exactly custom errors will be thrown](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0433-unsatisfiable.rst#motivation).
 
-While `TypeError` usage has been minor within the Haskell ecosystem, there are examples of them being used in very cool ways.[^3]
+While `TypeError` usage has been minor within the Haskell ecosystem, there are some very cool examples of them appearing in several libraries.[^4]
 
 ### Introducing `Unsatisfiable`
 
@@ -104,9 +114,7 @@ Triggering a compilation error with the above anti-instance can be seen below:
     • In the expression: (\ x -> x) == (\ y -> y)
 ```
 
-Anti-instances defined with `Unsatisfiable` look nearly identical to those defined with `TypeError`, but have some additional benefits.
-
-Unlike `TypeError`, `Unsatisfiable` is a typeclass and thus has kind `Constraint`.
+Anti-instances defined with `Unsatisfiable` look nearly identical to those defined with `TypeError`, but have some additional benefits. Unlike `TypeError`, `Unsatisfiable` is a typeclass and thus produces types of kind `Constraint`.
 
 ```hs:ghci
 λ> :kind TypeError
@@ -115,11 +123,9 @@ TypeError :: ErrorMessage -> b
 Unsatisfiable :: ErrorMessage -> Constraint
 ```
 
-This results in more predictable error reporting and fixes buggy behavior seen when `-fdefer-type-errors` is used with `TypeError`.
+This results in more predictable error reporting and fixes buggy behavior seen when `TypeError` is used with `-fdefer-type-errors`. You can find more details on its advantages in the [`Unsatisfiable` GHC Proposal](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0433-unsatisfiable.rst).
 
-Most important/prominent/ to users is in they will better match expectations with regards to compile-time behavior and provided greater convience. // TODO - Flesh out
-
-You can find more details and advantages in the [`Unsatisfiable` GHC Proposal](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0433-unsatisfiable.rst).
+{/* Most important/prominent/ to users is in they will better match expectations with regards to compile-time behavior and provided greater convience. // TODO - Flesh out */}
 
 ## Tips & Tricks
 
@@ -127,7 +133,7 @@ You can find more details and advantages in the [`Unsatisfiable` GHC Proposal](h
 
 What if you _really need_ an operation from an outlawed instance? Whether facing an implicit anti-instance by omission or an explicit anti-instance by custom type error, the solution is to use a newtype.
 
-Newtypes overcome anti-instances by creating a wrapper type on which fresh instances can be created without polluting the underlying type.
+Newtypes overcome anti-instances by creating a wrapper type upon which fresh instances can be created without polluting the underlying type.
 
 ```hs
 {-# OPTIONS_GHC -fno-warn-orphans #-}
@@ -168,79 +174,43 @@ CallStack (from HasCallStack):
   error, called at <interactive>:52:12 in interactive:Ghci7
 ```
 
-Clearly the above example is a bad idea. Carefully consider whether intentional anti-instances. likely that your case also has a better way to achieve your goals.
+Clearly the above example is a bad idea. Carefully consider whether this workaround is a good idea and truly necessary in your case. There's likely a different representation for your data that can better achieve your goals.
 
-For example, a different `First` datatype exists in `Data.Monoid` and is implemented as a newtype wrapper over `Maybe`. Combining values under `Data.Semigroup.First` means taking the first value, while combining values under `Data.Monoid.First` means taking the first non-`Nothing` value.
+For example, a different `First` datatype exists in `Data.Monoid` that wraps the `Maybe` datatype.
+
+```hs:Data.Monoid
+newtype First a = First { getFirst :: Maybe a }
+
+instance Semigroup (First a) where
+  (<>) :: First a -> First a -> First a
+  First Nothing <> b = b
+  a             <> _ = a
+
+instance Monoid (First a) where
+  mempty :: First a
+  mempty = First Nothing
+```
+
+Combining values under `Data.Semigroup.First` means taking the first value, while combining values under `Data.Monoid.First` means taking the first "non-empty" value.
+
+```hs:ghci
+λ> First Nothing <> First Nothing <> First Nothing
+First {getFirst = Nothing}
+λ> ((First Nothing <> First (Just 99)) <> First Nothing) <> First (Just 33)
+First {getFirst = Just 99}
+λ> First Nothing <> (First (Just 99) <> (First Nothing <> First (Just 33)))
+First {getFirst = Just 99}
+```
 
 ### Verified Counterexamples
 
-One of the best parts of Haskell is how it makes being explicit ergonomic.[^4] Rather than implicitly omitting instances, Haskellers can communicate intent with anti-instances. We can go beyond just providing an explanatory compilation error message and incorporate machine-checked proof into our documentation.
+One of Haskell's strengths is its ability to rewards explicitness.[^5] Rather than implicitly omitting impossible instances, Haskellers can communicate intent with anti-instances. Further, claims about why an anti-instance exists can be strenghtened by incorporating machine-checked validations.
 
-Using property-based testing with [doctests](https://serokell.io/blog/doctests-in-haskell), we can pair laws and get them directly in our documentation to show typeclass instances that are law-abiding or anti-instances which are intentionally law-breaking.
-
-Statically verified counter examples!
+Using property-based testing with [doctests](https://serokell.io/blog/doctests-in-haskell), we can provide verification of typeclass instance and anti-instance laws directly in our documentation. The presence or absence of verified counter examples makes it clear which typeclass instances are legitimately law-abiding or anti-instances which are intentionally law-breaking, respectively.
 
 ![Anti-instance Doctest](/static/images/blog/anti-instance-doctest.png)
 
-<caption className="flex justify-center text-base">Fig 2: Haddocks for Doctested Anti-Instance ([code](https://gist.github.com/hkailahi/ccad605dcf79daf426305e58b4d92359))[^5]</caption>
-
-## Tradeoffs
-
-Compile-time?? Pretty simple, we're not deriving anything so prob not?
-
-What if you disagree with an upstream provided anti-instance? Marginally less annoying than but prob still similar issues as with disagreeing with an exisiting instance. Should controversial anti-instances be orphaned off in separate modules? Coherence is a blessing and curse. Unless you know what you're doing, don't do weird stuff.
-
-Using a newtype to recover exstinsibility can be an inconvience (but arguably is one worth paying).
-
-I don't recommend `Unsatisfiable` orphans.
-
-TODO - Check if `UndecidableInstances` is needed with `Unsatisfiable` (like with `TypeError`)
-
-## Beyond Anti-Instances
-
-### Deprecated Instances
-
-// TODO - `DEPRECATED` already exists. Figure out what is different after this proposal.
-
-Currently, the `DEPRECATED` pragma can be used issue deprecation warning on modules, functions, data constructors, and type constructors, but not on typeclass instances. The GHC proposal for [Deprecated Instances](https://github.com/int-index/ghc-proposals/blob/int-index/deprecated-instances/proposals/0000-deprecated-instances.rst) to fix that was accepted last week!
-
-```hs:ghci
-instance {-# DEPRECATED "Do not use NFData (a -> b). See deepseq issue #16" #-}
-         NFData (a -> b)
-  where
-    rnf = rwhnf
-```
-
-This provides a path for creating a deprecation period to precede breaking changes.
-* Coherence conditions notorious breaking changes (frequency? or just more painful?)
-
-Breaking changes can be preceded with a deprecation period when the problematic code triggers a warning.
-
-* [Deprecated instances PR]https://github.com/ghc-proposals/ghc-proposals/pull/575
-* [Opaleye’s API breakage policy](http://h2.jaguarpaw.co.uk/posts/opaleyes-api-breakage-policy/)
-* https://github.com/haskell/deepseq/issues/16#issuecomment-1405288710
-* https://github.com/haskell/deepseq/issues/16#issuecomment-1405321124
-* https://discourse.haskell.org/t/ghc-medium-term-priorities/5600/21?u=angerman
-
-### Custom Type Warnings
-
-A pending proposal for [Custom Type Warnings](https://github.com/adamgundry/ghc-proposals/blob/custom-type-warnings/proposals/0000-custom-type-warnings.rst)
-
-- A `Warning` class, similar to `Unsatisfiable`, (or type family similar to `TypeError`) that presents...
-- GHC 9.8.1 also brings the addition of [`WARNING` pragmas with categories](https://github.com/adamgundry/ghc-proposals/blob/warning-pragmas/proposals/0000-warning-pragmas-with-categories.rst). // Flesh out - combining with Custom Type Warnings
-
-### Going Further (Advanced)
-
-Wish List
-
-Indulge with me in some sloppily speculation:
-Indulge me with some sloppily speculation:
-
-Type-families that conditionally evaluate to `Unsatisfiable`? For families (or shared categories) of anti-instances? Anti-instance families? Or can you do the same with `Unsatisfiable` superclasses?
-
-Deriving anti-instances?
-
-I'll leave these for further exploration.
+<caption className="flex justify-center text-base">Fig 2: Haddocks for Doctested Anti-Instance ([code](https://gist.github.com/hkailahi/ccad605dcf79daf426305e58b4d92359))[^6]</caption>
 
 ## Further Reading
 
@@ -253,30 +223,34 @@ Additionally:
 
   <summary>For learners looking to level up their typeclass knowledge...</summary>
 
-  For advance beginner and intermediate Haskellers looking for a deeper background on typeclasses and type-level techniques, check out [*Thinking With Types*](https://thinkingwithtypes.com) for comprehensive tour. Other resources I've found useful include:
-    * [Code Reuse in PureScript: Fns, Classes, and Interpreters](https://youtu.be/GlUcCPmH8wI) (video)
+  Advanced beginners and intermediate Haskellers looking to deepen their understanding of typeclasses and type-level techniques should check out [*Thinking With Types*](https://thinkingwithtypes.com) for comprehensive tour. Other resources I've found interesting and useful include:
+    * [*Code Reuse in PureScript: Fns, Classes, and Interpreters*](https://youtu.be/GlUcCPmH8wI) (video)
+    * [*Coherence of Type Class Resolution*](https://youtu.be/bmHd0MoCIiM) (video)
+    * [*All You Wanted to Know About Type Classes*](https://youtu.be/8o51sA12VfI) (video)
     * [*An introduction to typeclass metaprogramming*](https://lexi-lambda.github.io/blog/2021/03/25/an-introduction-to-typeclass-metaprogramming/)
-    * [Coherence of Type Class Resolution](https://youtu.be/bmHd0MoCIiM) (video)
-    * [All You Wanted to Know About Type Classes](https://youtu.be/8o51sA12VfI) (video)
 
   </details>
 *
   <details>
 
-  <summary>For intermediate Haskellers and explorers...</summary>
+  <summary>For more seasoned explorers...</summary>
 
-  For those with further interest in this area:
-  * See related GHC proposals, the accepted proposal for [Deprecated Instances](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0575-deprecated-instances.rst) and pending proposal for [Custom Type Warnings](https://github.com/adamgundry/ghc-proposals/blob/custom-type-warnings/proposals/0000-custom-type-warnings.rst).
-  * For why typeclass laws require manual verification, see this [StackOverflow answer](https://stackoverflow.com/questions/63523145/why-do-haskells-typeclass-laws-have-to-be-verified-manually). See the [*Verifying replicated data types*](https://dl.acm.org/doi/10.1145/3428284) and [*Quotient Haskell*](https://www.cs.nott.ac.uk/~pszgmh/quotient-haskell.pdf) papers for examples using Liquid Haskell to statically verify typeclass laws and encode laws directly onto datatypes, respectively.
+  Those with further interest in this area:
+  * See related GHC proposals like the recently accepted [Deprecated Instances](https://github.com/ghc-proposals/ghc-proposals/blob/master/proposals/0575-deprecated-instances.rst) proposal and pending [Custom Type Warnings](https://github.com/adamgundry/ghc-proposals/blob/custom-type-warnings/proposals/0000-custom-type-warnings.rst) proposal.
+  * For why typeclass laws require manual verification, see [Rice's theorem](https://en.wikipedia.org/wiki/Rice%27s_theorem) and this [StackOverflow answer](https://stackoverflow.com/questions/63523145/why-do-haskells-typeclass-laws-have-to-be-verified-manually). See the [*Verifying replicated data types*](https://dl.acm.org/doi/10.1145/3428284) and [*Quotient Haskell*](https://www.cs.nott.ac.uk/~pszgmh/quotient-haskell.pdf) papers for examples using Liquid Haskell to statically verify typeclass laws and encode laws directly onto datatypes, respectively.
 
   </details>
+
+If there's further interest, I may write about more on this topic. I have some thoughts to flesh out around tradeoffs, related proposals, more ergonomic law-checking, and deriving anti-instances.
+
+Thanks for reading!
+
+✌️
 
 ## Footnotes
 
 [^1]:
-    Associativity and Identity can be defined as follows:
-
-    * Associativity Law: An operation is associative if it's. Types with operations obeying the associative law can be given a [`Semigroup`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:Semigroup) instance.
+    * Associativity Law: An operation is associative if parenthesizing its usage from left-to-right and right-to-left evaluates to the same value. Types with operations obeying the associative law can be given a [`Semigroup`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:Semigroup) instance.
     * Identity Law: An operation has a neutral element, or [identity](https://en.wikipedia.org/wiki/Identity_element). Types with an identity value and an operation obeying the associative law can be given a `Monoid` instance.
 
     <div className="overflow-x-auto">
@@ -315,7 +289,8 @@ Additionally:
           </tr>
           <tr>
             <th scope="row" className="align-middle">
-              <p>Identity:</p>
+              <p>Associative + Identity:</p>
+              <p>`Semigroup: (A <> B) <> C == A <> (B <> C)`</p>
               <p>`Left Identity: e <> A == A`</p>
               <p>`Right Identity: A <> e == A`</p>
             </th>
@@ -341,22 +316,29 @@ Additionally:
     </div>
 
 [^2]:
-    Some classic typeclass heirarchy examples:
+    A `Semigroup` instance tells us when our type is combinable such that left-to-right and right-to-left combinations are equivalent. The [Semigroup](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#t:Semigroup)-[Monoid](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Monoid.html#t:Monoid)-[Group](https://hackage.haskell.org/package/groups-0.5.3/docs/Data-Group.html#t:Group) hierarchy distinguishes types are merely associative from those that are combinable with an identity and an inverse.
+
+    [Counterexamples of Type Classes](https://blog.functorial.com/posts/2015-12-06-Counterexamples.html) explores several typeclass heirarchies in Purescript by illustrating their reverse heirarchies of intentionally omitted instances concretely.
+
+    Here are some classic typeclass heirarchies for implict yet intentional omitted instances:
     * [Typeclassopedia](https://wiki.haskell.org/wikiupload/e/e9/Typeclassopedia.pdf)
     * [A Brief Guide to A Few Algebraic Structures](https://argumatronic.com/posts/2019-06-21-algebra-cheatsheet.html)
     * [A guide to the PureScript numeric hierarchy](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/) (Purescript)
     * [Numhask](https://hackage.haskell.org/package/numhask-0.11.0.2/docs/NumHask.html#g:2) (Alternative numeric hierarchy for Haskell)
 
 [^3]:
-    `TypeError` has powered wild things like:
-    * [`mezzo`](https://github.com/DimaSamoz/mezzo/tree/master) for type-safe (Western) music composition   [enforcing the rules of counterpoint](https://github.com/DimaSamoz/mezzo/blob/master/src/Mezzo/Model/Errors.  hs)
+    Otherwise known as a type family.
+
+[^4]:
+    `TypeError` has powered:
+    * [`mezzo`](https://github.com/DimaSamoz/mezzo/tree/master) for type-safe (Western) music composition   [enforcing the rules of counterpoint](https://github.com/DimaSamoz/mezzo/blob/master/src/Mezzo/Model/Errors.hs)
     * [`silica`](https://github.com/evertedsphere/silica) for more accessible optics with high-quality type   errors.
     https://twitter.com/evertedsphere/status/975660017738309632
 
-[^4]:
-    You can read more about the benefits of being explicit in my [Fearless Tinkering is Functional] blog series, including the forthcoming installment - [Fearless Tinkering in Haskell].
-
 [^5]:
+    You can read more about the benefits of being explicit in my [Fearless Tinkering is Functional](./fearless-tinkering-is-functional) blog series, including the forthcoming installment - [Fearless Tinkering in Haskell](./fearless-tinkering-haskell).
+
+[^6]:
     For good reason, testing against something like `monoidLaws` in [`quickcheck-classes`](https://hackage.haskell.org/package/quickcheck-classes) or [`hedgehog-classes`](https://hackage.haskell.org/package/hedgehog-classes) won't work because there's no typeclass instance for providing operations to assert against (again, this is a good thing). However, we can pass implementation as a record/value instead of through a typeclass to do achieve this.
 
     (lightly-modified html to fit on page)
