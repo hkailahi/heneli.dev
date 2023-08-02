@@ -5,7 +5,7 @@ lastmod: '2023-08-01'
 version: '0.1'
 tags: ['haskell', 'typeclasses', 'algebra']
 draft: false
-summary: 'Anti-instances with Unsatisfiable.'
+summary: 'Prevent bad typeclass instances using good type errors.'
 images: []
 authors: ['default']
 layout: PostLayout
@@ -340,8 +340,8 @@ Thanks for reading!
     You can read more about the benefits of being explicit in my [Fearless Tinkering is Functional](./fearless-tinkering-is-functional) blog series.
 
 [^6]:
-    Testing anti-instances against something like `monoidLaws` in [`quickcheck-classes`](https://hackage.haskell.org/package/quickcheck-classes) or [`hedgehog-classes`](https://hackage.haskell.org/package/hedgehog-classes) won't work. This is a good thing, as those checkers require operations from typeclass instances that we want to assert _don't exist_.
+    Testing anti-instances against something like `monoidLaws` in [`quickcheck-classes`](https://hackage.haskell.org/package/quickcheck-classes) or [`hedgehog-classes`](https://hackage.haskell.org/package/hedgehog-classes) won't work. This is a good thing, as those checkers require operations from typeclass instances that we _don't_ want to exist.
 
-    One workaround is to provide a false implementation of the typeclass operations as a record, and pass it around manually like a typeclass would if it was handling the plumbing. This is the approach taken in the Figure 2. That examples false implementation turned out to be problematic as it relied on any non-generated values. As point was more about co-locating lawful testing and instances within documentation, I've decided to leave the example as is for now.
+    One workaround is to provide a false implementation of typeclass operations as a record, and pass it around manually like a typeclass would if it was handling the plumbing. This is the approach taken in the Figure 2. That example's false implementation turned out to be problematic as it relied on any non-generated values. As my earlier point was more the ability to co-locate testing and instances within documentation, I've decided to leave the example as is (for now).
 
     Two interesting things to explore would be a) making law-checking without a valid instance more ergonomic and b) a fancier anti-instance wrapper that takes a counterexample as input before returning an `Unsatisfiable` constraint.
