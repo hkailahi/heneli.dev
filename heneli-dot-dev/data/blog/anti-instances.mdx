@@ -225,7 +225,7 @@ Additionally:
 
   <summary>For learners looking to level up their typeclass knowledge...</summary>
 
-  Advanced beginners and intermediate Haskellers looking to deepen their understanding of typeclasses and type-level techniques should check out [*Thinking With Types*](https://thinkingwithtypes.com) for comprehensive tour. Other resources I've found interesting and useful include:
+  Advanced beginners and intermediate Haskellers looking to deepen their understanding of typeclasses and type-level techniques should check out [*Thinking With Types*](https://thinkingwithtypes.com) for a comprehensive tour. Other resources I've found interesting and useful include:
     * [*Code Reuse in PureScript: Fns, Classes, and Interpreters*](https://youtu.be/GlUcCPmH8wI) (video)
     * [*Coherence of Type Class Resolution*](https://youtu.be/bmHd0MoCIiM) (video)
     * [*All You Wanted to Know About Type Classes*](https://youtu.be/8o51sA12VfI) (video)
@@ -326,7 +326,7 @@ Thanks for reading!
     * [A guide to the PureScript numeric hierarchy](https://a-guide-to-the-purescript-numeric-hierarchy.readthedocs.io/en/latest/) (Purescript)
     * [`NumHask`](https://hackage.haskell.org/package/numhask-0.11.0.2/docs/NumHask.html#g:2) (Alternative numeric hierarchy for Haskell)
 
-    [Counterexamples of Type Classes](https://blog.functorial.com/posts/2015-12-06-Counterexamples.html) explores several anti-instance hierarchies in Purescript with counterexamples.
+    [Counterexamples of Type Classes](https://blog.functorial.com/posts/2015-12-06-Counterexamples.html) explores several anti-instance hierarchies in Purescript through counterexamples.
 
 [^3]:
     Otherwise known as a type family.
@@ -334,7 +334,7 @@ Thanks for reading!
 [^4]:
     `TypeError` has powered:
     * [`mezzo`](https://github.com/DimaSamoz/mezzo/tree/master) for type-safe (Western) music composition that [enforces](https://github.com/DimaSamoz/mezzo/blob/master/src/Mezzo/Model/Errors.hs) the rules of counterpoint
-    * [`silica`](https://github.com/evertedsphere/silica) for more accessible optics with high-quality type errors.
+    * [`silica`](https://github.com/evertedsphere/silica) for more accessible optics with high-quality type errors
 
 [^5]:
     You can read more about the benefits of being explicit in my [Fearless Tinkering is Functional](./fearless-tinkering-is-functional) blog series.
@@ -342,6 +342,6 @@ Thanks for reading!
 [^6]:
     Testing anti-instances against something like `monoidLaws` in [`quickcheck-classes`](https://hackage.haskell.org/package/quickcheck-classes) or [`hedgehog-classes`](https://hackage.haskell.org/package/hedgehog-classes) won't work. This is a good thing, as those checkers require operations from typeclass instances that we _don't_ want to exist.
 
-    One workaround is to provide a false implementation of typeclass operations as a record, and pass it around manually like a typeclass would if it was handling the plumbing. This is the approach taken in the Figure 2. That example's false implementation turned out to be problematic as it relied on any non-generated values. As my earlier point was more the ability to co-locate testing and instances within documentation, I've decided to leave the example as is (for now).
+    One workaround is to provide a false implementation of typeclass operations as a record, and pass it around manually like a typeclass would if it was handling the plumbing. This is the approach taken in Figure 2. That example's false implementation turned out to be problematic as it relied on non-generated values. Since my earlier point was more the ability to co-locate testing and instances within documentation, I've decided to leave the example as is (for now).
 
-    Two interesting things to explore would be a) making law-checking without a valid instance more ergonomic and b) a fancier anti-instance wrapper that takes a counterexample as input before returning an `Unsatisfiable` constraint.
+    Two interesting things to explore would be a) making law-checking without a valid instance more ergonomic and b) making a fancier anti-instance wrapper that takes a counterexample as input before returning an `Unsatisfiable` constraint.
