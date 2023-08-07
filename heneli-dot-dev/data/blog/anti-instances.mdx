@@ -42,7 +42,6 @@ instance Semigroup (First a) where
 
 `First` comes with a `Semigroup` instance as [`(<>)`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Semigroup.html#v:-60--62-), an append operation obeying the associativity law[^1], can be implemented for combining `First` values.
 
-<caption className="flex justify-center text-base">Fig 1: Combines two values by selecting the first</caption>
 ```hs:ghci
 λ> First 99 <> First 12 <> First 30 <> First 7
 First 99
@@ -51,10 +50,16 @@ First 12
 λ> First 12 <> (First 30 <> (First 7 <> First 99))
 First 12
 ```
+<caption className="flex justify-center text-base">Figure 1: Combines two values by selecting the first</caption>
 
 On the other hand, there is no `Monoid` instance provided for `First`. No value can be supplied to `First` that, when combined with a distinct second value, would result in the second value. Therefore [`mempty`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Data-Monoid.html#v:mempty), an "empty" value satisfying the identity law[^1], cannot be implemented for `First`.
 
-Typeclass hierarchies let users distinguish how different types behave through the operations they implement and the laws they satisfy. Looking at hierarchies in the reverse direction makes them an easy place to discover intentionally omitted instances.[^2]
+Typeclass hierarchies help users quickly distinguish how different types behave by communicating the operations they implement and the laws they satisfy. Observing where different types fall within these hierarchies is an easy way to discover intentionally omitted instances.[^2]
+
+<p align="center" width="100%">
+  <img src="/static/images/blog/simple_haskell_hierarchy.png" alt="Standard Typeclass Hierarchy in Haskell" className="bg-white" height="50%" width="50%"/>
+  <caption className="flex justify-center text-base">Figure 2: A typeclass hierarchy ([Typeclassopedia](https://wiki.haskell.org/Typeclassopedia))</caption>
+</p>
 
 ### Using `TypeError`
 
@@ -210,7 +215,7 @@ Using property-based testing with [doctests](https://serokell.io/blog/doctests-i
 
 ![Anti-instance Doctest](/static/images/blog/anti-instance-doctest.png)
 
-<caption className="flex justify-center text-base">Fig 2: Haddocks for Doctested Anti-Instance ([code](https://gist.github.com/hkailahi/ccad605dcf79daf426305e58b4d92359))[^6]</caption>
+<caption className="flex justify-center text-base">Figure 3: Haddocks for Doctested Anti-Instance ([code](https://gist.github.com/hkailahi/ccad605dcf79daf426305e58b4d92359))[^6]</caption>
 
 ## Further Reading
 
@@ -340,6 +345,6 @@ Thanks for reading!
 [^6]:
     Testing anti-instances against something like `monoidLaws` in [`quickcheck-classes`](https://hackage.haskell.org/package/quickcheck-classes) or [`hedgehog-classes`](https://hackage.haskell.org/package/hedgehog-classes) won't work. This is a good thing, as those checkers require operations from typeclass instances that we _don't_ want to exist.
 
-    One workaround is to provide a false implementation of typeclass operations as a record and pass it around manually like a typeclass would if it was handling the plumbing. This is the approach taken in Figure 2. That example's false implementation turned out to be problematic as it relied on non-generated values. Since my earlier point was more about the ability to co-locate testing and instances within the documentation, I've decided to leave the example as is (for now).
+    One workaround is to provide a false implementation of typeclass operations as a record and pass it around manually like a typeclass would if it was handling the plumbing. This is the approach taken in Figure 3. That example's false implementation turned out to be problematic as it relied on non-generated values. Since my earlier point was more about the ability to co-locate testing and instances within the documentation, I've decided to leave the example as is (for now).
 
-    Two interesting things to explore would be a) making law-checking without a valid instance more ergonomic and b) making a fancier anti-instance wrapper that takes a counterexample as input before returning an `Unsatisfiable` constraint.
+    Two interesting things to explore would be a) making law-checking without a valid instance more ergonomic and b) making a fancier anti-instance wrapper that takes/witnesses a counterexample as input before returning an `Unsatisfiable` constraint.
