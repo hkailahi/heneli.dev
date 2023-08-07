@@ -36,7 +36,7 @@ interface LayoutProps {
 }
 
 export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { filePath, path, slug, date, title, version, tags, readingTime } = content
+  const { filePath, path, slug, date, title, version, tags, readingTime, audience } = content
   const basePath = path.split('/')[0]
   const [loadComments, setLoadComments] = useState(false)
 
@@ -63,11 +63,15 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
                   v{version}
                 </div>
+                <br />
+                <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
+                  {readingTime.text} ({readingTime.words} words)
+                </div>
               </div>
             </div>
           </header>
           <div className="grid-rows-[auto_1fr] divide-y divide-gray-200 pb-8 dark:divide-gray-700 xl:grid xl:grid-cols-4 xl:gap-x-6 xl:divide-y-0">
-            <dl className="pb-10 pt-6 xl:border-b xl:border-gray-200 xl:pt-11 xl:dark:border-gray-700">
+            <dl className="pb-10 pt-6 xl:pt-11">
               <dt className="sr-only">Authors</dt>
               <dd>
                 <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
@@ -99,25 +103,6 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                       </dl>
                     </li>
                   ))}
-                </ul>
-                <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
-                  {tags && (
-                    <div className="py-4 xl:py-8">
-                      <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
-                        Tags
-                      </h2>
-                      <div className="flex flex-wrap">
-                        {tags.map((tag) => (
-                          <Tag key={tag} text={tag} />
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </ul>
-                <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-x-0 xl:space-y-8">
-                  <div className="text-base font-medium leading-6 text-gray-500 dark:text-gray-400">
-                    {readingTime.text} ({readingTime.words} words)
-                  </div>
                 </ul>
               </dd>
             </dl>
@@ -164,6 +149,31 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
               )}
             </div>
             <footer>
+              {tags && (
+                <div className="py-4 xl:py-8">
+                  <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                    Tags
+                  </h2>
+                  <div className="flex flex-wrap">
+                    {tags.map((tag) => (
+                      <Tag key={tag} text={tag} />
+                    ))}
+                  </div>
+                </div>
+              )}
+              {audience && (
+                <div className="py-4 xl:py-8">
+                  <h2 className="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">
+                    Audience
+                  </h2>
+                  <div className="flex flex-wrap">
+                    {audience.map((item) => (
+                      <div key={item}>{item}</div>
+                      // FIXME - Do I need a `key` here? https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key
+                    ))}
+                  </div>
+                </div>
+              )}
               <div className="divide-gray-200 text-sm font-medium leading-5 dark:divide-gray-700 xl:col-start-1 xl:row-start-2 xl:divide-y">
                 {(next || prev) && (
                   <div className="flex justify-between py-4 xl:block xl:space-y-8 xl:py-8">
@@ -190,6 +200,7 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                   </div>
                 )}
               </div>
+              <div className="xl:border-b xl:border-gray-200 xl:dark:border-gray-700" />
               <div className="pt-4 xl:pt-8">
                 <Link
                   href={`/${basePath}`}
